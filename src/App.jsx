@@ -26,14 +26,79 @@ const DEFAULT_PLAN = {
   priorities: ['Magic Kingdom'],
   diningStyle: 'Quick Service',
   notes: '',
-  days: [
-    { day: 'Day 1', park: 'Magic Kingdom', focus: '' },
-    { day: 'Day 2', park: 'EPCOT', focus: '' }
-  ],
+  dayPlans: {},
   checklist: ['Park tickets', 'Resort booking', 'Genie+ plan']
 }
 
 const STORAGE_KEY = 'disney-holiday-planner'
+const EVENT_BACKGROUNDS = {
+  fireworks: '/images/fireworks.svg',
+  dining: '/images/dining.svg',
+  ride: '/images/rides.svg',
+  character: '/images/characters.svg',
+  nature: '/images/nature.svg',
+  default: '/images/magic.svg'
+}
+
+function normalizePlan(rawPlan) {
+  return {
+    ...DEFAULT_PLAN,
+    ...rawPlan,
+    priorities: rawPlan.priorities?.length ? rawPlan.priorities : DEFAULT_PLAN.priorities,
+    checklist: rawPlan.checklist?.length ? rawPlan.checklist : DEFAULT_PLAN.checklist,
+    dayPlans: rawPlan.dayPlans || {}
+  }
+}
+
+function getDateRange(startDate, endDate) {
+  if (!startDate || !endDate) return []
+  const start = new Date(`${startDate}T00:00:00`)
+  const end = new Date(`${endDate}T00:00:00`)
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end < start) return []
+
+  const dates = []
+  const cursor = new Date(start)
+  while (cursor <= end) {
+    dates.push(cursor.toISOString().slice(0, 10))
+    cursor.setDate(cursor.getDate() + 1)
+  }
+
+  return dates
+}
+
+function formatPrettyDate(dateString) {
+  return new Date(`${dateString}T00:00:00`).toLocaleDateString('en-GB', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short'
+  })
+}
+
+function detectTheme(text) {
+  const value = text.toLowerCase()
+
+  if (
+    value.includes('firework') ||
+    value.includes('night show') ||
+    value.includes('parade')
+  ) {
+    return 'fireworks'
+  }
+  if (value.includes('dining') || value.includes('restaurant') || value.includes('breakfast')) {
+    return 'dining'
+  }
+  if (value.includes('ride') || value.includes('coaster') || value.includes('genie+')) {
+    return 'ride'
+  }
+  if (value.includes('character') || value.includes('princess') || value.includes('meet')) {
+    return 'character'
+  }
+  if (value.includes('trail') || value.includes('safari') || value.includes('animal')) {
+    return 'nature'
+  }
+
+  return 'default'
+}
 
 function App() {
   const [plan, setPlan] = useState(() => {
@@ -41,28 +106,48 @@ function App() {
     if (!saved) return DEFAULT_PLAN
 
     try {
-      return JSON.parse(saved)
+      return normalizePlan(JSON.parse(saved))
     } catch {
       return DEFAULT_PLAN
     }
   })
 
   const [newChecklistItem, setNewChecklistItem] = useState('')
+  const [draftDayItems, setDraftDayItems] = useState({})
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(plan))
   }, [plan])
 
-  const tripLength = useMemo(() => {
-    if (!plan.startDate || !plan.endDate) return null
-
-    const start = new Date(plan.startDate)
-    const end = new Date(plan.endDate)
-    const msPerDay = 1000 * 60 * 60 * 24
-    const days = Math.floor((end - start) / msPerDay) + 1
-
-    return days > 0 ? days : null
+  const tripDates = useMemo(() => {
+    return getDateRange(plan.startDate, plan.endDate)
   }, [plan.startDate, plan.endDate])
+
+  const tripLength = tripDates.length || null
+
+  useEffect(() => {
+    setPlan((current) => {
+      const currentPlans = current.dayPlans || {}
+      const nextDayPlans = {}
+      let hasChanges = Object.keys(currentPlans).length !== tripDates.length
+
+      tripDates.forEach((date) => {
+        if (currentPlans[date]) {
+          nextDayPlans[date] = currentPlans[date]
+        } else {
+          hasChanges = true
+          nextDayPlans[date] = {
+            park: current.priorities[0] || 'Magic Kingdom',
+            focus: '',
+            items: []
+          }
+        }
+      })
+
+      if (!hasChanges) return current
+      return { ...current, dayPlans: nextDayPlans }
+    })
+  }, [tripDates, plan.priorities])
 
   const updateField = (field, value) => {
     setPlan((current) => ({ ...current, [field]: value }))
@@ -79,21 +164,53 @@ function App() {
     })
   }
 
-  const updateDay = (index, key, value) => {
+  const updateDayPlan = (date, key, value) => {
     setPlan((current) => {
-      const updated = [...current.days]
-      updated[index] = { ...updated[index], [key]: value }
-      return { ...current, days: updated }
+      const currentDay = current.dayPlans?.[date]
+      if (!currentDay) return current
+
+      return {
+        ...current,
+        dayPlans: {
+          ...current.dayPlans,
+          [date]: {
+            ...currentDay,
+            [key]: value
+          }
+        }
+      }
     })
   }
 
-  const addDay = () => {
+  const addDayItem = (date) => {
+    const item = (draftDayItems[date] || '').trim()
+    if (!item) return
+
+    const theme = detectTheme(item)
+
     setPlan((current) => ({
       ...current,
-      days: [
-        ...current.days,
-        { day: `Day ${current.days.length + 1}`, park: 'Magic Kingdom', focus: '' }
-      ]
+      dayPlans: {
+        ...current.dayPlans,
+        [date]: {
+          ...current.dayPlans[date],
+          items: [...(current.dayPlans[date]?.items || []), { text: item, theme }]
+        }
+      }
+    }))
+    setDraftDayItems((current) => ({ ...current, [date]: '' }))
+  }
+
+  const removeDayItem = (date, itemIndex) => {
+    setPlan((current) => ({
+      ...current,
+      dayPlans: {
+        ...current.dayPlans,
+        [date]: {
+          ...current.dayPlans[date],
+          items: (current.dayPlans[date]?.items || []).filter((_, idx) => idx !== itemIndex)
+        }
+      }
     }))
   }
 
@@ -241,37 +358,87 @@ function App() {
         </section>
 
         <section className="card card-wide">
-          <div className="card-title-row">
-            <h2>Daily Plan</h2>
-            <button type="button" className="action" onClick={addDay}>
-              Add day
-            </button>
+          <div className="card-title-row day-header">
+            <h2>Daily Plan by Date</h2>
+            <span className="section-hint">Date range auto-builds each day section.</span>
           </div>
 
-          <div className="day-list">
-            {plan.days.map((day, index) => (
-              <div key={`${day.day}-${index}`} className="day-row">
-                <input
-                  value={day.day}
-                  onChange={(event) => updateDay(index, 'day', event.target.value)}
-                />
-                <select
-                  value={day.park}
-                  onChange={(event) => updateDay(index, 'park', event.target.value)}
-                >
-                  {PARK_OPTIONS.map((park) => (
-                    <option key={park} value={park}>
-                      {park}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  value={day.focus}
-                  onChange={(event) => updateDay(index, 'focus', event.target.value)}
-                  placeholder="Top rides / dining / shows"
-                />
-              </div>
-            ))}
+          {!tripDates.length && (
+            <p className="section-hint">Set your start and end date to unlock daily planning cards.</p>
+          )}
+
+          <div className="date-plan-grid">
+            {tripDates.map((date, index) => {
+              const dayPlan = plan.dayPlans?.[date] || { park: 'Magic Kingdom', focus: '', items: [] }
+
+              return (
+                <article key={date} className="date-card">
+                  <div className="date-card-head">
+                    <h3>Day {index + 1}</h3>
+                    <p>{formatPrettyDate(date)}</p>
+                  </div>
+
+                  <div className="day-form-stack">
+                    <label className="field-compact">
+                      Park
+                      <select
+                        value={dayPlan.park}
+                        onChange={(event) => updateDayPlan(date, 'park', event.target.value)}
+                      >
+                        {PARK_OPTIONS.map((park) => (
+                          <option key={park} value={park}>
+                            {park}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="field-compact">
+                      Focus
+                      <input
+                        value={dayPlan.focus}
+                        onChange={(event) => updateDayPlan(date, 'focus', event.target.value)}
+                        placeholder="Top priority for this day"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="event-input-row">
+                    <input
+                      value={draftDayItems[date] || ''}
+                      onChange={(event) =>
+                        setDraftDayItems((current) => ({ ...current, [date]: event.target.value }))
+                      }
+                      placeholder="Add event (e.g. fireworks, character breakfast)"
+                    />
+                    <button type="button" className="action action-compact" onClick={() => addDayItem(date)}>
+                      Add event
+                    </button>
+                  </div>
+
+                  <div className="event-list">
+                    {!dayPlan.items?.length && (
+                      <p className="event-empty">No events yet for this day.</p>
+                    )}
+                    {dayPlan.items?.map((item, itemIndex) => (
+                      <div
+                        key={`${item.text}-${itemIndex}`}
+                        className="event-tile"
+                        style={{
+                          '--event-image': `url(${EVENT_BACKGROUNDS[item.theme] || EVENT_BACKGROUNDS.default})`
+                        }}
+                      >
+                        <div className="event-content">
+                          <p>{item.text}</p>
+                          <button type="button" onClick={() => removeDayItem(date, itemIndex)}>
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              )
+            })}
           </div>
         </section>
 

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#001a3e"/>
+      <stop offset="1" stop-color="#063f85"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g stroke-linecap="round">
+    <g transform="translate(310 280)" stroke="#ffd45a">
+      <circle r="14" fill="#ffd45a"/>
+      <path d="M0-120V-40M0 40V120M-120 0H-40M40 0H120M-85-85L-28-28M85 85L28 28M85-85L28-28M-85 85L-28 28" stroke-width="14"/>
+    </g>
+    <g transform="translate(760 220)" stroke="#8ed8f8">
+      <circle r="13" fill="#8ed8f8"/>
+      <path d="M0-110V-35M0 35V110M-110 0H-35M35 0H110M-78-78L-25-25M78 78L25 25M78-78L25-25M-78 78L-25 25" stroke-width="12"/>
+    </g>
+    <g transform="translate(890 430)" stroke="#f86664">
+      <circle r="11" fill="#f86664"/>
+      <path d="M0-90V-30M0 30V90M-90 0H-30M30 0H90M-64-64L-21-21M64 64L21 21M64-64L21-21M-64 64L-21 21" stroke-width="10"/>
+    </g>
+  </g>
+</svg>
