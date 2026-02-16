@@ -10,7 +10,7 @@ A Disney World-inspired holiday planning tool with:
 ## Stack
 - React
 - Vite
-- GitHub Pages (`gh-pages`)
+- GitHub Pages (GitHub Actions)
 
 ## Local run
 1. Install dependencies:
@@ -23,18 +23,16 @@ A Disney World-inspired holiday planning tool with:
    ```
 
 ## GitHub Pages deployment
-1. Update `base` in `/Users/jonesm/Documents/DisneyDashboards/vite.config.js` if your repo name is not `DisneyDashboards`.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Deploy:
-   ```bash
-   npm run deploy
-   ```
+This repo is configured to auto-deploy on push to `main` via:
+- `/Users/jonesm/Documents/DisneyDashboards/.github/workflows/deploy-pages.yml`
 
-This publishes the `dist` folder to the `gh-pages` branch.
+One-time GitHub setting:
+1. Go to repository `Settings` -> `Pages`
+2. Under `Build and deployment`, choose `Source: GitHub Actions`
+
+After that, every push to `main` publishes the latest app.
 
 ## Notes
+- Base path is set for repo `disneyplanner` in `/Users/jonesm/Documents/DisneyDashboards/vite.config.js`.
 - Data is stored in `localStorage` under `disney-holiday-planner`.
-- Current palette is Disney World-inspired and can be tuned in `/Users/jonesm/Documents/DisneyDashboards/src/App.css` variables.
+- Theme tokens are in `/Users/jonesm/Documents/DisneyDashboards/src/App.css`.
