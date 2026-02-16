@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="none"/>
+  <g transform="translate(120 220)">
+    <text x="0" y="110" font-family="Brush Script MT, cursive" font-size="150" fill="#a776d0" opacity="0.35">Disney</text>
+    <text x="210" y="250" font-family="Gill Sans, Arial, sans-serif" font-size="150" letter-spacing="4" fill="#a776d0" opacity="0.32">SPRINGS</text>
+    <path d="M0 280 C180 240, 320 330, 520 280" fill="none" stroke="#a776d0" stroke-width="18" opacity="0.24"/>
+  </g>
+</svg>

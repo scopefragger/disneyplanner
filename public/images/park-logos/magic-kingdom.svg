@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="none"/>
+  <g transform="translate(120 250)">
+    <text x="0" y="130" font-family="Georgia, serif" font-size="140" font-weight="700" fill="#0057b8" opacity="0.35">Magic Kingdom</text>
+    <path d="M80 170 L130 70 L180 170 Z" fill="#003b78" opacity="0.22"/>
+    <path d="M200 170 L260 40 L320 170 Z" fill="#003b78" opacity="0.22"/>
+    <path d="M340 170 L395 90 L450 170 Z" fill="#003b78" opacity="0.22"/>
+  </g>
+</svg>

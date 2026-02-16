@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="none"/>
+  <g transform="translate(150 190)">
+    <circle cx="160" cy="150" r="130" fill="none" stroke="#009ac7" stroke-width="20" opacity="0.24"/>
+    <path d="M35 150H285M160 25V275M70 70L250 250M250 70L70 250" stroke="#009ac7" stroke-width="14" opacity="0.2"/>
+    <text x="340" y="205" font-family="Helvetica, Arial, sans-serif" font-size="180" font-weight="700" letter-spacing="2" fill="#009ac7" opacity="0.32">EPCOT</text>
+  </g>
+</svg>

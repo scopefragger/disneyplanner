@@ -16,6 +16,124 @@ const DINING_OPTIONS = [
   'No Set Plan'
 ]
 
+const DAY_TYPES = ['Park', 'Swimming', 'Hotel/Shopping', 'Travel']
+const EVENT_TYPES = [
+  { value: 'Breakfast', theme: 'dining', requiresRestaurant: true },
+  { value: 'Lunch', theme: 'dining', requiresRestaurant: true },
+  { value: 'Dinner', theme: 'dining', requiresRestaurant: true },
+  { value: 'Tea', theme: 'dining', requiresRestaurant: true },
+  { value: 'Snack', theme: 'dining', requiresRestaurant: true },
+  { value: 'Fireworks', theme: 'fireworks', requiresRestaurant: false },
+  { value: 'Parade', theme: 'fireworks', requiresRestaurant: false },
+  { value: 'Ride', theme: 'ride', requiresRestaurant: false },
+  { value: 'Character Meet', theme: 'character', requiresRestaurant: false },
+  { value: 'Pool Time', theme: 'nature', requiresRestaurant: false },
+  { value: 'Shopping', theme: 'default', requiresRestaurant: false },
+  { value: 'Travel Transfer', theme: 'default', requiresRestaurant: false }
+]
+
+const RESTAURANT_GROUPS = {
+  'Magic Kingdom': [
+    "Cinderella's Royal Table",
+    'Be Our Guest Restaurant',
+    'The Crystal Palace',
+    'Liberty Tree Tavern',
+    'The Diamond Horseshoe',
+    'Jungle Navigation Co. LTD Skipper Canteen',
+    "Tony's Town Square Restaurant",
+    'The Plaza Restaurant',
+    "Casey's Corner",
+    'Columbia Harbour House',
+    "Cosmic Ray's Starlight Cafe",
+    "Pecos Bill Tall Tale Inn and Cafe"
+  ],
+  EPCOT: [
+    'Space 220 Restaurant',
+    'Le Cellier Steakhouse',
+    'Chefs de France',
+    'Monsieur Paul',
+    'Rose and Crown Dining Room',
+    'Spice Road Table',
+    'Via Napoli Ristorante e Pizzeria',
+    'Tutto Italia Ristorante',
+    'Biergarten Restaurant',
+    'Teppan Edo',
+    'Shiki-Sai: Sushi Izakaya',
+    'Coral Reef Restaurant',
+    'Garden Grill Restaurant',
+    'Akershus Royal Banquet Hall',
+    'San Angel Inn Restaurante',
+    'La Hacienda de San Angel',
+    'Regal Eagle Smokehouse',
+    'Connections Eatery'
+  ],
+  "Disney's Hollywood Studios": [
+    "The Hollywood Brown Derby",
+    "Roundup Rodeo BBQ",
+    "50's Prime Time Cafe",
+    'Sci-Fi Dine-In Theater Restaurant',
+    "Oga's Cantina at the Walt Disney World Resort",
+    'Docking Bay 7 Food and Cargo',
+    'Ronto Roasters',
+    "Woody's Lunch Box",
+    'Hollywood and Vine',
+    'ABC Commissary',
+    'Backlot Express'
+  ],
+  "Disney's Animal Kingdom": [
+    'Tiffins Restaurant',
+    'Yak and Yeti Restaurant',
+    'Tusker House Restaurant',
+    "Satu'li Canteen",
+    'Flame Tree Barbecue',
+    'Restaurantosaurus',
+    'Nomad Lounge'
+  ],
+  'Disney Springs': [
+    'The BOATHOUSE',
+    'Wine Bar George',
+    'Morimoto Asia',
+    "Chef Art Smith's Homecomin'",
+    'Raglan Road Irish Pub and Restaurant',
+    'Paddlefish',
+    'Frontera Cocina',
+    'Jaleo by Jose Andres',
+    'STK Orlando',
+    'City Works Eatery and Pour House',
+    'Planet Hollywood',
+    'Wolfgang Puck Bar and Grill'
+  ],
+  'Resort Dining': [
+    "Chef Mickey's",
+    "Topolino's Terrace - Flavors of the Riviera",
+    "California Grill",
+    'Steakhouse 71',
+    'Boma - Flavors of Africa',
+    'Jiko - The Cooking Place',
+    'Sanaa',
+    "Ohana",
+    'Kona Cafe',
+    "Capt. Cook's",
+    'Grand Floridian Cafe',
+    "Narcoossee's",
+    "Citricos",
+    'Victoria and Alberts',
+    '1900 Park Fare',
+    'Whispering Canyon Cafe',
+    'Story Book Dining at Artist Point',
+    'Geyser Point Bar and Grill',
+    'Cape May Cafe',
+    'Ale and Compass Restaurant',
+    'Beaches and Cream Soda Shop',
+    'Yachtsman Steakhouse',
+    'Flying Fish',
+    "Sebastian's Bistro",
+    'Toledo - Tapas, Steak and Seafood',
+    'Three Bridges Bar and Grill',
+    'Trattoria al Forno'
+  ]
+}
+
 const DEFAULT_PLAN = {
   tripName: 'Our Disney Holiday',
   startDate: '',
@@ -41,12 +159,21 @@ const EVENT_BACKGROUNDS = {
 }
 
 function normalizePlan(rawPlan) {
+  const normalizedDayPlans = Object.entries(rawPlan.dayPlans || {}).reduce((acc, [date, dayPlan]) => {
+    acc[date] = {
+      dayType: dayPlan.dayType || 'Park',
+      park: dayPlan.park || 'Magic Kingdom',
+      items: dayPlan.items || []
+    }
+    return acc
+  }, {})
+
   return {
     ...DEFAULT_PLAN,
     ...rawPlan,
     priorities: rawPlan.priorities?.length ? rawPlan.priorities : DEFAULT_PLAN.priorities,
     checklist: rawPlan.checklist?.length ? rawPlan.checklist : DEFAULT_PLAN.checklist,
-    dayPlans: rawPlan.dayPlans || {}
+    dayPlans: normalizedDayPlans
   }
 }
 
@@ -100,6 +227,74 @@ function detectTheme(text) {
   return 'default'
 }
 
+function getEventTypeConfig(type) {
+  return EVENT_TYPES.find((eventType) => eventType.value === type) || EVENT_TYPES[0]
+}
+
+function buildEventLabel(item) {
+  if (item.type && item.restaurant) {
+    return `${item.type} at ${item.restaurant}`
+  }
+  if (item.type && item.note) {
+    return `${item.type}: ${item.note}`
+  }
+  if (item.type) return item.type
+  return item.text || 'Event'
+}
+
+function normalizeEventItem(item) {
+  if (item?.type) {
+    return {
+      type: item.type,
+      restaurant: item.restaurant || '',
+      customRestaurant: item.customRestaurant || '',
+      note: item.note || '',
+      theme: item.theme || getEventTypeConfig(item.type).theme
+    }
+  }
+
+  const text = item?.text || ''
+  return {
+    type: '',
+    restaurant: '',
+    customRestaurant: '',
+    note: text,
+    theme: item?.theme || detectTheme(text),
+    text
+  }
+}
+
+const DAY_TYPE_BACKGROUNDS = {
+  Park: '/images/day-park.svg',
+  Swimming: '/images/day-swimming.svg',
+  'Hotel/Shopping': '/images/day-hotel-shopping.svg',
+  Travel: '/images/day-travel.svg'
+}
+
+const PARK_TINTS = {
+  'Magic Kingdom': 'rgba(103, 133, 246, 0.24)',
+  EPCOT: 'rgba(0, 154, 199, 0.2)',
+  "Disney's Hollywood Studios": 'rgba(250, 127, 111, 0.22)',
+  "Disney's Animal Kingdom": 'rgba(78, 167, 119, 0.22)',
+  'Disney Springs': 'rgba(167, 118, 208, 0.2)'
+}
+
+const PARK_LOGO_BACKGROUNDS = {
+  'Magic Kingdom': '/images/park-logos/magic-kingdom.svg',
+  EPCOT: '/images/park-logos/epcot.svg',
+  "Disney's Hollywood Studios": '/images/park-logos/hollywood-studios.svg',
+  "Disney's Animal Kingdom": '/images/park-logos/animal-kingdom.svg',
+  'Disney Springs': '/images/park-logos/disney-springs.svg'
+}
+
+function getDayCardStyle(dayPlan) {
+  return {
+    '--day-bg-image': `url(${DAY_TYPE_BACKGROUNDS[dayPlan.dayType] || DAY_TYPE_BACKGROUNDS.Park})`,
+    '--day-tint': PARK_TINTS[dayPlan.park] || 'rgba(0, 87, 184, 0.2)',
+    '--park-logo-image': `url(${PARK_LOGO_BACKGROUNDS[dayPlan.park] || PARK_LOGO_BACKGROUNDS['Magic Kingdom']})`
+  }
+}
+
 function App() {
   const [plan, setPlan] = useState(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
@@ -133,12 +328,17 @@ function App() {
 
       tripDates.forEach((date) => {
         if (currentPlans[date]) {
-          nextDayPlans[date] = currentPlans[date]
+          nextDayPlans[date] = {
+            dayType: currentPlans[date].dayType || 'Park',
+            park: currentPlans[date].park || current.priorities[0] || 'Magic Kingdom',
+            items: currentPlans[date].items || []
+          }
+          if (!currentPlans[date].dayType) hasChanges = true
         } else {
           hasChanges = true
           nextDayPlans[date] = {
+            dayType: 'Park',
             park: current.priorities[0] || 'Magic Kingdom',
-            focus: '',
             items: []
           }
         }
@@ -183,10 +383,21 @@ function App() {
   }
 
   const addDayItem = (date) => {
-    const item = (draftDayItems[date] || '').trim()
-    if (!item) return
+    const draft = draftDayItems[date] || {
+      type: 'Fireworks',
+      restaurant: '',
+      customRestaurant: '',
+      note: ''
+    }
+    const eventType = getEventTypeConfig(draft.type)
+    const restaurant =
+      draft.restaurant === '__custom__'
+        ? (draft.customRestaurant || '').trim()
+        : (draft.restaurant || '').trim()
+    const note = (draft.note || '').trim()
 
-    const theme = detectTheme(item)
+    if (eventType.requiresRestaurant && !restaurant) return
+    if (!eventType.requiresRestaurant && !note && !draft.type) return
 
     setPlan((current) => ({
       ...current,
@@ -194,11 +405,23 @@ function App() {
         ...current.dayPlans,
         [date]: {
           ...current.dayPlans[date],
-          items: [...(current.dayPlans[date]?.items || []), { text: item, theme }]
+          items: [
+            ...(current.dayPlans[date]?.items || []),
+            {
+              type: draft.type,
+              restaurant,
+              customRestaurant: draft.restaurant === '__custom__' ? restaurant : '',
+              note,
+              theme: eventType.theme
+            }
+          ]
         }
       }
     }))
-    setDraftDayItems((current) => ({ ...current, [date]: '' }))
+    setDraftDayItems((current) => ({
+      ...current,
+      [date]: { type: draft.type, restaurant: '', customRestaurant: '', note: '' }
+    }))
   }
 
   const removeDayItem = (date, itemIndex) => {
@@ -369,72 +592,178 @@ function App() {
 
           <div className="date-plan-grid">
             {tripDates.map((date, index) => {
-              const dayPlan = plan.dayPlans?.[date] || { park: 'Magic Kingdom', focus: '', items: [] }
+              const dayPlan = plan.dayPlans?.[date] || {
+                dayType: 'Park',
+                park: 'Magic Kingdom',
+                items: []
+              }
+              const draft = draftDayItems[date] || {
+                type: 'Fireworks',
+                restaurant: '',
+                customRestaurant: '',
+                note: ''
+              }
+              const selectedEventType = getEventTypeConfig(draft.type)
 
               return (
-                <article key={date} className="date-card">
+                <article key={date} className="date-card" style={getDayCardStyle(dayPlan)}>
                   <div className="date-card-head">
                     <h3>Day {index + 1}</h3>
                     <p>{formatPrettyDate(date)}</p>
                   </div>
 
                   <div className="day-form-stack">
-                    <label className="field-compact">
-                      Park
-                      <select
-                        value={dayPlan.park}
-                        onChange={(event) => updateDayPlan(date, 'park', event.target.value)}
-                      >
-                        {PARK_OPTIONS.map((park) => (
-                          <option key={park} value={park}>
-                            {park}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="field-compact">
-                      Focus
-                      <input
-                        value={dayPlan.focus}
-                        onChange={(event) => updateDayPlan(date, 'focus', event.target.value)}
-                        placeholder="Top priority for this day"
-                      />
-                    </label>
+                    <div className="day-meta-row">
+                      <label className="field-compact">
+                        Day type
+                        <select
+                          value={dayPlan.dayType}
+                          onChange={(event) => updateDayPlan(date, 'dayType', event.target.value)}
+                        >
+                          {DAY_TYPES.map((type) => (
+                            <option key={type} value={type}>
+                              {type}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label className="field-compact">
+                        Park
+                        <select
+                          value={dayPlan.park}
+                          onChange={(event) => updateDayPlan(date, 'park', event.target.value)}
+                        >
+                          {PARK_OPTIONS.map((park) => (
+                            <option key={park} value={park}>
+                              {park}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    </div>
                   </div>
 
-                  <div className="event-input-row">
-                    <input
-                      value={draftDayItems[date] || ''}
-                      onChange={(event) =>
-                        setDraftDayItems((current) => ({ ...current, [date]: event.target.value }))
-                      }
-                      placeholder="Add event (e.g. fireworks, character breakfast)"
-                    />
-                    <button type="button" className="action action-compact" onClick={() => addDayItem(date)}>
-                      Add event
-                    </button>
+                  <div className="event-builder">
+                    <div className="day-meta-row">
+                      <label className="field-compact">
+                        Event type
+                        <select
+                          value={draft.type}
+                          onChange={(event) =>
+                            setDraftDayItems((current) => ({
+                              ...current,
+                              [date]: {
+                                type: event.target.value,
+                                restaurant: '',
+                                customRestaurant: '',
+                                note: current[date]?.note || ''
+                              }
+                            }))
+                          }
+                        >
+                          {EVENT_TYPES.map((eventType) => (
+                            <option key={eventType.value} value={eventType.value}>
+                              {eventType.value}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      {selectedEventType.requiresRestaurant ? (
+                        <label className="field-compact">
+                          Restaurant
+                          <select
+                            value={draft.restaurant}
+                            onChange={(event) =>
+                              setDraftDayItems((current) => ({
+                                ...current,
+                                [date]: {
+                                  ...draft,
+                                  restaurant: event.target.value,
+                                  customRestaurant:
+                                    event.target.value === '__custom__'
+                                      ? current[date]?.customRestaurant || ''
+                                      : ''
+                                }
+                              }))
+                            }
+                          >
+                            <option value="">Choose restaurant</option>
+                            {Object.entries(RESTAURANT_GROUPS).map(([group, restaurants]) => (
+                              <optgroup key={group} label={group}>
+                                {restaurants.map((restaurant) => (
+                                  <option key={restaurant} value={restaurant}>
+                                    {restaurant}
+                                  </option>
+                                ))}
+                              </optgroup>
+                            ))}
+                            <option value="__custom__">Other (type manually)</option>
+                          </select>
+                        </label>
+                      ) : (
+                        <label className="field-compact">
+                          Notes
+                          <input
+                            value={draft.note}
+                            onChange={(event) =>
+                              setDraftDayItems((current) => ({
+                                ...current,
+                                [date]: { ...draft, note: event.target.value }
+                              }))
+                            }
+                            placeholder="Optional details"
+                          />
+                        </label>
+                      )}
+                    </div>
+                    {selectedEventType.requiresRestaurant && draft.restaurant === '__custom__' && (
+                      <label className="field-compact">
+                        Custom restaurant
+                        <input
+                          value={draft.customRestaurant}
+                          onChange={(event) =>
+                            setDraftDayItems((current) => ({
+                              ...current,
+                              [date]: { ...draft, customRestaurant: event.target.value }
+                            }))
+                          }
+                          placeholder="Type restaurant name"
+                        />
+                      </label>
+                    )}
+
+                    <div className="event-action-row">
+                      <button type="button" className="action action-compact" onClick={() => addDayItem(date)}>
+                        Add event
+                      </button>
+                    </div>
                   </div>
 
                   <div className="event-list">
                     {!dayPlan.items?.length && (
                       <p className="event-empty">No events yet for this day.</p>
                     )}
-                    {dayPlan.items?.map((item, itemIndex) => (
-                      <div
-                        key={`${item.text}-${itemIndex}`}
-                        className="event-tile"
-                        style={{
-                          '--event-image': `url(${EVENT_BACKGROUNDS[item.theme] || EVENT_BACKGROUNDS.default})`
-                        }}
-                      >
-                        <div className="event-content">
-                          <p>{item.text}</p>
-                          <button type="button" onClick={() => removeDayItem(date, itemIndex)}>
-                            Remove
-                          </button>
+                    {dayPlan.items?.map((item, itemIndex) => {
+                      const normalizedItem = normalizeEventItem(item)
+                      const label = buildEventLabel(normalizedItem)
+                      return (
+                        <div
+                          key={`${label}-${itemIndex}`}
+                          className="event-tile"
+                          style={{
+                            '--event-image': `url(${EVENT_BACKGROUNDS[normalizedItem.theme] || EVENT_BACKGROUNDS.default})`
+                          }}
+                        >
+                          <div className="event-content">
+                            <p>{label}</p>
+                            <button type="button" onClick={() => removeDayItem(date, itemIndex)}>
+                              Remove
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 </article>
               )
