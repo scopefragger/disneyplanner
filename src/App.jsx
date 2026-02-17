@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { RESTAURANT_METADATA } from './data/restaurantMetadata'
 
 const PARK_OPTIONS = [
   'Magic Kingdom',
@@ -134,6 +135,21 @@ const RESTAURANT_GROUPS = {
   ]
 }
 
+const DISNEY_WORLD_BASE_URL = 'https://www.disneyworld.co.uk'
+
+function getRestaurantResources(restaurantName) {
+  const metadata = RESTAURANT_METADATA[restaurantName]
+  if (metadata) return metadata
+
+  const query = encodeURIComponent(restaurantName)
+  const searchUrl = `${DISNEY_WORLD_BASE_URL}/search/?q=${query}`
+  return {
+    menuUrl: searchUrl,
+    bookingUrl: searchUrl,
+    heroImage: ''
+  }
+}
+
 const DEFAULT_PLAN = {
   tripName: 'Our Disney Holiday',
   startDate: '',
@@ -248,6 +264,9 @@ function normalizeEventItem(item) {
       type: item.type,
       restaurant: item.restaurant || '',
       customRestaurant: item.customRestaurant || '',
+      menuUrl: item.menuUrl || '',
+      bookingUrl: item.bookingUrl || '',
+      heroImage: item.heroImage || '',
       note: item.note || '',
       theme: item.theme || getEventTypeConfig(item.type).theme
     }
@@ -258,6 +277,9 @@ function normalizeEventItem(item) {
     type: '',
     restaurant: '',
     customRestaurant: '',
+    menuUrl: '',
+    bookingUrl: '',
+    heroImage: '',
     note: text,
     theme: item?.theme || detectTheme(text),
     text
@@ -395,6 +417,7 @@ function App() {
         ? (draft.customRestaurant || '').trim()
         : (draft.restaurant || '').trim()
     const note = (draft.note || '').trim()
+    const restaurantResources = restaurant ? getRestaurantResources(restaurant) : null
 
     if (eventType.requiresRestaurant && !restaurant) return
     if (!eventType.requiresRestaurant && !note && !draft.type) return
@@ -411,6 +434,9 @@ function App() {
               type: draft.type,
               restaurant,
               customRestaurant: draft.restaurant === '__custom__' ? restaurant : '',
+              menuUrl: restaurantResources?.menuUrl || '',
+              bookingUrl: restaurantResources?.bookingUrl || '',
+              heroImage: restaurantResources?.heroImage || '',
               note,
               theme: eventType.theme
             }
@@ -747,16 +773,41 @@ function App() {
                     {dayPlan.items?.map((item, itemIndex) => {
                       const normalizedItem = normalizeEventItem(item)
                       const label = buildEventLabel(normalizedItem)
+                      const menuUrl = normalizedItem.menuUrl
+                      const bookingUrl = normalizedItem.bookingUrl
+                      const hasRestaurantLinks = Boolean(
+                        normalizedItem.restaurant && (menuUrl || bookingUrl)
+                      )
+                      const eventBackgroundImage =
+                        normalizedItem.heroImage ||
+                        EVENT_BACKGROUNDS[normalizedItem.theme] ||
+                        EVENT_BACKGROUNDS.default
                       return (
                         <div
                           key={`${label}-${itemIndex}`}
                           className="event-tile"
                           style={{
-                            '--event-image': `url(${EVENT_BACKGROUNDS[normalizedItem.theme] || EVENT_BACKGROUNDS.default})`
+                            '--event-image': `url(${eventBackgroundImage})`
                           }}
                         >
                           <div className="event-content">
-                            <p>{label}</p>
+                            <div className="event-text">
+                              <p>{label}</p>
+                              {hasRestaurantLinks && (
+                                <div className="event-links">
+                                  {menuUrl && (
+                                    <a href={menuUrl} target="_blank" rel="noreferrer noopener">
+                                      View menu
+                                    </a>
+                                  )}
+                                  {bookingUrl && (
+                                    <a href={bookingUrl} target="_blank" rel="noreferrer noopener">
+                                      Book
+                                    </a>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                             <button type="button" onClick={() => removeDayItem(date, itemIndex)}>
                               Remove
                             </button>
