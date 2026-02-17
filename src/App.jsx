@@ -415,13 +415,14 @@ function hashtagLabel(value) {
 function getDayCardStyle(dayPlan) {
   const dayTypeImage = DAY_TYPE_BACKGROUNDS[dayPlan.dayType] || DAY_TYPE_BACKGROUNDS.Park
   let tint = 'rgba(0, 87, 184, 0.14)'
-  let tintOverlay = tint
+  let tintOverlay = `linear-gradient(135deg, ${tint}, ${tint})`
   let logo = ''
   let logo2 = ''
 
   if (dayPlan.dayType === 'Park' && dayPlan.park) {
     const firstTint = PARK_TINTS[dayPlan.park] || tint
     tint = firstTint
+    tintOverlay = `linear-gradient(135deg, ${firstTint}, ${firstTint})`
     logo = PARK_LOGO_BACKGROUNDS[dayPlan.park] || ''
 
     if (dayPlan.parkHop && dayPlan.secondPark) {
@@ -431,11 +432,11 @@ function getDayCardStyle(dayPlan) {
     }
   } else if (dayPlan.dayType === 'Swimming' && dayPlan.swimSpot) {
     tint = SWIM_TINTS[dayPlan.swimSpot] || tint
-    tintOverlay = tint
+    tintOverlay = `linear-gradient(135deg, ${tint}, ${tint})`
     logo = SWIM_LOGO_BACKGROUNDS[dayPlan.swimSpot] || ''
   } else if (dayPlan.dayType === 'Hotel/Shopping' && dayPlan.staySpot) {
     tint = dayPlan.staySpot === 'Disney Springs' ? PARK_TINTS['Disney Springs'] : HOTEL_TINT
-    tintOverlay = tint
+    tintOverlay = `linear-gradient(135deg, ${tint}, ${tint})`
     logo =
       dayPlan.staySpot === 'Disney Springs'
         ? PARK_LOGO_BACKGROUNDS['Disney Springs']
@@ -446,8 +447,7 @@ function getDayCardStyle(dayPlan) {
     '--day-bg-image': `url(${dayTypeImage})`,
     '--day-tint': tint,
     '--day-tint-overlay': tintOverlay,
-    '--park-logo-image': logo ? `url(${logo})` : 'none'
-    ,
+    '--park-logo-image': logo ? `url(${logo})` : 'none',
     '--park-logo-image-2': logo2 ? `url(${logo2})` : 'none'
   }
 }
@@ -639,6 +639,35 @@ function App() {
 
   const clearStaySpot = (date) => {
     updateDayPlan(date, 'staySpot', '')
+  }
+
+  const resetDay = (date) => {
+    setPlan((current) => {
+      const currentDay = current.dayPlans?.[date]
+      if (!currentDay) return current
+
+      return {
+        ...current,
+        dayPlans: {
+          ...current.dayPlans,
+          [date]: {
+            ...currentDay,
+            dayType: '',
+            park: '',
+            secondPark: '',
+            parkHop: false,
+            swimSpot: '',
+            staySpot: '',
+            items: []
+          }
+        }
+      }
+    })
+
+    setDraftDayItems((current) => ({
+      ...current,
+      [date]: { type: 'Fireworks', restaurant: '', customRestaurant: '', note: '' }
+    }))
   }
 
   const setDayType = (date, dayType) => {
@@ -904,16 +933,32 @@ function App() {
                         >
                           {hashtagLabel(dayPlan.dayType)}
                         </span>
+                        {dayPlan.dayType === 'Park' && dayPlan.parkHop && (
+                          <span
+                            className="day-summary-pill day-summary-type"
+                            style={{ '--chip-color': dayTypeChipColor }}
+                          >
+                            {hashtagLabel('ParkHop')}
+                          </span>
+                        )}
                         <span
                           className="day-summary-pill day-summary-location"
                           style={{ '--chip-color': dayTypeChipColor }}
                         >
-                          {hashtagLabel(
-                            locationDisplay
+                          {hashtagLabel(dayPlan.parkHop && dayPlan.dayType === 'Park'
+                            ? dayPlan.park || 'Choose first park'
+                            : locationDisplay
                               ? locationDisplay.label.replace(/^My hotel:\s*/i, '')
-                              : 'Choose location'
-                          )}
+                              : 'Choose location')}
                         </span>
+                        {dayPlan.dayType === 'Park' && dayPlan.parkHop && (
+                          <span
+                            className="day-summary-pill day-summary-location"
+                            style={{ '--chip-color': dayTypeChipColor }}
+                          >
+                            {hashtagLabel(dayPlan.secondPark || 'Choose second park')}
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1196,7 +1241,14 @@ function App() {
                         })
                       }}
                     >
-                      {dayPlan.parkHop ? 'Park hop on' : 'Park hop'}
+                      {dayPlan.parkHop ? 'Remove park hop' : 'Park hop'}
+                    </button>
+                    <button
+                      type="button"
+                      className="park-hop-btn reset-day-btn"
+                      onClick={() => resetDay(date)}
+                    >
+                      Reset day
                     </button>
                   </div>
                 </article>

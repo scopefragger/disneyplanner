@@ -224,7 +224,7 @@ textarea:focus {
   border-radius: 16px;
   border: 1px solid rgba(0, 87, 184, 0.2);
   background: rgba(255, 255, 255, 0.88);
-  padding: 1rem;
+  padding: 1rem 1rem 3.35rem;
 }
 
 .date-card::before {
@@ -232,12 +232,13 @@ textarea:focus {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(140deg, rgba(255, 255, 255, 0.86), var(--day-tint, rgba(0, 87, 184, 0.2))),
+    linear-gradient(140deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.56)),
+    var(--day-tint-overlay),
     var(--day-bg-image),
-    var(--park-logo-image);
-  background-size: cover;
-  background-size: cover, cover, 72%;
-  background-position: center, center, center;
+    var(--park-logo-image),
+    var(--park-logo-image-2);
+  background-size: cover, cover, cover, 66%, 66%;
+  background-position: center, center, center, left -15% top 20%, right -15% bottom 20%;
   background-repeat: no-repeat;
   opacity: 0.92;
 }
@@ -454,6 +455,35 @@ textarea:focus {
   cursor: pointer;
 }
 
+.park-hop-dock {
+  position: absolute;
+  left: 0.95rem;
+  bottom: 0.85rem;
+  z-index: 2;
+  display: flex;
+  gap: 0.45rem;
+}
+
+.park-hop-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.42rem 0.74rem;
+  background: rgba(0, 87, 184, 0.9);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.park-hop-btn.disabled {
+  background: rgba(146, 162, 188, 0.7);
+  cursor: not-allowed;
+}
+
+.reset-day-btn {
+  background: rgba(248, 102, 100, 0.9);
+}
+
 .footer-bar {
   margin-top: 1rem;
   padding: 0.95rem 1rem;
@@ -497,6 +527,10 @@ textarea:focus {
 
   .date-plan-grid {
     grid-template-columns: 1fr;
+  }
+
+  .date-card {
+    padding-bottom: 3.55rem;
   }
 
   .footer-bar {
