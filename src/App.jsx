@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { RESTAURANT_METADATA } from './data/restaurantMetadata'
 
+const IMG_BASE = `${import.meta.env.BASE_URL}images/`
+
 const PARK_OPTIONS = [
   'Magic Kingdom',
   'EPCOT',
@@ -17,7 +19,40 @@ const DINING_OPTIONS = [
   'No Set Plan'
 ]
 
-const DAY_TYPES = ['Park', 'Swimming', 'Hotel/Shopping', 'Travel']
+const DAY_TYPES = [
+  { value: 'Park', icon: `${IMG_BASE}day-type-icons/park.svg` },
+  { value: 'Swimming', icon: `${IMG_BASE}day-type-icons/swimming.svg` },
+  { value: 'Hotel/Shopping', icon: `${IMG_BASE}day-type-icons/hotel-shopping.svg` },
+  { value: 'Travel', icon: `${IMG_BASE}day-type-icons/travel.svg` }
+]
+
+const SWIM_OPTIONS = [
+  { value: "Disney's Typhoon Lagoon Water Park", icon: `${IMG_BASE}swim-icons/typhoon-lagoon.svg` },
+  { value: "Disney's Blizzard Beach Water Park", icon: `${IMG_BASE}swim-icons/blizzard-beach.svg` }
+]
+
+const DISNEY_HOTELS = [
+  "Disney's Contemporary Resort",
+  "Disney's Grand Floridian Resort & Spa",
+  "Disney's Polynesian Village Resort",
+  "Disney's Wilderness Lodge",
+  "Disney's Animal Kingdom Lodge",
+  "Disney's Yacht Club Resort",
+  "Disney's Beach Club Resort",
+  "Disney's BoardWalk Inn",
+  "Disney's Coronado Springs Resort",
+  "Disney's Caribbean Beach Resort",
+  "Disney's Port Orleans Resort - Riverside",
+  "Disney's Port Orleans Resort - French Quarter",
+  "Disney's Pop Century Resort",
+  "Disney's Art of Animation Resort",
+  "Disney's All-Star Movies Resort",
+  "Disney's All-Star Music Resort",
+  "Disney's All-Star Sports Resort",
+  "Disney's Saratoga Springs Resort & Spa",
+  "Disney's Old Key West Resort",
+  "Disney's Riviera Resort"
+]
 const EVENT_TYPES = [
   { value: 'Breakfast', theme: 'dining', requiresRestaurant: true },
   { value: 'Lunch', theme: 'dining', requiresRestaurant: true },
@@ -154,6 +189,7 @@ const DEFAULT_PLAN = {
   tripName: 'Our Disney Holiday',
   startDate: '',
   endDate: '',
+  myHotel: '',
   adults: 2,
   children: 0,
   budget: 3500,
@@ -166,19 +202,23 @@ const DEFAULT_PLAN = {
 
 const STORAGE_KEY = 'disney-holiday-planner'
 const EVENT_BACKGROUNDS = {
-  fireworks: '/images/fireworks.svg',
-  dining: '/images/dining.svg',
-  ride: '/images/rides.svg',
-  character: '/images/characters.svg',
-  nature: '/images/nature.svg',
-  default: '/images/magic.svg'
+  fireworks: `${IMG_BASE}fireworks.svg`,
+  dining: `${IMG_BASE}dining.svg`,
+  ride: `${IMG_BASE}rides.svg`,
+  character: `${IMG_BASE}characters.svg`,
+  nature: `${IMG_BASE}nature.svg`,
+  default: `${IMG_BASE}magic.svg`
 }
 
 function normalizePlan(rawPlan) {
   const normalizedDayPlans = Object.entries(rawPlan.dayPlans || {}).reduce((acc, [date, dayPlan]) => {
     acc[date] = {
-      dayType: dayPlan.dayType || 'Park',
-      park: dayPlan.park || 'Magic Kingdom',
+      dayType: dayPlan.dayType || '',
+      park: dayPlan.park || '',
+      secondPark: dayPlan.secondPark || '',
+      parkHop: Boolean(dayPlan.parkHop),
+      swimSpot: dayPlan.swimSpot || '',
+      staySpot: dayPlan.staySpot || '',
       items: dayPlan.items || []
     }
     return acc
@@ -287,10 +327,10 @@ function normalizeEventItem(item) {
 }
 
 const DAY_TYPE_BACKGROUNDS = {
-  Park: '/images/day-park.svg',
-  Swimming: '/images/day-swimming.svg',
-  'Hotel/Shopping': '/images/day-hotel-shopping.svg',
-  Travel: '/images/day-travel.svg'
+  Park: `${IMG_BASE}day-park.svg`,
+  Swimming: `${IMG_BASE}day-swimming.svg`,
+  'Hotel/Shopping': `${IMG_BASE}day-hotel-shopping.svg`,
+  Travel: `${IMG_BASE}day-travel.svg`
 }
 
 const PARK_TINTS = {
@@ -302,19 +342,123 @@ const PARK_TINTS = {
 }
 
 const PARK_LOGO_BACKGROUNDS = {
-  'Magic Kingdom': '/images/park-logos/magic-kingdom.svg',
-  EPCOT: '/images/park-logos/epcot.svg',
-  "Disney's Hollywood Studios": '/images/park-logos/hollywood-studios.svg',
-  "Disney's Animal Kingdom": '/images/park-logos/animal-kingdom.svg',
-  'Disney Springs': '/images/park-logos/disney-springs.svg'
+  'Magic Kingdom': `${IMG_BASE}park-logos/magic-kingdom.svg`,
+  EPCOT: `${IMG_BASE}park-logos/epcot.svg`,
+  "Disney's Hollywood Studios": `${IMG_BASE}park-logos/hollywood-studios.svg`,
+  "Disney's Animal Kingdom": `${IMG_BASE}park-logos/animal-kingdom.svg`,
+  'Disney Springs': `${IMG_BASE}park-logos/disney-springs.svg`
+}
+
+const PARK_BADGE_ICONS = {
+  'Magic Kingdom': `${IMG_BASE}park-icons/magic-kingdom.svg`,
+  EPCOT: `${IMG_BASE}park-icons/epcot.svg`,
+  "Disney's Hollywood Studios": `${IMG_BASE}park-icons/hollywood-studios.svg`,
+  "Disney's Animal Kingdom": `${IMG_BASE}park-icons/animal-kingdom.svg`,
+  'Disney Springs': `${IMG_BASE}park-icons/disney-springs.svg`
+}
+
+const SWIM_TINTS = {
+  "Disney's Typhoon Lagoon Water Park": 'rgba(0, 157, 200, 0.2)',
+  "Disney's Blizzard Beach Water Park": 'rgba(89, 173, 239, 0.2)'
+}
+
+const SWIM_LOGO_BACKGROUNDS = {
+  "Disney's Typhoon Lagoon Water Park": `${IMG_BASE}swim-icons/typhoon-lagoon.svg`,
+  "Disney's Blizzard Beach Water Park": `${IMG_BASE}swim-icons/blizzard-beach.svg`
+}
+
+const HOTEL_ICON = `${IMG_BASE}day-type-icons/hotel-shopping.svg`
+const HOTEL_TINT = 'rgba(144, 109, 201, 0.2)'
+
+function getLocationDisplay(dayPlan, myHotel) {
+  if (dayPlan.dayType === 'Park' && dayPlan.park) {
+    const parkLabel =
+      dayPlan.parkHop && dayPlan.secondPark ? `${dayPlan.park} to ${dayPlan.secondPark}` : dayPlan.park
+    return {
+      label: parkLabel,
+      icon: PARK_BADGE_ICONS[dayPlan.park] || PARK_LOGO_BACKGROUNDS[dayPlan.park] || ''
+    }
+  }
+
+  if (dayPlan.dayType === 'Swimming' && dayPlan.swimSpot) {
+    const match = SWIM_OPTIONS.find((option) => option.value === dayPlan.swimSpot)
+    return { label: dayPlan.swimSpot, icon: match?.icon || HOTEL_ICON }
+  }
+
+  if (dayPlan.dayType === 'Hotel/Shopping' && dayPlan.staySpot) {
+    if (dayPlan.staySpot === 'Disney Springs') {
+      return {
+        label: dayPlan.staySpot,
+        icon: PARK_BADGE_ICONS['Disney Springs']
+      }
+    }
+
+    const isMyHotel = myHotel && dayPlan.staySpot === myHotel
+    return { label: isMyHotel ? `My hotel: ${dayPlan.staySpot}` : dayPlan.staySpot, icon: HOTEL_ICON }
+  }
+
+  return null
+}
+
+function getDayTypeChipColor(dayType) {
+  if (dayType === 'Park') return 'rgba(0, 87, 184, 0.2)'
+  if (dayType === 'Swimming') return 'rgba(0, 157, 200, 0.2)'
+  if (dayType === 'Hotel/Shopping') return 'rgba(144, 109, 201, 0.24)'
+  if (dayType === 'Travel') return 'rgba(92, 134, 201, 0.22)'
+  return 'rgba(0, 87, 184, 0.14)'
+}
+
+function hashtagLabel(value) {
+  return value ? `#${value.replace(/\s+/g, '')}` : '#Choose'
 }
 
 function getDayCardStyle(dayPlan) {
-  return {
-    '--day-bg-image': `url(${DAY_TYPE_BACKGROUNDS[dayPlan.dayType] || DAY_TYPE_BACKGROUNDS.Park})`,
-    '--day-tint': PARK_TINTS[dayPlan.park] || 'rgba(0, 87, 184, 0.2)',
-    '--park-logo-image': `url(${PARK_LOGO_BACKGROUNDS[dayPlan.park] || PARK_LOGO_BACKGROUNDS['Magic Kingdom']})`
+  const dayTypeImage = DAY_TYPE_BACKGROUNDS[dayPlan.dayType] || DAY_TYPE_BACKGROUNDS.Park
+  let tint = 'rgba(0, 87, 184, 0.14)'
+  let tintOverlay = tint
+  let logo = ''
+  let logo2 = ''
+
+  if (dayPlan.dayType === 'Park' && dayPlan.park) {
+    const firstTint = PARK_TINTS[dayPlan.park] || tint
+    tint = firstTint
+    logo = PARK_LOGO_BACKGROUNDS[dayPlan.park] || ''
+
+    if (dayPlan.parkHop && dayPlan.secondPark) {
+      const secondTint = PARK_TINTS[dayPlan.secondPark] || firstTint
+      tintOverlay = `linear-gradient(135deg, ${firstTint} 0 49%, ${secondTint} 51% 100%)`
+      logo2 = PARK_LOGO_BACKGROUNDS[dayPlan.secondPark] || ''
+    }
+  } else if (dayPlan.dayType === 'Swimming' && dayPlan.swimSpot) {
+    tint = SWIM_TINTS[dayPlan.swimSpot] || tint
+    tintOverlay = tint
+    logo = SWIM_LOGO_BACKGROUNDS[dayPlan.swimSpot] || ''
+  } else if (dayPlan.dayType === 'Hotel/Shopping' && dayPlan.staySpot) {
+    tint = dayPlan.staySpot === 'Disney Springs' ? PARK_TINTS['Disney Springs'] : HOTEL_TINT
+    tintOverlay = tint
+    logo =
+      dayPlan.staySpot === 'Disney Springs'
+        ? PARK_LOGO_BACKGROUNDS['Disney Springs']
+        : HOTEL_ICON
   }
+
+  return {
+    '--day-bg-image': `url(${dayTypeImage})`,
+    '--day-tint': tint,
+    '--day-tint-overlay': tintOverlay,
+    '--park-logo-image': logo ? `url(${logo})` : 'none'
+    ,
+    '--park-logo-image-2': logo2 ? `url(${logo2})` : 'none'
+  }
+}
+
+function getDayTypeIcon(dayType) {
+  const match = DAY_TYPES.find((type) => type.value === dayType)
+  return match?.icon || ''
+}
+
+function getSecondParkOptions(firstPark) {
+  return PARK_OPTIONS.filter((park) => park !== firstPark)
 }
 
 function App() {
@@ -351,16 +495,23 @@ function App() {
       tripDates.forEach((date) => {
         if (currentPlans[date]) {
           nextDayPlans[date] = {
-            dayType: currentPlans[date].dayType || 'Park',
-            park: currentPlans[date].park || current.priorities[0] || 'Magic Kingdom',
+            dayType: currentPlans[date].dayType || '',
+            park: currentPlans[date].park || '',
+            secondPark: currentPlans[date].secondPark || '',
+            parkHop: Boolean(currentPlans[date].parkHop),
+            swimSpot: currentPlans[date].swimSpot || '',
+            staySpot: currentPlans[date].staySpot || '',
             items: currentPlans[date].items || []
           }
-          if (!currentPlans[date].dayType) hasChanges = true
         } else {
           hasChanges = true
           nextDayPlans[date] = {
-            dayType: 'Park',
-            park: current.priorities[0] || 'Magic Kingdom',
+            dayType: '',
+            park: '',
+            secondPark: '',
+            parkHop: false,
+            swimSpot: '',
+            staySpot: '',
             items: []
           }
         }
@@ -369,7 +520,7 @@ function App() {
       if (!hasChanges) return current
       return { ...current, dayPlans: nextDayPlans }
     })
-  }, [tripDates, plan.priorities])
+  }, [tripDates])
 
   const updateField = (field, value) => {
     setPlan((current) => ({ ...current, [field]: value }))
@@ -463,6 +614,56 @@ function App() {
     }))
   }
 
+  const clearDayType = (date) => {
+    updateDayPlan(date, 'dayType', '')
+  }
+
+  const clearPark = (date) => {
+    setPlan((current) => ({
+      ...current,
+      dayPlans: {
+        ...current.dayPlans,
+        [date]: {
+          ...current.dayPlans[date],
+          park: '',
+          secondPark: '',
+          parkHop: false
+        }
+      }
+    }))
+  }
+
+  const clearSwimSpot = (date) => {
+    updateDayPlan(date, 'swimSpot', '')
+  }
+
+  const clearStaySpot = (date) => {
+    updateDayPlan(date, 'staySpot', '')
+  }
+
+  const setDayType = (date, dayType) => {
+    setPlan((current) => {
+      const currentDay = current.dayPlans?.[date]
+      if (!currentDay) return current
+
+      return {
+        ...current,
+        dayPlans: {
+          ...current.dayPlans,
+          [date]: {
+            ...currentDay,
+            dayType,
+            park: '',
+            secondPark: '',
+            parkHop: false,
+            swimSpot: '',
+            staySpot: ''
+          }
+        }
+      }
+    })
+  }
+
   const addChecklistItem = () => {
     const item = newChecklistItem.trim()
     if (!item) return
@@ -507,6 +708,21 @@ function App() {
               placeholder="Magical Family Getaway"
             />
           </label>
+
+          <label>
+            My hotel
+            <input
+              list="hotel-list"
+              value={plan.myHotel}
+              onChange={(event) => updateField('myHotel', event.target.value)}
+              placeholder="Type or pick your Disney hotel"
+            />
+          </label>
+          <datalist id="hotel-list">
+            {DISNEY_HOTELS.map((hotel) => (
+              <option key={hotel} value={hotel} />
+            ))}
+          </datalist>
 
           <div className="inline-fields">
             <label>
@@ -619,10 +835,23 @@ function App() {
           <div className="date-plan-grid">
             {tripDates.map((date, index) => {
               const dayPlan = plan.dayPlans?.[date] || {
-                dayType: 'Park',
-                park: 'Magic Kingdom',
+                dayType: '',
+                park: '',
+                secondPark: '',
+                parkHop: false,
+                swimSpot: '',
+                staySpot: '',
                 items: []
               }
+              const hotelShoppingOptions = [
+                ...(plan.myHotel.trim()
+                  ? [{ value: plan.myHotel.trim(), label: `My hotel: ${plan.myHotel.trim()}` }]
+                  : []),
+                { value: 'Disney Springs', label: 'Disney Springs' },
+                ...DISNEY_HOTELS
+                  .filter((hotel) => hotel !== plan.myHotel.trim())
+                  .map((hotel) => ({ value: hotel, label: hotel }))
+              ]
               const draft = draftDayItems[date] || {
                 type: 'Fireworks',
                 restaurant: '',
@@ -630,42 +859,168 @@ function App() {
                 note: ''
               }
               const selectedEventType = getEventTypeConfig(draft.type)
+              const locationDisplay = getLocationDisplay(dayPlan, plan.myHotel.trim())
+              const dayTypeChipColor = getDayTypeChipColor(dayPlan.dayType)
+              const secondParkOptions = getSecondParkOptions(dayPlan.park)
 
               return (
                 <article key={date} className="date-card" style={getDayCardStyle(dayPlan)}>
+                  <div className="card-badges">
+                    {dayPlan.dayType && (
+                      <button
+                        type="button"
+                        className="day-type-badge"
+                        onClick={() => clearDayType(date)}
+                        title="Remove day type"
+                      >
+                        <img src={getDayTypeIcon(dayPlan.dayType)} alt={dayPlan.dayType} />
+                      </button>
+                    )}
+                    {locationDisplay && (
+                      <button
+                        type="button"
+                        className="day-type-badge"
+                        onClick={() => {
+                          if (dayPlan.dayType === 'Park') clearPark(date)
+                          if (dayPlan.dayType === 'Swimming') clearSwimSpot(date)
+                          if (dayPlan.dayType === 'Hotel/Shopping') clearStaySpot(date)
+                        }}
+                        title={`Remove ${locationDisplay.label}`}
+                      >
+                        <img src={locationDisplay.icon} alt={locationDisplay.label} />
+                      </button>
+                    )}
+                  </div>
                   <div className="date-card-head">
-                    <h3>Day {index + 1}</h3>
+                    <div className="date-title-row">
+                      <h3>Day {index + 1}</h3>
+                    </div>
                     <p>{formatPrettyDate(date)}</p>
+                    {dayPlan.dayType && (
+                      <div className="day-summary-group">
+                        <span
+                          className="day-summary-pill day-summary-type"
+                          style={{ '--chip-color': dayTypeChipColor }}
+                        >
+                          {hashtagLabel(dayPlan.dayType)}
+                        </span>
+                        <span
+                          className="day-summary-pill day-summary-location"
+                          style={{ '--chip-color': dayTypeChipColor }}
+                        >
+                          {hashtagLabel(
+                            locationDisplay
+                              ? locationDisplay.label.replace(/^My hotel:\s*/i, '')
+                              : 'Choose location'
+                          )}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="day-form-stack">
                     <div className="day-meta-row">
-                      <label className="field-compact">
-                        Day type
-                        <select
-                          value={dayPlan.dayType}
-                          onChange={(event) => updateDayPlan(date, 'dayType', event.target.value)}
-                        >
-                          {DAY_TYPES.map((type) => (
-                            <option key={type} value={type}>
-                              {type}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      <label className="field-compact">
-                        Park
-                        <select
-                          value={dayPlan.park}
-                          onChange={(event) => updateDayPlan(date, 'park', event.target.value)}
-                        >
-                          {PARK_OPTIONS.map((park) => (
-                            <option key={park} value={park}>
-                              {park}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                      {!dayPlan.dayType && (
+                        <label className="field-compact">
+                          Day type
+                          <select
+                            value={dayPlan.dayType}
+                            onChange={(event) => setDayType(date, event.target.value)}
+                          >
+                            <option value="">Select day type</option>
+                            {DAY_TYPES.map((type) => (
+                              <option key={type.value} value={type.value}>
+                                {type.value}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
+                      {dayPlan.dayType === 'Park' && !dayPlan.park && (
+                        <label className="field-compact">
+                          Park
+                          <select
+                            value={dayPlan.park}
+                            onChange={(event) => {
+                              const selectedPark = event.target.value
+                              setPlan((current) => {
+                                const currentDay = current.dayPlans?.[date]
+                                if (!currentDay) return current
+
+                                const nextSecondPark =
+                                  currentDay.secondPark === selectedPark ? '' : currentDay.secondPark
+
+                                return {
+                                  ...current,
+                                  dayPlans: {
+                                    ...current.dayPlans,
+                                    [date]: {
+                                      ...currentDay,
+                                      park: selectedPark,
+                                      secondPark: nextSecondPark
+                                    }
+                                  }
+                                }
+                              })
+                            }}
+                          >
+                            <option value="">Select park</option>
+                            {PARK_OPTIONS.map((park) => (
+                              <option key={park} value={park}>
+                                {park}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
+                      {dayPlan.dayType === 'Park' && dayPlan.park && dayPlan.parkHop && (
+                        <label className="field-compact">
+                          Hop to
+                          <select
+                            value={dayPlan.secondPark}
+                            onChange={(event) => updateDayPlan(date, 'secondPark', event.target.value)}
+                          >
+                            <option value="">Select second park</option>
+                            {secondParkOptions.map((park) => (
+                              <option key={park} value={park}>
+                                {park}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
+                      {dayPlan.dayType === 'Swimming' && !dayPlan.swimSpot && (
+                        <label className="field-compact">
+                          Swim park
+                          <select
+                            value={dayPlan.swimSpot}
+                            onChange={(event) => updateDayPlan(date, 'swimSpot', event.target.value)}
+                          >
+                            <option value="">Select water park</option>
+                            {SWIM_OPTIONS.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.value}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
+                      {dayPlan.dayType === 'Hotel/Shopping' && !dayPlan.staySpot && (
+                        <label className="field-compact">
+                          Hotel / shopping location
+                          <select
+                            value={dayPlan.staySpot}
+                            onChange={(event) => updateDayPlan(date, 'staySpot', event.target.value)}
+                          >
+                            <option value="">Select location</option>
+                            {hotelShoppingOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
                     </div>
                   </div>
 
@@ -778,16 +1133,17 @@ function App() {
                       const hasRestaurantLinks = Boolean(
                         normalizedItem.restaurant && (menuUrl || bookingUrl)
                       )
-                      const eventBackgroundImage =
-                        normalizedItem.heroImage ||
-                        EVENT_BACKGROUNDS[normalizedItem.theme] ||
-                        EVENT_BACKGROUNDS.default
+                      const fallbackEventImage =
+                        EVENT_BACKGROUNDS[normalizedItem.theme] || EVENT_BACKGROUNDS.default
+                      const eventBackgroundLayers = normalizedItem.heroImage
+                        ? `url(${normalizedItem.heroImage}), url(${fallbackEventImage})`
+                        : `url(${fallbackEventImage})`
                       return (
                         <div
                           key={`${label}-${itemIndex}`}
                           className="event-tile"
                           style={{
-                            '--event-image': `url(${eventBackgroundImage})`
+                            '--event-image': eventBackgroundLayers
                           }}
                         >
                           <div className="event-content">
@@ -815,6 +1171,33 @@ function App() {
                         </div>
                       )
                     })}
+                  </div>
+                  <div className="park-hop-dock">
+                    <button
+                      type="button"
+                      className={dayPlan.dayType === 'Park' ? 'park-hop-btn' : 'park-hop-btn disabled'}
+                      onClick={() => {
+                        if (dayPlan.dayType !== 'Park') return
+                        setPlan((current) => {
+                          const currentDay = current.dayPlans?.[date]
+                          if (!currentDay) return current
+                          const nextHop = !currentDay.parkHop
+                          return {
+                            ...current,
+                            dayPlans: {
+                              ...current.dayPlans,
+                              [date]: {
+                                ...currentDay,
+                                parkHop: nextHop,
+                                secondPark: nextHop ? currentDay.secondPark : ''
+                              }
+                            }
+                          }
+                        })
+                      }}
+                    >
+                      {dayPlan.parkHop ? 'Park hop on' : 'Park hop'}
+                    </button>
                   </div>
                 </article>
               )
