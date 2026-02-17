@@ -53,6 +53,47 @@ const DISNEY_HOTELS = [
   "Disney's Old Key West Resort",
   "Disney's Riviera Resort"
 ]
+
+const RIDES_BY_PARK = {
+  'Magic Kingdom': [
+    'TRON Lightcycle / Run',
+    'Seven Dwarfs Mine Train',
+    'Space Mountain',
+    'Big Thunder Mountain Railroad',
+    "Pirates of the Caribbean",
+    'Haunted Mansion',
+    'Peter Pan’s Flight',
+    "Tiana's Bayou Adventure",
+    'Jungle Cruise'
+  ],
+  EPCOT: [
+    'Guardians of the Galaxy: Cosmic Rewind',
+    'Test Track',
+    'Frozen Ever After',
+    'Remys Ratatouille Adventure',
+    'Soarin Around the World',
+    'Mission: SPACE',
+    'Spaceship Earth'
+  ],
+  "Disney's Hollywood Studios": [
+    'Star Wars: Rise of the Resistance',
+    'Millennium Falcon: Smugglers Run',
+    'Slinky Dog Dash',
+    'Tower of Terror',
+    'Rock n Roller Coaster',
+    'Mickey and Minnies Runaway Railway',
+    'Toy Story Mania'
+  ],
+  "Disney's Animal Kingdom": [
+    'Avatar Flight of Passage',
+    'Na vi River Journey',
+    'Expedition Everest',
+    'Kilimanjaro Safaris',
+    "Kali River Rapids",
+    "DINOSAUR"
+  ],
+  'Disney Springs': ['Aerophile - The World Leader in Balloon Flight']
+}
 const EVENT_TYPES = [
   { value: 'Breakfast', theme: 'dining', requiresRestaurant: true },
   { value: 'Lunch', theme: 'dining', requiresRestaurant: true },
@@ -288,6 +329,9 @@ function getEventTypeConfig(type) {
 }
 
 function buildEventLabel(item) {
+  if (item.type === 'Ride' && item.ride) {
+    return `Ride: ${item.ride}${item.ridePark ? ` (${item.ridePark})` : ''}`
+  }
   if (item.type && item.restaurant) {
     return `${item.type} at ${item.restaurant}`
   }
@@ -307,6 +351,8 @@ function normalizeEventItem(item) {
       menuUrl: item.menuUrl || '',
       bookingUrl: item.bookingUrl || '',
       heroImage: item.heroImage || '',
+      ride: item.ride || '',
+      ridePark: item.ridePark || '',
       note: item.note || '',
       theme: item.theme || getEventTypeConfig(item.type).theme
     }
@@ -320,6 +366,8 @@ function normalizeEventItem(item) {
     menuUrl: '',
     bookingUrl: '',
     heroImage: '',
+    ride: '',
+    ridePark: '',
     note: text,
     theme: item?.theme || detectTheme(text),
     text
@@ -461,6 +509,23 @@ function getSecondParkOptions(firstPark) {
   return PARK_OPTIONS.filter((park) => park !== firstPark)
 }
 
+function getRideOptionsForDay(dayPlan) {
+  if (dayPlan.dayType !== 'Park') return []
+
+  const parks = []
+  if (dayPlan.park) parks.push(dayPlan.park)
+  if (dayPlan.parkHop && dayPlan.secondPark && dayPlan.secondPark !== dayPlan.park) {
+    parks.push(dayPlan.secondPark)
+  }
+
+  return parks.flatMap((park) =>
+    (RIDES_BY_PARK[park] || []).map((ride) => ({
+      value: `${park}::${ride}`,
+      label: dayPlan.parkHop ? `${ride} (${park})` : ride
+    }))
+  )
+}
+
 function App() {
   const [plan, setPlan] = useState(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
@@ -560,6 +625,7 @@ function App() {
       type: 'Fireworks',
       restaurant: '',
       customRestaurant: '',
+      ride: '',
       note: ''
     }
     const eventType = getEventTypeConfig(draft.type)
@@ -567,10 +633,13 @@ function App() {
       draft.restaurant === '__custom__'
         ? (draft.customRestaurant || '').trim()
         : (draft.restaurant || '').trim()
+    const rideSelection = draft.ride || ''
+    const [ridePark = '', ride = ''] = rideSelection.split('::')
     const note = (draft.note || '').trim()
     const restaurantResources = restaurant ? getRestaurantResources(restaurant) : null
 
     if (eventType.requiresRestaurant && !restaurant) return
+    if (draft.type === 'Ride' && !rideSelection) return
     if (!eventType.requiresRestaurant && !note && !draft.type) return
 
     setPlan((current) => ({
@@ -588,6 +657,8 @@ function App() {
               menuUrl: restaurantResources?.menuUrl || '',
               bookingUrl: restaurantResources?.bookingUrl || '',
               heroImage: restaurantResources?.heroImage || '',
+              ride,
+              ridePark,
               note,
               theme: eventType.theme
             }
@@ -597,7 +668,7 @@ function App() {
     }))
     setDraftDayItems((current) => ({
       ...current,
-      [date]: { type: draft.type, restaurant: '', customRestaurant: '', note: '' }
+      [date]: { type: draft.type, restaurant: '', customRestaurant: '', ride: '', note: '' }
     }))
   }
 
@@ -666,7 +737,7 @@ function App() {
 
     setDraftDayItems((current) => ({
       ...current,
-      [date]: { type: 'Fireworks', restaurant: '', customRestaurant: '', note: '' }
+      [date]: { type: 'Fireworks', restaurant: '', customRestaurant: '', ride: '', note: '' }
     }))
   }
 
@@ -885,12 +956,14 @@ function App() {
                 type: 'Fireworks',
                 restaurant: '',
                 customRestaurant: '',
+                ride: '',
                 note: ''
               }
               const selectedEventType = getEventTypeConfig(draft.type)
               const locationDisplay = getLocationDisplay(dayPlan, plan.myHotel.trim())
               const dayTypeChipColor = getDayTypeChipColor(dayPlan.dayType)
               const secondParkOptions = getSecondParkOptions(dayPlan.park)
+              const rideOptions = getRideOptionsForDay(dayPlan)
 
               return (
                 <article key={date} className="date-card" style={getDayCardStyle(dayPlan)}>
@@ -1082,6 +1155,7 @@ function App() {
                                 type: event.target.value,
                                 restaurant: '',
                                 customRestaurant: '',
+                                ride: '',
                                 note: current[date]?.note || ''
                               }
                             }))
@@ -1125,6 +1199,31 @@ function App() {
                               </optgroup>
                             ))}
                             <option value="__custom__">Other (type manually)</option>
+                          </select>
+                        </label>
+                      ) : draft.type === 'Ride' ? (
+                        <label className="field-compact">
+                          Ride
+                          <select
+                            value={draft.ride}
+                            onChange={(event) =>
+                              setDraftDayItems((current) => ({
+                                ...current,
+                                [date]: { ...draft, ride: event.target.value }
+                              }))
+                            }
+                            disabled={!rideOptions.length}
+                          >
+                            <option value="">
+                              {rideOptions.length
+                                ? 'Choose ride'
+                                : 'Select park(s) for this day first'}
+                            </option>
+                            {rideOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
                           </select>
                         </label>
                       ) : (
