@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { RESTAURANT_METADATA } from './data/restaurantMetadata'
+import { getParkSuggestions, fetchLiveParkShows } from './data/parkSuggestions.js'
 
 const IMG_BASE = `${import.meta.env.BASE_URL}images/`
 
@@ -275,7 +276,8 @@ function normalizePlan(rawPlan) {
       parkHop: Boolean(dayPlan.parkHop),
       swimSpot: dayPlan.swimSpot || '',
       staySpot: dayPlan.staySpot || '',
-      items: dayPlan.items || []
+      items: dayPlan.items || [],
+      dismissedSuggestions: dayPlan.dismissedSuggestions || []
     }
     return acc
   }, {})
@@ -608,6 +610,7 @@ function App() {
   const [activeDay, setActiveDay] = useState(0)
   const [editingDayItem, setEditingDayItem] = useState(null) // { date, index, draft }
   const [addEventOpen, setAddEventOpen] = useState(false)
+  const [liveShowData, setLiveShowData] = useState({}) // keyed by park name
 
   const nextStep = () => setCurrentStep(s => Math.min(s + 1, 5))
   const prevStep = () => setCurrentStep(s => Math.max(s - 1, 1))
@@ -666,6 +669,22 @@ function App() {
       return { ...current, dayPlans: nextDayPlans }
     })
   }, [tripDates])
+
+  // Fetch live show data for any park that appears in the trip plan
+  useEffect(() => {
+    const parks = [...new Set(
+      Object.values(plan.dayPlans)
+        .filter(dp => dp.dayType === 'Park')
+        .flatMap(dp => [dp.park, dp.secondPark].filter(Boolean))
+    )]
+    parks.forEach(park => {
+      if (liveShowData[park] !== undefined) return // already fetched or in-flight
+      setLiveShowData(prev => ({ ...prev, [park]: null })) // mark in-flight
+      fetchLiveParkShows(park).then(shows => {
+        if (shows) setLiveShowData(prev => ({ ...prev, [park]: shows }))
+      })
+    })
+  }, [plan.dayPlans]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateField = (field, value) => {
     setPlan((current) => ({ ...current, [field]: value }))
@@ -765,6 +784,37 @@ function App() {
         [date]: {
           ...current.dayPlans[date],
           items: (current.dayPlans[date]?.items || []).filter((_, idx) => idx !== itemIndex)
+        }
+      }
+    }))
+  }
+
+  const acceptSuggestion = (date, suggestion) => {
+    setPlan((current) => ({
+      ...current,
+      dayPlans: {
+        ...current.dayPlans,
+        [date]: {
+          ...current.dayPlans[date],
+          items: [
+            ...(current.dayPlans[date]?.items || []),
+            { type: suggestion.type, restaurant: '', customRestaurant: '', menuUrl: '', bookingUrl: '',
+              heroImage: '', ride: '', ridePark: '', note: suggestion.label, time: suggestion.time, theme: suggestion.theme }
+          ],
+          dismissedSuggestions: [...(current.dayPlans[date]?.dismissedSuggestions || []), suggestion.id]
+        }
+      }
+    }))
+  }
+
+  const dismissSuggestion = (date, suggestionId) => {
+    setPlan((current) => ({
+      ...current,
+      dayPlans: {
+        ...current.dayPlans,
+        [date]: {
+          ...current.dayPlans[date],
+          dismissedSuggestions: [...(current.dayPlans[date]?.dismissedSuggestions || []), suggestionId]
         }
       }
     }))
@@ -1162,6 +1212,16 @@ function App() {
               const rideOptions = getRideOptionsForDay(dayPlan)
               const itemsWithIndex = (dayPlan.items || []).map((item, idx) => ({ ...item, _idx: idx }))
               const timeSlots = getTimeSlots(dayPlan.dayType)
+              const dismissed = dayPlan.dismissedSuggestions || []
+              const ghostSuggestions = (() => {
+                if (dayPlan.dayType !== 'Park') return []
+                const parks = [dayPlan.park, dayPlan.secondPark].filter(Boolean)
+                // Use live data if available for any park, else fall back to static
+                const fromLive = parks.flatMap(park => liveShowData[park] || [])
+                const fromStatic = getParkSuggestions(dayPlan.park, dayPlan.secondPark)
+                const base = fromLive.length ? fromLive : fromStatic
+                return base.filter(s => !dismissed.includes(s.id))
+              })()
 
               return (
                 <>
@@ -1522,7 +1582,8 @@ function App() {
                   <div className="day-timeline">
                     {timeSlots.flatMap(slot => {
                       const slotItems = itemsWithIndex.filter(item => getItemSlot(item) === slot.slot)
-                      if (!slotItems.length) return []
+                      const slotGhosts = ghostSuggestions.filter(s => getItemSlot(s) === slot.slot)
+                      if (!slotItems.length && !slotGhosts.length) return []
                       return [(
                         <div key={`slot-${slot.slot}`} className="timeline-slot">
                           <div className="timeline-anchor">
@@ -1612,6 +1673,29 @@ function App() {
                                 </div>
                               )
                             })}
+                            {slotGhosts.map(suggestion => (
+                              <div key={suggestion.id} className="timeline-event">
+                                <div className="ghost-event-content" data-theme={suggestion.theme}>
+                                  <div className="event-text">
+                                    <span className="event-time">{formatTime(suggestion.time)}</span>
+                                    <p>{suggestion.label}</p>
+                                    {suggestion.tags?.length > 0 && (
+                                      <div className="ghost-tags">
+                                        {suggestion.tags.map(tag => (
+                                          <span key={tag} className="ghost-tag">{tag}</span>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="ghost-actions">
+                                    <button type="button" className="ghost-accept-btn" title="Add to my plan"
+                                      onClick={() => acceptSuggestion(date, suggestion)}>✓</button>
+                                    <button type="button" className="ghost-dismiss-btn" title="Not for me"
+                                      onClick={() => dismissSuggestion(date, suggestion.id)}>✕</button>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       )]

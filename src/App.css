@@ -994,6 +994,63 @@ textarea:focus {
   margin-bottom: 0.1rem;
 }
 
+/* ── Ghost suggestion entries ── */
+.ghost-event-content {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 7px;
+  padding: 0.3rem 0.4rem 0.3rem 0.65rem;
+  border: 1.5px dashed var(--event-theme-color, rgba(0, 87, 184, 0.3));
+  opacity: 0.82;
+}
+
+.ghost-event-content[data-theme="dining"]    { --event-theme-color: #f86664; }
+.ghost-event-content[data-theme="fireworks"] { --event-theme-color: #003b78; }
+.ghost-event-content[data-theme="ride"]      { --event-theme-color: #0057b8; }
+.ghost-event-content[data-theme="character"] { --event-theme-color: #8fd8c2; }
+.ghost-event-content[data-theme="nature"]    { --event-theme-color: #4ea777; }
+.ghost-event-content[data-theme="default"]   { --event-theme-color: #8a93a6; }
+
+.ghost-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.ghost-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(29, 42, 68, 0.5);
+  letter-spacing: 0.03em;
+}
+
+.ghost-actions {
+  display: flex;
+  gap: 0.2rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.ghost-accept-btn,
+.ghost-dismiss-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  padding: 0.15rem 0.3rem;
+  line-height: 1;
+}
+
+.ghost-accept-btn { color: #22c55e; }
+.ghost-accept-btn:hover { background: rgba(34, 197, 94, 0.12); }
+
+.ghost-dismiss-btn { color: rgba(29, 42, 68, 0.3); }
+.ghost-dismiss-btn:hover { background: rgba(248, 102, 100, 0.1); color: #f86664; }
+
 .event-edit-btn {
   flex-shrink: 0;
   background: none;
