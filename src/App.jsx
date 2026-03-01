@@ -12,11 +12,9 @@ const PARK_OPTIONS = [
 ]
 
 const DINING_OPTIONS = [
-  'Character Dining',
-  'Quick Service',
-  'Signature Dining',
-  'Snack Crawl',
-  'No Set Plan'
+  'No dining plan',
+  'Quick service dining plan',
+  'Table service dining plan'
 ]
 
 const DAY_TYPES = [
@@ -235,20 +233,37 @@ const DEFAULT_PLAN = {
   children: 0,
   budget: 3500,
   priorities: ['Magic Kingdom'],
-  diningStyle: 'Quick Service',
+  diningStyle: 'No dining plan',
   notes: '',
   dayPlans: {},
   checklist: ['Park tickets', 'Resort booking', 'Genie+ plan']
 }
 
 const STORAGE_KEY = 'disney-holiday-planner'
-const EVENT_BACKGROUNDS = {
-  fireworks: `${IMG_BASE}fireworks.svg`,
-  dining: `${IMG_BASE}dining.svg`,
-  ride: `${IMG_BASE}rides.svg`,
-  character: `${IMG_BASE}characters.svg`,
-  nature: `${IMG_BASE}nature.svg`,
-  default: `${IMG_BASE}magic.svg`
+const PROJECTS_KEY = 'disney-holiday-projects'
+
+function generateId() {
+  return `proj-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
+}
+
+function loadAllProjects() {
+  const saved = localStorage.getItem(PROJECTS_KEY)
+  if (saved) {
+    try { return JSON.parse(saved) } catch { return {} }
+  }
+  // Migrate old single-plan format
+  const old = localStorage.getItem(STORAGE_KEY)
+  if (old) {
+    try {
+      const plan = normalizePlan(JSON.parse(old))
+      const id = generateId()
+      const projects = { [id]: { id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), plan } }
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects))
+      localStorage.removeItem(STORAGE_KEY)
+      return projects
+    } catch { return {} }
+  }
+  return {}
 }
 
 function normalizePlan(rawPlan) {
@@ -526,24 +541,75 @@ function getRideOptionsForDay(dayPlan) {
   )
 }
 
+const EVENT_SLOT = {
+  Breakfast: 'morning',
+  'Travel Transfer': 'morning',
+  Ride: 'day',
+  'Character Meet': 'day',
+  Lunch: 'day',
+  Snack: 'day',
+  'Pool Time': 'day',
+  Shopping: 'day',
+  Parade: 'day',
+  Dinner: 'evening',
+  Tea: 'evening',
+  Fireworks: 'evening',
+}
+
+function getTimeAnchors(dayType) {
+  if (dayType === 'Park') return [
+    { slot: 'morning', time: '7:00am', label: 'Park opens · Rope drop' },
+    { slot: 'day', time: '9:00am', label: 'In the parks' },
+    { slot: 'evening', time: '6:00pm', label: 'Evening magic' },
+  ]
+  if (dayType === 'Swimming') return [
+    { slot: 'morning', time: '10:00am', label: 'Water park opens' },
+    { slot: 'day', time: '12:00pm', label: 'Midday splash' },
+    { slot: 'evening', time: '6:00pm', label: 'Wind down' },
+  ]
+  if (dayType === 'Travel') return [
+    { slot: 'morning', time: '6:00am', label: 'Early start' },
+    { slot: 'day', time: '12:00pm', label: 'Journey' },
+    { slot: 'evening', time: '6:00pm', label: 'Arriving' },
+  ]
+  return [
+    { slot: 'morning', time: '9:00am', label: 'Morning' },
+    { slot: 'day', time: '12:00pm', label: 'Midday' },
+    { slot: 'evening', time: '6:00pm', label: 'Evening' },
+  ]
+}
+
+function formatShortDate(dateStr) {
+  if (!dateStr) return ''
+  const [, month, day] = dateStr.split('-')
+  return `${parseInt(month, 10)}/${parseInt(day, 10)}`
+}
+
 function App() {
-  const [plan, setPlan] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (!saved) return DEFAULT_PLAN
-
-    try {
-      return normalizePlan(JSON.parse(saved))
-    } catch {
-      return DEFAULT_PLAN
-    }
-  })
-
+  const [projects, setProjects] = useState(() => loadAllProjects())
+  const [activeProjectId, setActiveProjectId] = useState(null)
+  const [plan, setPlan] = useState(DEFAULT_PLAN)
   const [newChecklistItem, setNewChecklistItem] = useState('')
   const [draftDayItems, setDraftDayItems] = useState({})
+  const [setupDone, setSetupDone] = useState(false)
+  const [currentStep, setCurrentStep] = useState(1)
+
+  const [activeDay, setActiveDay] = useState(0)
+
+  const nextStep = () => setCurrentStep(s => Math.min(s + 1, 5))
+  const prevStep = () => setCurrentStep(s => Math.max(s - 1, 1))
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(plan))
-  }, [plan])
+    if (!activeProjectId) return
+    setProjects(prev => {
+      const updated = {
+        ...prev,
+        [activeProjectId]: { ...prev[activeProjectId], updatedAt: new Date().toISOString(), plan }
+      }
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify(updated))
+      return updated
+    })
+  }, [plan, activeProjectId])
 
   const tripDates = useMemo(() => {
     return getDateRange(plan.startDate, plan.endDate)
@@ -552,6 +618,7 @@ function App() {
   const tripLength = tripDates.length || null
 
   useEffect(() => {
+    setActiveDay(prev => Math.min(prev, Math.max(tripDates.length - 1, 0)))
     setPlan((current) => {
       const currentPlans = current.dayPlans || {}
       const nextDayPlans = {}
@@ -589,17 +656,6 @@ function App() {
 
   const updateField = (field, value) => {
     setPlan((current) => ({ ...current, [field]: value }))
-  }
-
-  const togglePriority = (park) => {
-    setPlan((current) => {
-      const exists = current.priorities.includes(park)
-      const priorities = exists
-        ? current.priorities.filter((item) => item !== park)
-        : [...current.priorities, park]
-
-      return { ...current, priorities }
-    })
   }
 
   const updateDayPlan = (date, key, value) => {
@@ -784,148 +840,257 @@ function App() {
 
   const resetPlan = () => {
     setPlan(DEFAULT_PLAN)
-    localStorage.removeItem(STORAGE_KEY)
+    setSetupDone(false)
+    setDraftDayItems({})
+  }
+
+  const createProject = () => {
+    const id = generateId()
+    const newProject = { id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), plan: DEFAULT_PLAN }
+    setProjects(prev => {
+      const updated = { ...prev, [id]: newProject }
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify(updated))
+      return updated
+    })
+    setPlan(DEFAULT_PLAN)
+    setSetupDone(false)
+    setDraftDayItems({})
+    setActiveProjectId(id)
+  }
+
+  const openProject = (id) => {
+    const project = projects[id]
+    setPlan(project.plan)
+    setSetupDone(!!(project.plan.startDate && project.plan.endDate))
+    setCurrentStep(1)
+    setDraftDayItems({})
+    setActiveProjectId(id)
+  }
+
+  const deleteProject = (id) => {
+    setProjects(prev => {
+      const next = { ...prev }
+      delete next[id]
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify(next))
+      return next
+    })
+  }
+
+  const goHome = () => {
+    setActiveProjectId(null)
   }
 
   return (
     <div className="page-shell">
-      <header className="hero">
-        <p className="eyebrow">Disney World-Inspired Holiday Tool</p>
-        <h1>{plan.tripName}</h1>
-        <p className="subtitle">
-          Build your park days, spending target, and must-do list in one place.
-        </p>
-      </header>
+      {activeProjectId === null ? (
+        <>
+          <header className="hero">
+            <p className="eyebrow">Disney World Holiday Planner</p>
+            <h1>My Holidays</h1>
+            <p className="subtitle">Plan and manage all your Disney World adventures.</p>
+          </header>
 
-      <main className="planner-grid">
-        <section className="card">
-          <h2>Trip Basics</h2>
-          <label>
-            Trip name
-            <input
-              value={plan.tripName}
-              onChange={(event) => updateField('tripName', event.target.value)}
-              placeholder="Magical Family Getaway"
-            />
-          </label>
+          <main className="home-grid">
+            {Object.keys(projects).length > 0 && (
+              <section className="card card-wide">
+                <h2 className="home-section-title">Your holidays</h2>
+                <div className="project-list">
+                  {Object.values(projects)
+                    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+                    .map(project => {
+                      const p = project.plan
+                      const len = getDateRange(p.startDate, p.endDate).length
+                      return (
+                        <div key={project.id} className="project-row" onClick={() => openProject(project.id)}>
+                          <div className="project-row-info">
+                            <strong>{p.tripName || 'Untitled Holiday'}</strong>
+                            <span>
+                              {p.startDate
+                                ? `${formatPrettyDate(p.startDate)} – ${formatPrettyDate(p.endDate)} · ${len} day${len !== 1 ? 's' : ''}`
+                                : 'Dates not set'}
+                              {p.myHotel ? ` · ${p.myHotel}` : ''}
+                            </span>
+                          </div>
+                          <button
+                            className="chip"
+                            onClick={(e) => { e.stopPropagation(); deleteProject(project.id) }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )
+                    })}
+                </div>
+              </section>
+            )}
 
-          <label>
-            My hotel
-            <input
-              list="hotel-list"
-              value={plan.myHotel}
-              onChange={(event) => updateField('myHotel', event.target.value)}
-              placeholder="Type or pick your Disney hotel"
-            />
-          </label>
-          <datalist id="hotel-list">
-            {DISNEY_HOTELS.map((hotel) => (
-              <option key={hotel} value={hotel} />
-            ))}
-          </datalist>
+            <button className="new-project-btn" onClick={createProject}>
+              + New holiday
+            </button>
 
-          <div className="inline-fields">
-            <label>
-              Start
+            {Object.keys(projects).length === 0 && (
+              <p className="home-empty">No holidays yet. Start planning your first Disney trip!</p>
+            )}
+          </main>
+        </>
+      ) : (
+        <>
+          <header className="hero">
+            <button className="back-btn" onClick={goHome}>← My Holidays</button>
+            <h1>{plan.tripName}</h1>
+            <p className="subtitle">
+              Build your park days, spending target, and must-do list in one place.
+            </p>
+          </header>
+
+          <main className="planner-grid">
+        {!setupDone && (
+          <section key={currentStep} className="card card-wide setup-step">
+            <p className="step-label">Step {currentStep} of 5</p>
+
+            {currentStep === 1 && <>
+              <h2 className="step-question">Name your holiday</h2>
+              <p className="step-sub">Every great adventure deserves a great name.</p>
               <input
-                type="date"
-                value={plan.startDate}
-                onChange={(event) => updateField('startDate', event.target.value)}
+                className="step-input"
+                value={plan.tripName}
+                onChange={(event) => updateField('tripName', event.target.value)}
+                placeholder="e.g. Magical Family Getaway"
+                autoFocus
               />
-            </label>
-            <label>
-              End
+            </>}
+
+            {currentStep === 2 && <>
+              <h2 className="step-question">When are you going?</h2>
+              <p className="step-sub">Pick your dates and we'll build your day-by-day planner automatically.</p>
+              <div className="step-date-row">
+                <label>
+                  From
+                  <input
+                    type="date"
+                    value={plan.startDate}
+                    onChange={(event) => updateField('startDate', event.target.value)}
+                  />
+                </label>
+                <label>
+                  To
+                  <input
+                    type="date"
+                    value={plan.endDate}
+                    onChange={(event) => updateField('endDate', event.target.value)}
+                  />
+                </label>
+                {tripLength > 0 && (
+                  <span className="step-length-pill">{tripLength} day{tripLength !== 1 ? 's' : ''}</span>
+                )}
+              </div>
+            </>}
+
+            {currentStep === 3 && <>
+              <h2 className="step-question">Where are you staying?</h2>
+              <p className="step-sub">Your resort sets the tone — from castle views to savannah sunrises.</p>
               <input
-                type="date"
-                value={plan.endDate}
-                onChange={(event) => updateField('endDate', event.target.value)}
+                className="step-input"
+                list="hotel-list"
+                value={plan.myHotel}
+                onChange={(event) => updateField('myHotel', event.target.value)}
+                placeholder="Type or pick a Disney hotel"
+                autoFocus
               />
-            </label>
+              <datalist id="hotel-list">
+                {DISNEY_HOTELS.map((hotel) => (
+                  <option key={hotel} value={hotel} />
+                ))}
+              </datalist>
+            </>}
+
+            {currentStep === 4 && <>
+              <h2 className="step-question">Who's going?</h2>
+              <p className="step-sub">The more the merrier — every party size gets the magic treatment.</p>
+              <div className="inline-fields">
+                <label>
+                  Adults
+                  <input
+                    type="number"
+                    min="1"
+                    value={plan.adults}
+                    onChange={(event) => updateField('adults', Number(event.target.value))}
+                  />
+                </label>
+                <label>
+                  Children
+                  <input
+                    type="number"
+                    min="0"
+                    value={plan.children}
+                    onChange={(event) => updateField('children', Number(event.target.value))}
+                  />
+                </label>
+              </div>
+            </>}
+
+            {currentStep === 5 && <>
+              <h2 className="step-question">How do you like to dine?</h2>
+              <p className="step-sub">Disney dining is half the fun — let's make sure you've got a plan.</p>
+              <div className="step-dining-grid">
+                {DINING_OPTIONS.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className={plan.diningStyle === option ? 'dining-chip selected' : 'dining-chip'}
+                    onClick={() => updateField('diningStyle', option)}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </>}
+
+            <div className="step-nav">
+              {currentStep > 1 && (
+                <button className="step-back-btn" onClick={prevStep}>← Back</button>
+              )}
+              {currentStep < 5 ? (
+                <button className="setup-continue-btn" onClick={nextStep}>Next →</button>
+              ) : (
+                <>
+                  <button
+                    className="setup-continue-btn"
+                    disabled={!plan.startDate || !plan.endDate}
+                    onClick={() => setSetupDone(true)}
+                  >
+                    Start Planning →
+                  </button>
+                  {(!plan.startDate || !plan.endDate) && (
+                    <span className="setup-hint">Set your dates in Step 2 to continue</span>
+                  )}
+                </>
+              )}
+            </div>
+          </section>
+        )}
+
+        {setupDone && (
+          <div className="setup-summary card card-wide">
+            <div className="setup-summary-inner">
+              <div className="setup-summary-info">
+                <strong>{plan.tripName}</strong>
+                <span>{formatPrettyDate(plan.startDate)} – {formatPrettyDate(plan.endDate)} · {tripLength} day{tripLength !== 1 ? 's' : ''}</span>
+                <span>{plan.adults} adult{plan.adults !== 1 ? 's' : ''}{plan.children > 0 ? `, ${plan.children} child${plan.children !== 1 ? 'ren' : ''}` : ''} · £{Number(plan.budget).toLocaleString()} · {plan.diningStyle}</span>
+              </div>
+              <button className="chip" onClick={() => { setSetupDone(false); setCurrentStep(1) }}>Edit setup</button>
+            </div>
           </div>
+        )}
 
-          <div className="inline-fields">
-            <label>
-              Adults
-              <input
-                type="number"
-                min="1"
-                value={plan.adults}
-                onChange={(event) => updateField('adults', Number(event.target.value))}
-              />
-            </label>
-            <label>
-              Children
-              <input
-                type="number"
-                min="0"
-                value={plan.children}
-                onChange={(event) => updateField('children', Number(event.target.value))}
-              />
-            </label>
-          </div>
-
-          <label>
-            Holiday budget (GBP)
-            <input
-              type="number"
-              min="0"
-              step="50"
-              value={plan.budget}
-              onChange={(event) => updateField('budget', Number(event.target.value))}
-            />
-          </label>
-
-          <div className="summary-row">
-            <span>Length</span>
-            <strong>{tripLength ? `${tripLength} day${tripLength > 1 ? 's' : ''}` : 'Pick dates'}</strong>
-          </div>
-        </section>
-
-        <section className="card">
-          <h2>Parks and Dining</h2>
-          <p className="section-hint">Tap your top parks.</p>
-          <div className="chip-row">
-            {PARK_OPTIONS.map((park) => (
-              <button
-                key={park}
-                type="button"
-                className={plan.priorities.includes(park) ? 'chip selected' : 'chip'}
-                onClick={() => togglePriority(park)}
-              >
-                {park}
-              </button>
-            ))}
-          </div>
-
-          <label>
-            Dining style
-            <select
-              value={plan.diningStyle}
-              onChange={(event) => updateField('diningStyle', event.target.value)}
-            >
-              {DINING_OPTIONS.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label>
-            Extra notes
-            <textarea
-              rows="4"
-              value={plan.notes}
-              onChange={(event) => updateField('notes', event.target.value)}
-              placeholder="Parades, fireworks, room requests, transport ideas..."
-            />
-          </label>
-        </section>
-
-        <section className="card card-wide">
+        {setupDone && <section className="card card-wide">
           <div className="card-title-row day-header">
             <h2>Daily Plan by Date</h2>
-            <span className="section-hint">Date range auto-builds each day section.</span>
+            <div className="day-nav-arrows">
+              <button disabled={activeDay === 0} onClick={() => setActiveDay(d => d - 1)}>←</button>
+              <span>Day {activeDay + 1} of {tripDates.length || 0}</span>
+              <button disabled={activeDay >= tripDates.length - 1} onClick={() => setActiveDay(d => d + 1)}>→</button>
+            </div>
           </div>
 
           {!tripDates.length && (
@@ -933,7 +1098,26 @@ function App() {
           )}
 
           <div className="date-plan-grid">
-            {tripDates.map((date, index) => {
+            <div className="day-nav-strip">
+              {tripDates.map((date, index) => {
+                const dp = plan.dayPlans?.[date]
+                const isPlanned = !!(dp?.dayType || dp?.items?.length)
+                return (
+                  <button
+                    key={date}
+                    type="button"
+                    className={['day-nav-btn', index === activeDay ? 'active' : '', isPlanned ? 'has-plan' : ''].filter(Boolean).join(' ')}
+                    onClick={() => setActiveDay(index)}
+                  >
+                    <span className="day-nav-num">{index + 1}</span>
+                    <span className="day-nav-date">{formatShortDate(date)}</span>
+                  </button>
+                )
+              })}
+            </div>
+            {tripDates.length > 0 && (() => {
+              const date = tripDates[activeDay]
+              const index = activeDay
               const dayPlan = plan.dayPlans?.[date] || {
                 dayType: '',
                 park: '',
@@ -964,8 +1148,11 @@ function App() {
               const dayTypeChipColor = getDayTypeChipColor(dayPlan.dayType)
               const secondParkOptions = getSecondParkOptions(dayPlan.park)
               const rideOptions = getRideOptionsForDay(dayPlan)
+              const itemsWithIndex = (dayPlan.items || []).map((item, idx) => ({ ...item, _idx: idx }))
+              const timeAnchors = getTimeAnchors(dayPlan.dayType)
 
               return (
+                <>
                 <article key={date} className="date-card" style={getDayCardStyle(dayPlan)}>
                   <div className="card-badges">
                     {dayPlan.dayType && (
@@ -1142,6 +1329,43 @@ function App() {
                     </div>
                   </div>
 
+                  <div className="park-hop-dock">
+                    <button
+                      type="button"
+                      className={dayPlan.dayType === 'Park' ? 'park-hop-btn' : 'park-hop-btn disabled'}
+                      onClick={() => {
+                        if (dayPlan.dayType !== 'Park') return
+                        setPlan((current) => {
+                          const currentDay = current.dayPlans?.[date]
+                          if (!currentDay) return current
+                          const nextHop = !currentDay.parkHop
+                          return {
+                            ...current,
+                            dayPlans: {
+                              ...current.dayPlans,
+                              [date]: {
+                                ...currentDay,
+                                parkHop: nextHop,
+                                secondPark: nextHop ? currentDay.secondPark : ''
+                              }
+                            }
+                          }
+                        })
+                      }}
+                    >
+                      {dayPlan.parkHop ? 'Remove park hop' : 'Park hop'}
+                    </button>
+                    <button
+                      type="button"
+                      className="park-hop-btn reset-day-btn"
+                      onClick={() => resetDay(date)}
+                    >
+                      Reset day
+                    </button>
+                  </div>
+                </article>
+
+                <div className="day-timeline-card card">
                   <div className="event-builder">
                     <div className="day-meta-row">
                       <label className="field-compact">
@@ -1257,7 +1481,6 @@ function App() {
                         />
                       </label>
                     )}
-
                     <div className="event-action-row">
                       <button type="button" className="action action-compact" onClick={() => addDayItem(date)}>
                         Add event
@@ -1265,98 +1488,55 @@ function App() {
                     </div>
                   </div>
 
-                  <div className="event-list">
-                    {!dayPlan.items?.length && (
-                      <p className="event-empty">No events yet for this day.</p>
-                    )}
-                    {dayPlan.items?.map((item, itemIndex) => {
-                      const normalizedItem = normalizeEventItem(item)
-                      const label = buildEventLabel(normalizedItem)
-                      const menuUrl = normalizedItem.menuUrl
-                      const bookingUrl = normalizedItem.bookingUrl
-                      const hasRestaurantLinks = Boolean(
-                        normalizedItem.restaurant && (menuUrl || bookingUrl)
-                      )
-                      const fallbackEventImage =
-                        EVENT_BACKGROUNDS[normalizedItem.theme] || EVENT_BACKGROUNDS.default
-                      const eventBackgroundLayers = normalizedItem.heroImage
-                        ? `url(${normalizedItem.heroImage}), url(${fallbackEventImage})`
-                        : `url(${fallbackEventImage})`
-                      return (
-                        <div
-                          key={`${label}-${itemIndex}`}
-                          className="event-tile"
-                          style={{
-                            '--event-image': eventBackgroundLayers
-                          }}
-                        >
-                          <div className="event-content">
-                            <div className="event-text">
-                              <p>{label}</p>
-                              {hasRestaurantLinks && (
-                                <div className="event-links">
-                                  {menuUrl && (
-                                    <a href={menuUrl} target="_blank" rel="noreferrer noopener">
-                                      View menu
-                                    </a>
-                                  )}
-                                  {bookingUrl && (
-                                    <a href={bookingUrl} target="_blank" rel="noreferrer noopener">
-                                      Book
-                                    </a>
+                  <div className="day-timeline">
+                    {timeAnchors.flatMap(anchor => {
+                      const slotItems = itemsWithIndex.filter(item => (EVENT_SLOT[item.type] || 'day') === anchor.slot)
+                      return [
+                        <div key={`anchor-${anchor.slot}`} className="timeline-anchor">
+                          <span className="timeline-anchor-time">{anchor.time}</span>
+                          <span className="timeline-anchor-label">{anchor.label}</span>
+                        </div>,
+                        ...slotItems.map(item => {
+                          const normalizedItem = normalizeEventItem(item)
+                          const label = buildEventLabel(normalizedItem)
+                          const menuUrl = normalizedItem.menuUrl
+                          const bookingUrl = normalizedItem.bookingUrl
+                          const hasRestaurantLinks = Boolean(normalizedItem.restaurant && (menuUrl || bookingUrl))
+                          return (
+                            <div key={`event-${item._idx}`} className="timeline-event">
+                              <div className="timeline-event-content" data-theme={normalizedItem.theme}>
+                                <div className="event-text">
+                                  <p>{label}</p>
+                                  {hasRestaurantLinks && (
+                                    <div className="event-links">
+                                      {menuUrl && (
+                                        <a href={menuUrl} target="_blank" rel="noreferrer noopener">View menu</a>
+                                      )}
+                                      {bookingUrl && (
+                                        <a href={bookingUrl} target="_blank" rel="noreferrer noopener">Book</a>
+                                      )}
+                                    </div>
                                   )}
                                 </div>
-                              )}
+                                <button type="button" onClick={() => removeDayItem(date, item._idx)}>×</button>
+                              </div>
                             </div>
-                            <button type="button" onClick={() => removeDayItem(date, itemIndex)}>
-                              Remove
-                            </button>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                  <div className="park-hop-dock">
-                    <button
-                      type="button"
-                      className={dayPlan.dayType === 'Park' ? 'park-hop-btn' : 'park-hop-btn disabled'}
-                      onClick={() => {
-                        if (dayPlan.dayType !== 'Park') return
-                        setPlan((current) => {
-                          const currentDay = current.dayPlans?.[date]
-                          if (!currentDay) return current
-                          const nextHop = !currentDay.parkHop
-                          return {
-                            ...current,
-                            dayPlans: {
-                              ...current.dayPlans,
-                              [date]: {
-                                ...currentDay,
-                                parkHop: nextHop,
-                                secondPark: nextHop ? currentDay.secondPark : ''
-                              }
-                            }
-                          }
+                          )
                         })
-                      }}
-                    >
-                      {dayPlan.parkHop ? 'Remove park hop' : 'Park hop'}
-                    </button>
-                    <button
-                      type="button"
-                      className="park-hop-btn reset-day-btn"
-                      onClick={() => resetDay(date)}
-                    >
-                      Reset day
-                    </button>
+                      ]
+                    })}
+                    {!dayPlan.items?.length && (
+                      <p className="timeline-empty">Add your first event above to build your day</p>
+                    )}
                   </div>
-                </article>
+                </div>
+                </>
               )
-            })}
+            })()}
           </div>
-        </section>
+        </section>}
 
-        <section className="card">
+        {setupDone && <section className="card">
           <h2>Checklist</h2>
           <div className="inline-fields">
             <input
@@ -1379,15 +1559,17 @@ function App() {
               </li>
             ))}
           </ul>
-        </section>
-      </main>
+        </section>}
+          </main>
 
-      <footer className="footer-bar">
-        <p>Saved automatically in your browser.</p>
-        <button type="button" className="danger" onClick={resetPlan}>
-          Reset planner
-        </button>
-      </footer>
+          <footer className="footer-bar">
+            <p>Saved automatically in your browser.</p>
+            <button type="button" className="danger" onClick={resetPlan}>
+              Reset planner
+            </button>
+          </footer>
+        </>
+      )}
     </div>
   )
 }
