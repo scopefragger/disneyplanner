@@ -357,6 +357,14 @@ function buildEventLabel(item) {
   return item.text || 'Event'
 }
 
+function formatTime(time) {
+  if (!time) return ''
+  const [h, m] = time.split(':').map(Number)
+  const period = h >= 12 ? 'pm' : 'am'
+  const hour = h % 12 || 12
+  return `${hour}:${m.toString().padStart(2, '0')}${period}`
+}
+
 function normalizeEventItem(item) {
   if (item?.type) {
     return {
@@ -369,6 +377,7 @@ function normalizeEventItem(item) {
       ride: item.ride || '',
       ridePark: item.ridePark || '',
       note: item.note || '',
+      time: item.time || '',
       theme: item.theme || getEventTypeConfig(item.type).theme
     }
   }
@@ -384,6 +393,7 @@ function normalizeEventItem(item) {
     ride: '',
     ridePark: '',
     note: text,
+    time: item?.time || '',
     theme: item?.theme || detectTheme(text),
     text
   }
@@ -541,41 +551,44 @@ function getRideOptionsForDay(dayPlan) {
   )
 }
 
-const EVENT_SLOT = {
+const DEFAULT_SLOT = {
   Breakfast: 'morning',
   'Travel Transfer': 'morning',
-  Ride: 'day',
-  'Character Meet': 'day',
-  Lunch: 'day',
-  Snack: 'day',
-  'Pool Time': 'day',
-  Shopping: 'day',
-  Parade: 'day',
+  Ride: 'morning',
+  'Character Meet': 'morning',
+  Lunch: 'midday',
+  Snack: 'midday',
+  'Pool Time': 'midday',
+  Shopping: 'afternoon',
+  Parade: 'afternoon',
+  Tea: 'afternoon',
   Dinner: 'evening',
-  Tea: 'evening',
-  Fireworks: 'evening',
+  Fireworks: 'night',
 }
 
-function getTimeAnchors(dayType) {
-  if (dayType === 'Park') return [
-    { slot: 'morning', time: '7:00am', label: 'Park opens · Rope drop' },
-    { slot: 'day', time: '9:00am', label: 'In the parks' },
-    { slot: 'evening', time: '6:00pm', label: 'Evening magic' },
-  ]
-  if (dayType === 'Swimming') return [
-    { slot: 'morning', time: '10:00am', label: 'Water park opens' },
-    { slot: 'day', time: '12:00pm', label: 'Midday splash' },
-    { slot: 'evening', time: '6:00pm', label: 'Wind down' },
-  ]
-  if (dayType === 'Travel') return [
-    { slot: 'morning', time: '6:00am', label: 'Early start' },
-    { slot: 'day', time: '12:00pm', label: 'Journey' },
-    { slot: 'evening', time: '6:00pm', label: 'Arriving' },
-  ]
+function getItemSlot(item) {
+  if (item.time) {
+    const [h] = item.time.split(':').map(Number)
+    if (h >= 21) return 'night'
+    if (h >= 18) return 'evening'
+    if (h >= 15) return 'afternoon'
+    if (h >= 12) return 'midday'
+    if (h >= 9)  return 'morning'
+    return 'latenight'
+  }
+  return DEFAULT_SLOT[item.type] || 'midday'
+}
+
+function getTimeSlots(dayType) {
+  const isPark = dayType === 'Park'
+  const isSwim = dayType === 'Swimming'
   return [
-    { slot: 'morning', time: '9:00am', label: 'Morning' },
-    { slot: 'day', time: '12:00pm', label: 'Midday' },
-    { slot: 'evening', time: '6:00pm', label: 'Evening' },
+    { slot: 'morning',   time: '9:00am',   label: isPark ? 'Rope drop' : isSwim ? 'Water park opens' : 'Morning' },
+    { slot: 'midday',    time: '12:00pm',  label: isPark ? 'In the parks' : isSwim ? 'Midday splash' : 'Midday' },
+    { slot: 'afternoon', time: '3:00pm',   label: 'Afternoon' },
+    { slot: 'evening',   time: '6:00pm',   label: isPark ? 'Evening magic' : 'Evening' },
+    { slot: 'night',     time: '9:00pm',   label: isPark ? 'Night shows' : 'Night' },
+    { slot: 'latenight', time: 'Midnight', label: 'Late night' },
   ]
 }
 
@@ -589,12 +602,12 @@ function App() {
   const [projects, setProjects] = useState(() => loadAllProjects())
   const [activeProjectId, setActiveProjectId] = useState(null)
   const [plan, setPlan] = useState(DEFAULT_PLAN)
-  const [newChecklistItem, setNewChecklistItem] = useState('')
   const [draftDayItems, setDraftDayItems] = useState({})
   const [setupDone, setSetupDone] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
-
   const [activeDay, setActiveDay] = useState(0)
+  const [editingDayItem, setEditingDayItem] = useState(null) // { date, index, draft }
+  const [addEventOpen, setAddEventOpen] = useState(false)
 
   const nextStep = () => setCurrentStep(s => Math.min(s + 1, 5))
   const prevStep = () => setCurrentStep(s => Math.max(s - 1, 1))
@@ -716,6 +729,7 @@ function App() {
               ride,
               ridePark,
               note,
+              time: draft.time || '',
               theme: eventType.theme
             }
           ]
@@ -724,7 +738,22 @@ function App() {
     }))
     setDraftDayItems((current) => ({
       ...current,
-      [date]: { type: draft.type, restaurant: '', customRestaurant: '', ride: '', note: '' }
+      [date]: { type: draft.type, restaurant: '', customRestaurant: '', ride: '', note: '', time: '' }
+    }))
+  }
+
+  const updateDayItem = (date, itemIndex, updates) => {
+    setPlan((current) => ({
+      ...current,
+      dayPlans: {
+        ...current.dayPlans,
+        [date]: {
+          ...current.dayPlans[date],
+          items: current.dayPlans[date].items.map((item, idx) =>
+            idx === itemIndex ? { ...item, ...updates } : item
+          )
+        }
+      }
     }))
   }
 
@@ -818,24 +847,6 @@ function App() {
         }
       }
     })
-  }
-
-  const addChecklistItem = () => {
-    const item = newChecklistItem.trim()
-    if (!item) return
-
-    setPlan((current) => ({
-      ...current,
-      checklist: [...current.checklist, item]
-    }))
-    setNewChecklistItem('')
-  }
-
-  const removeChecklistItem = (index) => {
-    setPlan((current) => ({
-      ...current,
-      checklist: current.checklist.filter((_, itemIndex) => itemIndex !== index)
-    }))
   }
 
   const resetPlan = () => {
@@ -1141,7 +1152,8 @@ function App() {
                 restaurant: '',
                 customRestaurant: '',
                 ride: '',
-                note: ''
+                note: '',
+                time: ''
               }
               const selectedEventType = getEventTypeConfig(draft.type)
               const locationDisplay = getLocationDisplay(dayPlan, plan.myHotel.trim())
@@ -1149,7 +1161,7 @@ function App() {
               const secondParkOptions = getSecondParkOptions(dayPlan.park)
               const rideOptions = getRideOptionsForDay(dayPlan)
               const itemsWithIndex = (dayPlan.items || []).map((item, idx) => ({ ...item, _idx: idx }))
-              const timeAnchors = getTimeAnchors(dayPlan.dayType)
+              const timeSlots = getTimeSlots(dayPlan.dayType)
 
               return (
                 <>
@@ -1366,167 +1378,246 @@ function App() {
                 </article>
 
                 <div className="day-timeline-card card">
-                  <div className="event-builder">
-                    <div className="day-meta-row">
-                      <label className="field-compact">
-                        Event type
-                        <select
-                          value={draft.type}
-                          onChange={(event) =>
-                            setDraftDayItems((current) => ({
-                              ...current,
-                              [date]: {
-                                type: event.target.value,
-                                restaurant: '',
-                                customRestaurant: '',
-                                ride: '',
-                                note: current[date]?.note || ''
-                              }
-                            }))
-                          }
-                        >
-                          {EVENT_TYPES.map((eventType) => (
-                            <option key={eventType.value} value={eventType.value}>
-                              {eventType.value}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-
-                      {selectedEventType.requiresRestaurant ? (
+                  {addEventOpen && (
+                    <div className="event-builder-panel">
+                      <div className="event-builder-header">
+                        <span>Add event</span>
+                        <button type="button" className="event-builder-close" onClick={() => setAddEventOpen(false)}>×</button>
+                      </div>
+                      <div className="day-meta-row">
                         <label className="field-compact">
-                          Restaurant
+                          Event type
                           <select
-                            value={draft.restaurant}
+                            value={draft.type}
                             onChange={(event) =>
                               setDraftDayItems((current) => ({
                                 ...current,
                                 [date]: {
-                                  ...draft,
-                                  restaurant: event.target.value,
-                                  customRestaurant:
-                                    event.target.value === '__custom__'
-                                      ? current[date]?.customRestaurant || ''
-                                      : ''
+                                  type: event.target.value,
+                                  restaurant: '',
+                                  customRestaurant: '',
+                                  ride: '',
+                                  note: current[date]?.note || ''
                                 }
                               }))
                             }
                           >
-                            <option value="">Choose restaurant</option>
-                            {Object.entries(RESTAURANT_GROUPS).map(([group, restaurants]) => (
-                              <optgroup key={group} label={group}>
-                                {restaurants.map((restaurant) => (
-                                  <option key={restaurant} value={restaurant}>
-                                    {restaurant}
-                                  </option>
-                                ))}
-                              </optgroup>
-                            ))}
-                            <option value="__custom__">Other (type manually)</option>
-                          </select>
-                        </label>
-                      ) : draft.type === 'Ride' ? (
-                        <label className="field-compact">
-                          Ride
-                          <select
-                            value={draft.ride}
-                            onChange={(event) =>
-                              setDraftDayItems((current) => ({
-                                ...current,
-                                [date]: { ...draft, ride: event.target.value }
-                              }))
-                            }
-                            disabled={!rideOptions.length}
-                          >
-                            <option value="">
-                              {rideOptions.length
-                                ? 'Choose ride'
-                                : 'Select park(s) for this day first'}
-                            </option>
-                            {rideOptions.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
+                            {EVENT_TYPES.map((eventType) => (
+                              <option key={eventType.value} value={eventType.value}>
+                                {eventType.value}
                               </option>
                             ))}
                           </select>
                         </label>
-                      ) : (
+
+                        {selectedEventType.requiresRestaurant ? (
+                          <label className="field-compact">
+                            Restaurant
+                            <select
+                              value={draft.restaurant}
+                              onChange={(event) =>
+                                setDraftDayItems((current) => ({
+                                  ...current,
+                                  [date]: {
+                                    ...draft,
+                                    restaurant: event.target.value,
+                                    customRestaurant:
+                                      event.target.value === '__custom__'
+                                        ? current[date]?.customRestaurant || ''
+                                        : ''
+                                  }
+                                }))
+                              }
+                            >
+                              <option value="">Choose restaurant</option>
+                              {Object.entries(RESTAURANT_GROUPS).map(([group, restaurants]) => (
+                                <optgroup key={group} label={group}>
+                                  {restaurants.map((restaurant) => (
+                                    <option key={restaurant} value={restaurant}>
+                                      {restaurant}
+                                    </option>
+                                  ))}
+                                </optgroup>
+                              ))}
+                              <option value="__custom__">Other (type manually)</option>
+                            </select>
+                          </label>
+                        ) : draft.type === 'Ride' ? (
+                          <label className="field-compact">
+                            Ride
+                            <select
+                              value={draft.ride}
+                              onChange={(event) =>
+                                setDraftDayItems((current) => ({
+                                  ...current,
+                                  [date]: { ...draft, ride: event.target.value }
+                                }))
+                              }
+                              disabled={!rideOptions.length}
+                            >
+                              <option value="">
+                                {rideOptions.length
+                                  ? 'Choose ride'
+                                  : 'Select park(s) for this day first'}
+                              </option>
+                              {rideOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        ) : (
+                          <label className="field-compact">
+                            Notes
+                            <input
+                              value={draft.note}
+                              onChange={(event) =>
+                                setDraftDayItems((current) => ({
+                                  ...current,
+                                  [date]: { ...draft, note: event.target.value }
+                                }))
+                              }
+                              placeholder="Optional details"
+                            />
+                          </label>
+                        )}
+                      </div>
+                      {selectedEventType.requiresRestaurant && draft.restaurant === '__custom__' && (
                         <label className="field-compact">
-                          Notes
+                          Custom restaurant
                           <input
-                            value={draft.note}
+                            value={draft.customRestaurant}
                             onChange={(event) =>
                               setDraftDayItems((current) => ({
                                 ...current,
-                                [date]: { ...draft, note: event.target.value }
+                                [date]: { ...draft, customRestaurant: event.target.value }
                               }))
                             }
-                            placeholder="Optional details"
+                            placeholder="Type restaurant name"
                           />
                         </label>
                       )}
+                      <div className="event-action-row">
+                        <label className="field-compact field-time">
+                          Time
+                          <input
+                            type="time"
+                            value={draft.time || ''}
+                            onChange={(event) =>
+                              setDraftDayItems((current) => ({
+                                ...current,
+                                [date]: { ...draft, time: event.target.value }
+                              }))
+                            }
+                          />
+                        </label>
+                        <button type="button" className="action action-compact" onClick={() => { addDayItem(date); setAddEventOpen(false) }}>
+                          Add event
+                        </button>
+                      </div>
                     </div>
-                    {selectedEventType.requiresRestaurant && draft.restaurant === '__custom__' && (
-                      <label className="field-compact">
-                        Custom restaurant
-                        <input
-                          value={draft.customRestaurant}
-                          onChange={(event) =>
-                            setDraftDayItems((current) => ({
-                              ...current,
-                              [date]: { ...draft, customRestaurant: event.target.value }
-                            }))
-                          }
-                          placeholder="Type restaurant name"
-                        />
-                      </label>
-                    )}
-                    <div className="event-action-row">
-                      <button type="button" className="action action-compact" onClick={() => addDayItem(date)}>
-                        Add event
-                      </button>
-                    </div>
-                  </div>
+                  )}
 
                   <div className="day-timeline">
-                    {timeAnchors.flatMap(anchor => {
-                      const slotItems = itemsWithIndex.filter(item => (EVENT_SLOT[item.type] || 'day') === anchor.slot)
-                      return [
-                        <div key={`anchor-${anchor.slot}`} className="timeline-anchor">
-                          <span className="timeline-anchor-time">{anchor.time}</span>
-                          <span className="timeline-anchor-label">{anchor.label}</span>
-                        </div>,
-                        ...slotItems.map(item => {
-                          const normalizedItem = normalizeEventItem(item)
-                          const label = buildEventLabel(normalizedItem)
-                          const menuUrl = normalizedItem.menuUrl
-                          const bookingUrl = normalizedItem.bookingUrl
-                          const hasRestaurantLinks = Boolean(normalizedItem.restaurant && (menuUrl || bookingUrl))
-                          return (
-                            <div key={`event-${item._idx}`} className="timeline-event">
-                              <div className="timeline-event-content" data-theme={normalizedItem.theme}>
-                                <div className="event-text">
-                                  <p>{label}</p>
-                                  {hasRestaurantLinks && (
-                                    <div className="event-links">
-                                      {menuUrl && (
-                                        <a href={menuUrl} target="_blank" rel="noreferrer noopener">View menu</a>
-                                      )}
-                                      {bookingUrl && (
-                                        <a href={bookingUrl} target="_blank" rel="noreferrer noopener">Book</a>
-                                      )}
+                    {timeSlots.flatMap(slot => {
+                      const slotItems = itemsWithIndex.filter(item => getItemSlot(item) === slot.slot)
+                      if (!slotItems.length) return []
+                      return [(
+                        <div key={`slot-${slot.slot}`} className="timeline-slot">
+                          <div className="timeline-anchor">
+                            <span className="timeline-anchor-time">{slot.time}</span>
+                            <span className="timeline-anchor-label">{slot.label}</span>
+                          </div>
+                          <div className="timeline-node" />
+                          <div className="timeline-slot-events">
+                            {slotItems.map(item => {
+                              const normalizedItem = normalizeEventItem(item)
+                              const label = buildEventLabel(normalizedItem)
+                              const menuUrl = normalizedItem.menuUrl
+                              const bookingUrl = normalizedItem.bookingUrl
+                              const hasRestaurantLinks = Boolean(normalizedItem.restaurant && (menuUrl || bookingUrl))
+                              const isEditing = editingDayItem?.date === date && editingDayItem?.index === item._idx
+                              return (
+                                <div key={`event-${item._idx}`} className="timeline-event">
+                                  {isEditing ? (
+                                    <div className="timeline-event-edit" data-theme={normalizedItem.theme}>
+                                      <div className="event-edit-fields">
+                                        <label className="event-edit-label">
+                                          Time
+                                          <input
+                                            type="time"
+                                            value={editingDayItem.draft.time || ''}
+                                            onChange={(e) => setEditingDayItem(prev => ({ ...prev, draft: { ...prev.draft, time: e.target.value } }))}
+                                          />
+                                        </label>
+                                        <label className="event-edit-label">
+                                          Note
+                                          <input
+                                            type="text"
+                                            placeholder="Optional note"
+                                            value={editingDayItem.draft.note || ''}
+                                            onChange={(e) => setEditingDayItem(prev => ({ ...prev, draft: { ...prev.draft, note: e.target.value } }))}
+                                          />
+                                        </label>
+                                      </div>
+                                      <div className="event-edit-actions">
+                                        <button
+                                          type="button"
+                                          className="event-edit-save"
+                                          onClick={() => {
+                                            updateDayItem(date, item._idx, editingDayItem.draft)
+                                            setEditingDayItem(null)
+                                          }}
+                                        >Save</button>
+                                        <button
+                                          type="button"
+                                          className="event-edit-cancel"
+                                          onClick={() => setEditingDayItem(null)}
+                                        >Cancel</button>
+                                        <button
+                                          type="button"
+                                          className="event-edit-delete"
+                                          onClick={() => { removeDayItem(date, item._idx); setEditingDayItem(null) }}
+                                        >Delete</button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="timeline-event-content" data-theme={normalizedItem.theme}>
+                                      <div className="event-text">
+                                        {normalizedItem.time && (
+                                          <span className="event-time">{formatTime(normalizedItem.time)}</span>
+                                        )}
+                                        <p>{label}</p>
+                                        {hasRestaurantLinks && (
+                                          <div className="event-links">
+                                            {menuUrl && (
+                                              <a href={menuUrl} target="_blank" rel="noreferrer noopener">View menu</a>
+                                            )}
+                                            {bookingUrl && (
+                                              <a href={bookingUrl} target="_blank" rel="noreferrer noopener">Book</a>
+                                            )}
+                                          </div>
+                                        )}
+                                      </div>
+                                      <button
+                                        type="button"
+                                        className="event-edit-btn"
+                                        title="Edit"
+                                        onClick={() => setEditingDayItem({ date, index: item._idx, draft: { time: normalizedItem.time || '', note: normalizedItem.note || '' } })}
+                                      >✏</button>
+                                      <button type="button" onClick={() => removeDayItem(date, item._idx)}>×</button>
                                     </div>
                                   )}
                                 </div>
-                                <button type="button" onClick={() => removeDayItem(date, item._idx)}>×</button>
-                              </div>
-                            </div>
-                          )
-                        })
-                      ]
+                              )
+                            })}
+                          </div>
+                        </div>
+                      )]
                     })}
                     {!dayPlan.items?.length && (
-                      <p className="timeline-empty">Add your first event above to build your day</p>
+                      <p className="timeline-empty">Tap + to add your first event</p>
                     )}
                   </div>
                 </div>
@@ -1536,30 +1627,17 @@ function App() {
           </div>
         </section>}
 
-        {setupDone && <section className="card">
-          <h2>Checklist</h2>
-          <div className="inline-fields">
-            <input
-              value={newChecklistItem}
-              onChange={(event) => setNewChecklistItem(event.target.value)}
-              placeholder="Add task"
-            />
-            <button type="button" className="action" onClick={addChecklistItem}>
-              Add
-            </button>
-          </div>
+        {setupDone && (
+          <button
+            type="button"
+            className="fab-add-event"
+            onClick={() => setAddEventOpen(prev => !prev)}
+            aria-label="Add event"
+          >
+            <span className={addEventOpen ? 'fab-icon fab-icon-close' : 'fab-icon'}>+</span>
+          </button>
+        )}
 
-          <ul className="checklist">
-            {plan.checklist.map((item, index) => (
-              <li key={`${item}-${index}`}>
-                <span>{item}</span>
-                <button type="button" onClick={() => removeChecklistItem(index)}>
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>}
           </main>
 
           <footer className="footer-bar">
