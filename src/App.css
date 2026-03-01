@@ -213,6 +213,45 @@ body {
   transform: scale(1.03);
 }
 
+.pref-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(29, 42, 68, 0.45);
+  margin: 1.1rem 0 0.5rem;
+}
+
+.pref-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pref-chip {
+  border: 1.5px solid rgba(0, 87, 184, 0.2);
+  background: rgba(0, 87, 184, 0.04);
+  color: var(--dw-castle-blue);
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.12s;
+}
+
+.pref-chip:hover {
+  border-color: rgba(0, 87, 184, 0.4);
+  background: rgba(0, 87, 184, 0.09);
+}
+
+.pref-chip.selected {
+  background: linear-gradient(120deg, var(--dw-royal-blue), var(--dw-castle-blue));
+  border-color: transparent;
+  color: #fff;
+  transform: scale(1.04);
+}
+
 .inline-fields.four-col {
   grid-template-columns: 1fr 1fr 1fr 1fr;
 }

@@ -1,21 +1,78 @@
+const DW = 'https://disneyworld.disney.go.com'
+const MAPS = 'https://www.google.com/maps?q='
+
 // Static fallback suggestions (used when API is unavailable)
 export const PARK_SUGGESTIONS = {
   'Magic Kingdom': [
-    { id: 'mk-friendship-faire',   label: "Mickey's Magical Friendship Faire", time: '10:30', type: 'Show',      theme: 'character', tags: ['#character', '#castle', '#family']    },
-    { id: 'mk-festival-fantasy',   label: 'Festival of Fantasy Parade',        time: '15:00', type: 'Parade',    theme: 'default',   tags: ['#parade', '#afternoon', '#mustdo']    },
-    { id: 'mk-happily-ever-after', label: 'Happily Ever After Fireworks',      time: '21:00', type: 'Fireworks', theme: 'fireworks', tags: ['#fireworks', '#nighttime', '#mustdo'] },
+    {
+      id: 'mk-friendship-faire', label: "Mickey's Magical Friendship Faire",
+      time: '10:30', type: 'Show', theme: 'character',
+      tags: ['#character', '#castle', '#family'],
+      infoUrl: `${DW}/entertainment/magic-kingdom/mickeys-magical-friendship-faire/`,
+      mapUrl:  `${MAPS}Cinderella+Castle+Stage+Magic+Kingdom+Walt+Disney+World`,
+    },
+    {
+      id: 'mk-festival-fantasy', label: 'Festival of Fantasy Parade',
+      time: '15:00', type: 'Parade', theme: 'default',
+      tags: ['#parade', '#afternoon', '#mustdo'],
+      infoUrl: `${DW}/entertainment/magic-kingdom/festival-of-fantasy-parade/`,
+      mapUrl:  `${MAPS}Main+Street+USA+Magic+Kingdom+Walt+Disney+World`,
+    },
+    {
+      id: 'mk-happily-ever-after', label: 'Happily Ever After Fireworks',
+      time: '21:00', type: 'Fireworks', theme: 'fireworks',
+      tags: ['#fireworks', '#nighttime', '#mustdo'],
+      infoUrl: `${DW}/entertainment/magic-kingdom/happily-ever-after/`,
+      mapUrl:  `${MAPS}Cinderella+Castle+Magic+Kingdom+Walt+Disney+World`,
+    },
   ],
   'EPCOT': [
-    { id: 'ep-luminous', label: 'Luminous: The Symphony of Us', time: '21:00', type: 'Fireworks', theme: 'fireworks', tags: ['#fireworks', '#nighttime', '#worldshowcase'] },
+    {
+      id: 'ep-luminous', label: 'Luminous: The Symphony of Us',
+      time: '21:00', type: 'Fireworks', theme: 'fireworks',
+      tags: ['#fireworks', '#nighttime', '#worldshowcase'],
+      infoUrl: `${DW}/entertainment/epcot/luminous-the-symphony-of-us/`,
+      mapUrl:  `${MAPS}World+Showcase+Lagoon+EPCOT+Walt+Disney+World`,
+    },
   ],
   "Disney's Hollywood Studios": [
-    { id: 'hs-indy',      label: 'Indiana Jones Epic Stunt Spectacular', time: '11:30', type: 'Show',      theme: 'default',   tags: ['#stunts', '#live', '#adventure']      },
-    { id: 'hs-fantasmic', label: 'Fantasmic!',                           time: '21:00', type: 'Fireworks', theme: 'fireworks', tags: ['#nighttime', '#mustdo', '#spectacular'] },
-    { id: 'hs-galactic',  label: 'Star Wars: A Galactic Spectacular',    time: '21:30', type: 'Fireworks', theme: 'fireworks', tags: ['#starwars', '#fireworks', '#nighttime'] },
+    {
+      id: 'hs-indy', label: 'Indiana Jones Epic Stunt Spectacular',
+      time: '11:30', type: 'Show', theme: 'default',
+      tags: ['#stunts', '#live', '#adventure'],
+      infoUrl: `${DW}/entertainment/hollywood-studios/indiana-jones-epic-stunt-spectacular/`,
+      mapUrl:  `${MAPS}Indiana+Jones+Epic+Stunt+Spectacular+Hollywood+Studios+Walt+Disney+World`,
+    },
+    {
+      id: 'hs-fantasmic', label: 'Fantasmic!',
+      time: '21:00', type: 'Fireworks', theme: 'fireworks',
+      tags: ['#nighttime', '#mustdo', '#spectacular'],
+      infoUrl: `${DW}/entertainment/hollywood-studios/fantasmic/`,
+      mapUrl:  `${MAPS}Hollywood+Hills+Amphitheater+Hollywood+Studios+Walt+Disney+World`,
+    },
+    {
+      id: 'hs-galactic', label: 'Star Wars: A Galactic Spectacular',
+      time: '21:30', type: 'Fireworks', theme: 'fireworks',
+      tags: ['#starwars', '#fireworks', '#nighttime'],
+      infoUrl: `${DW}/entertainment/hollywood-studios/star-wars-a-galactic-spectacular/`,
+      mapUrl:  `${MAPS}Hollywood+Studios+Walt+Disney+World`,
+    },
   ],
   "Disney's Animal Kingdom": [
-    { id: 'ak-harambe',        label: 'Harambe Wildlife Parti',  time: '17:00', type: 'Parade', theme: 'nature', tags: ['#parade', '#africa', '#interactive'] },
-    { id: 'ak-tree-awakening', label: 'Tree of Life Awakening',  time: '20:00', type: 'Show',   theme: 'nature', tags: ['#nature', '#evening', '#magical']    },
+    {
+      id: 'ak-harambe', label: 'Harambe Wildlife Parti',
+      time: '17:00', type: 'Parade', theme: 'nature',
+      tags: ['#parade', '#africa', '#interactive'],
+      infoUrl: `${DW}/entertainment/animal-kingdom/harambe-wildlife-parti/`,
+      mapUrl:  `${MAPS}Harambe+Africa+Animal+Kingdom+Walt+Disney+World`,
+    },
+    {
+      id: 'ak-tree-awakening', label: 'Tree of Life Awakening',
+      time: '20:00', type: 'Show', theme: 'nature',
+      tags: ['#nature', '#evening', '#magical'],
+      infoUrl: `${DW}/entertainment/animal-kingdom/tree-of-life-awakening/`,
+      mapUrl:  `${MAPS}Tree+of+Life+Animal+Kingdom+Walt+Disney+World`,
+    },
   ],
 }
 
@@ -25,6 +82,14 @@ const PARK_ENTITY_IDS = {
   'EPCOT':                           '47f90d2c-e191-4239-a466-5892ef59a88b',
   "Disney's Hollywood Studios":      '288747d1-8b4f-4a64-867e-ea7c9b27bad8',
   "Disney's Animal Kingdom":         '1c84a229-8862-4648-9c71-378ddd2c7693',
+}
+
+// Fallback map links for live-data shows (park-level Google Maps search)
+const PARK_MAP_URLS = {
+  'Magic Kingdom':              `${MAPS}Magic+Kingdom+Walt+Disney+World+Orlando`,
+  'EPCOT':                      `${MAPS}EPCOT+Walt+Disney+World+Orlando`,
+  "Disney's Hollywood Studios": `${MAPS}Hollywood+Studios+Walt+Disney+World+Orlando`,
+  "Disney's Animal Kingdom":    `${MAPS}Animal+Kingdom+Walt+Disney+World+Orlando`,
 }
 
 // Infer theme from show name
@@ -164,7 +229,7 @@ function parseShowTime(isoString) {
 }
 
 // Fetch live show data for a park from themeparks.wiki
-// Returns array of { id, label, time, type, theme, tags } or null on failure
+// Returns array of { id, label, time, type, theme, tags, infoUrl, mapUrl } or null on failure
 // Caches in sessionStorage for 30 minutes
 export async function fetchLiveParkShows(parkName) {
   const entityId = PARK_ENTITY_IDS[parkName]
@@ -188,6 +253,7 @@ export async function fetchLiveParkShows(parkName) {
         const firstTime = parseShowTime(e.showtimes[0]?.startTime)
         if (!firstTime) return null
         const theme = inferTheme(e.name)
+        const encodedName = encodeURIComponent(e.name + ' Walt Disney World')
         return {
           id: `live-${e.id}`,
           label: e.name,
@@ -196,6 +262,8 @@ export async function fetchLiveParkShows(parkName) {
           theme,
           tags: inferTags(e.name, theme),
           showtimes: e.showtimes.map(s => parseShowTime(s.startTime)).filter(Boolean),
+          infoUrl: `https://www.google.com/search?q=${encodedName}`,
+          mapUrl:  PARK_MAP_URLS[parkName] ?? `${MAPS}${encodedName}`,
         }
       })
       .filter(Boolean)

@@ -18,6 +18,50 @@ const DINING_OPTIONS = [
   'Table service dining plan'
 ]
 
+const ENTERTAINMENT_TYPES = [
+  { tag: '#fireworks',    label: 'Fireworks & Spectaculars' },
+  { tag: '#parade',       label: 'Parades'                  },
+  { tag: '#meetandgreet', label: 'Character Meet & Greets'  },
+  { tag: '#adventure',    label: 'Stunts & Adventure'       },
+  { tag: '#nature',       label: 'Nature & Wildlife'        },
+  { tag: '#princess',     label: 'Princess Experiences'     },
+]
+
+const FRANCHISE_OPTIONS = [
+  // Disney Animation
+  { tag: '#frozen',            label: 'Frozen'               },
+  { tag: '#lionking',          label: 'The Lion King'        },
+  { tag: '#moana',             label: 'Moana'                },
+  { tag: '#tangled',           label: 'Tangled'              },
+  { tag: '#aladdin',           label: 'Aladdin'              },
+  { tag: '#littlemermaid',     label: 'The Little Mermaid'   },
+  { tag: '#beautyandthebeast', label: 'Beauty & the Beast'   },
+  { tag: '#liloandstitch',     label: 'Lilo & Stitch'        },
+  { tag: '#mulan',             label: 'Mulan'                },
+  { tag: '#cinderella',        label: 'Cinderella'           },
+  { tag: '#snowwhite',         label: 'Snow White'           },
+  { tag: '#brave',             label: 'Brave'                },
+  // Pixar
+  { tag: '#toystory',          label: 'Toy Story'            },
+  { tag: '#findingnemo',       label: 'Finding Nemo'         },
+  { tag: '#up',                label: 'Up'                   },
+  { tag: '#incredibles',       label: 'The Incredibles'      },
+  { tag: '#coco',              label: 'Coco'                 },
+  { tag: '#monsters',          label: 'Monsters, Inc.'       },
+  { tag: '#insideout',         label: 'Inside Out'           },
+  // Marvel
+  { tag: '#spiderman',              label: 'Spider-Man'              },
+  { tag: '#guardiansofthegalaxy',   label: 'Guardians of the Galaxy' },
+  { tag: '#blackpanther',           label: 'Black Panther'           },
+  { tag: '#thor',                   label: 'Thor'                    },
+  // Star Wars & Classics
+  { tag: '#starwars',          label: 'Star Wars'            },
+  { tag: '#indianajones',      label: 'Indiana Jones'        },
+  { tag: '#muppets',           label: 'The Muppets'          },
+  { tag: '#pooh',              label: 'Winnie the Pooh'      },
+  { tag: '#figment',           label: 'Figment'              },
+]
+
 const DAY_TYPES = [
   { value: 'Park', icon: `${IMG_BASE}day-type-icons/park.svg` },
   { value: 'Swimming', icon: `${IMG_BASE}day-type-icons/swimming.svg` },
@@ -287,6 +331,7 @@ function normalizePlan(rawPlan) {
     ...rawPlan,
     priorities: rawPlan.priorities?.length ? rawPlan.priorities : DEFAULT_PLAN.priorities,
     checklist: rawPlan.checklist?.length ? rawPlan.checklist : DEFAULT_PLAN.checklist,
+    favoriteTags: rawPlan.favoriteTags || [],
     dayPlans: normalizedDayPlans
   }
 }
@@ -612,8 +657,17 @@ function App() {
   const [addEventOpen, setAddEventOpen] = useState(false)
   const [liveShowData, setLiveShowData] = useState({}) // keyed by park name
 
-  const nextStep = () => setCurrentStep(s => Math.min(s + 1, 5))
+  const nextStep = () => setCurrentStep(s => Math.min(s + 1, 6))
   const prevStep = () => setCurrentStep(s => Math.max(s - 1, 1))
+
+  const toggleFavoriteTag = tag => {
+    setPlan(p => ({
+      ...p,
+      favoriteTags: p.favoriteTags?.includes(tag)
+        ? p.favoriteTags.filter(t => t !== tag)
+        : [...(p.favoriteTags || []), tag]
+    }))
+  }
 
   useEffect(() => {
     if (!activeProjectId) return
@@ -1107,11 +1161,36 @@ function App() {
               </div>
             </>}
 
+            {currentStep === 6 && <>
+              <h2 className="step-question">What do you love most?</h2>
+              <p className="step-sub">We'll use this to surface the shows, parades and meet & greets that matter to you.</p>
+
+              <p className="pref-section-label">Entertainment style</p>
+              <div className="pref-chip-grid">
+                {ENTERTAINMENT_TYPES.map(({ tag, label }) => (
+                  <button key={tag} type="button"
+                    className={plan.favoriteTags?.includes(tag) ? 'pref-chip selected' : 'pref-chip'}
+                    onClick={() => toggleFavoriteTag(tag)}
+                  >{label}</button>
+                ))}
+              </div>
+
+              <p className="pref-section-label">Favourite worlds & franchises</p>
+              <div className="pref-chip-grid">
+                {FRANCHISE_OPTIONS.map(({ tag, label }) => (
+                  <button key={tag} type="button"
+                    className={plan.favoriteTags?.includes(tag) ? 'pref-chip selected' : 'pref-chip'}
+                    onClick={() => toggleFavoriteTag(tag)}
+                  >{label}</button>
+                ))}
+              </div>
+            </>}
+
             <div className="step-nav">
               {currentStep > 1 && (
                 <button className="step-back-btn" onClick={prevStep}>← Back</button>
               )}
-              {currentStep < 5 ? (
+              {currentStep < 6 ? (
                 <button className="setup-continue-btn" onClick={nextStep}>Next →</button>
               ) : (
                 <>
@@ -1216,11 +1295,15 @@ function App() {
               const ghostSuggestions = (() => {
                 if (dayPlan.dayType !== 'Park') return []
                 const parks = [dayPlan.park, dayPlan.secondPark].filter(Boolean)
-                // Use live data if available for any park, else fall back to static
                 const fromLive = parks.flatMap(park => liveShowData[park] || [])
                 const fromStatic = getParkSuggestions(dayPlan.park, dayPlan.secondPark)
                 const base = fromLive.length ? fromLive : fromStatic
-                return base.filter(s => !dismissed.includes(s.id))
+                const favSet = new Set(plan.favoriteTags || [])
+                return base.filter(s => {
+                  if (dismissed.includes(s.id)) return false
+                  if (!favSet.size) return true // no prefs set → show all
+                  return s.tags?.some(t => favSet.has(t))
+                })
               })()
 
               return (
@@ -1686,6 +1769,16 @@ function App() {
                                         ))}
                                       </div>
                                     )}
+                                    <div className="ghost-links">
+                                      {suggestion.infoUrl && (
+                                        <a href={suggestion.infoUrl} target="_blank" rel="noreferrer noopener"
+                                          className="ghost-link" title="About this show">ℹ Info</a>
+                                      )}
+                                      {suggestion.mapUrl && (
+                                        <a href={suggestion.mapUrl} target="_blank" rel="noreferrer noopener"
+                                          className="ghost-link" title="View on map">📍 Map</a>
+                                      )}
+                                    </div>
                                   </div>
                                   <div className="ghost-actions">
                                     <button type="button" className="ghost-accept-btn" title="Add to my plan"
