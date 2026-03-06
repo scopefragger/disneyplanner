@@ -332,6 +332,103 @@ const RESTAURANT_GROUPS = {
 
 const ALL_RESTAURANTS = Object.values(RESTAURANT_GROUPS).flat()
 
+// Dining style tags for search (e.g. "buffet", "character", "steakhouse")
+const RESTAURANT_TAGS = {
+  // Magic Kingdom
+  "Cinderella's Royal Table":                       ['character', 'princess', 'fine dining', 'table service'],
+  'Be Our Guest Restaurant':                         ['table service', 'character', 'french', 'beauty and the beast', 'fine dining'],
+  'The Crystal Palace':                              ['buffet', 'character', 'family style'],
+  'Liberty Tree Tavern':                             ['family style', 'american', 'table service'],
+  'The Diamond Horseshoe':                           ['quick service', 'american'],
+  'Jungle Navigation Co. LTD Skipper Canteen':       ['table service', 'american'],
+  "Tony's Town Square Restaurant":                   ['table service', 'italian', 'pasta'],
+  'The Plaza Restaurant':                            ['table service', 'american'],
+  "Casey's Corner":                                  ['quick service', 'hot dogs'],
+  'Columbia Harbour House':                          ['quick service', 'seafood'],
+  "Cosmic Ray's Starlight Cafe":                     ['quick service', 'american'],
+  'Pecos Bill Tall Tale Inn and Cafe':               ['quick service', 'american', 'mexican'],
+  // EPCOT
+  'Space 220 Restaurant':                            ['table service', 'american', 'fine dining'],
+  'Le Cellier Steakhouse':                           ['table service', 'steakhouse', 'fine dining'],
+  'Chefs de France':                                 ['table service', 'french'],
+  'Monsieur Paul':                                   ['table service', 'french', 'fine dining'],
+  'Rose and Crown Dining Room':                      ['table service', 'british', 'pub'],
+  'Spice Road Table':                                ['table service', 'mediterranean'],
+  'Via Napoli Ristorante e Pizzeria':                ['table service', 'italian', 'pizza'],
+  'Tutto Italia Ristorante':                         ['table service', 'italian'],
+  'Biergarten Restaurant':                           ['buffet', 'german', 'family style'],
+  'Teppan Edo':                                      ['table service', 'japanese', 'hibachi', 'teppanyaki'],
+  'Shiki-Sai: Sushi Izakaya':                        ['table service', 'japanese', 'sushi'],
+  'Coral Reef Restaurant':                           ['table service', 'seafood'],
+  'Garden Grill Restaurant':                         ['character', 'family style', 'table service', 'american'],
+  'Akershus Royal Banquet Hall':                     ['character', 'buffet', 'norwegian', 'princess', 'family style'],
+  'San Angel Inn Restaurante':                       ['table service', 'mexican'],
+  'La Hacienda de San Angel':                        ['table service', 'mexican'],
+  'Regal Eagle Smokehouse':                          ['quick service', 'bbq', 'american'],
+  'Connections Eatery':                              ['quick service', 'american'],
+  // Hollywood Studios
+  'The Hollywood Brown Derby':                       ['table service', 'american', 'fine dining'],
+  'Roundup Rodeo BBQ':                               ['table service', 'bbq', 'family style', 'american'],
+  "50's Prime Time Cafe":                            ['table service', 'american', 'comfort food'],
+  'Sci-Fi Dine-In Theater Restaurant':               ['table service', 'american'],
+  "Oga's Cantina at the Walt Disney World Resort":   ['bar', 'star wars', 'quick service', 'cocktails'],
+  'Docking Bay 7 Food and Cargo':                    ['quick service', 'star wars'],
+  'Ronto Roasters':                                  ['quick service', 'star wars'],
+  "Woody's Lunch Box":                               ['quick service', 'toy story'],
+  'Hollywood and Vine':                              ['buffet', 'character', 'family style'],
+  'ABC Commissary':                                  ['quick service', 'american'],
+  'Backlot Express':                                 ['quick service', 'american'],
+  // Animal Kingdom
+  'Tiffins Restaurant':                              ['table service', 'fine dining', 'african', 'asian', 'indian'],
+  'Yak and Yeti Restaurant':                         ['table service', 'asian', 'pan-asian'],
+  'Tusker House Restaurant':                         ['buffet', 'character', 'family style', 'african'],
+  "Satu'li Canteen":                                 ['quick service', 'avatar', 'american'],
+  'Flame Tree Barbecue':                             ['quick service', 'bbq'],
+  'Restaurantosaurus':                               ['quick service', 'american'],
+  'Nomad Lounge':                                    ['bar', 'lounge', 'cocktails'],
+  // Disney Springs
+  'The BOATHOUSE':                                   ['table service', 'seafood', 'american'],
+  'Wine Bar George':                                 ['bar', 'wine', 'tapas'],
+  'Morimoto Asia':                                   ['table service', 'asian', 'japanese', 'fine dining'],
+  "Chef Art Smith's Homecomin'":                     ['table service', 'american', 'southern'],
+  'Raglan Road Irish Pub and Restaurant':             ['table service', 'irish', 'pub'],
+  'Paddlefish':                                      ['table service', 'seafood'],
+  'Frontera Cocina':                                 ['table service', 'mexican'],
+  'Jaleo by Jose Andres':                            ['table service', 'spanish', 'tapas'],
+  'STK Orlando':                                     ['table service', 'steakhouse', 'fine dining'],
+  'City Works Eatery and Pour House':                ['bar', 'american'],
+  'Planet Hollywood':                                ['table service', 'american'],
+  'Wolfgang Puck Bar and Grill':                     ['table service', 'american', 'fine dining'],
+  // Resort Dining
+  "Chef Mickey's":                                   ['character', 'buffet', 'family style'],
+  "Topolino's Terrace - Flavors of the Riviera":     ['character', 'french', 'italian', 'fine dining', 'table service'],
+  'California Grill':                                ['table service', 'fine dining', 'american', 'sushi'],
+  'Steakhouse 71':                                   ['table service', 'steakhouse', 'american'],
+  'Boma - Flavors of Africa':                        ['buffet', 'african', 'family style'],
+  'Jiko - The Cooking Place':                        ['table service', 'fine dining', 'african'],
+  'Sanaa':                                           ['table service', 'indian', 'african'],
+  'Ohana':                                           ['family style', 'character', 'hawaiian'],
+  'Kona Cafe':                                       ['table service', 'asian', 'pacific rim'],
+  "Capt. Cook's":                                    ['quick service', 'american'],
+  'Grand Floridian Cafe':                            ['table service', 'american'],
+  "Narcoossee's":                                    ['table service', 'seafood', 'fine dining'],
+  'Citricos':                                        ['table service', 'fine dining', 'american'],
+  'Victoria and Alberts':                            ['table service', 'fine dining', 'upscale'],
+  '1900 Park Fare':                                  ['buffet', 'character', 'family style'],
+  'Whispering Canyon Cafe':                          ['table service', 'american', 'bbq', 'family style'],
+  'Story Book Dining at Artist Point':               ['character', 'table service', 'american'],
+  'Geyser Point Bar and Grill':                      ['bar', 'american'],
+  'Cape May Cafe':                                   ['buffet', 'seafood', 'character'],
+  'Ale and Compass Restaurant':                      ['table service', 'american', 'seafood'],
+  'Beaches and Cream Soda Shop':                     ['table service', 'american', 'dessert', 'ice cream'],
+  'Yachtsman Steakhouse':                            ['table service', 'steakhouse', 'fine dining'],
+  'Flying Fish':                                     ['table service', 'seafood', 'fine dining'],
+  "Sebastian's Bistro":                              ['table service', 'caribbean'],
+  'Toledo - Tapas, Steak and Seafood':               ['table service', 'tapas', 'steakhouse', 'seafood'],
+  'Three Bridges Bar and Grill':                     ['bar', 'american'],
+  'Trattoria al Forno':                              ['table service', 'italian', 'character'],
+}
+
 const DISNEY_WORLD_BASE_URL = 'https://www.disneyworld.co.uk'
 
 function getRestaurantResources(restaurantName) {
@@ -1432,7 +1529,11 @@ function App() {
               const eventSearchResults = searchQ ? {
                 shows: getParkSuggestions(dayPlan.park, dayPlan.secondPark)
                   .filter(s => fuzzyMatch(searchQ, s.label)).slice(0, 4),
-                restaurants: ALL_RESTAURANTS.filter(r => fuzzyMatch(searchQ, r)).slice(0, 4),
+                restaurants: ALL_RESTAURANTS.map(r => {
+                  const tags = RESTAURANT_TAGS[r] || []
+                  const matchingTag = tags.find(t => fuzzyMatch(searchQ, t))
+                  return (fuzzyMatch(searchQ, r) || matchingTag) ? { name: r, tag: matchingTag || null } : null
+                }).filter(Boolean).slice(0, 6),
                 rides: rideOptions.filter(r => fuzzyMatch(searchQ, r.label)).slice(0, 4),
               } : null
               const hasSearchResults = eventSearchResults &&
@@ -1704,9 +1805,9 @@ function App() {
                             {eventSearchResults.restaurants.length > 0 && <>
                               <div className="esr-group-label">Restaurants</div>
                               {eventSearchResults.restaurants.map(r => (
-                                <button key={r} type="button" className="esr-item" onClick={() => applySearchResult('restaurant', r)}>
-                                  <span className="esr-name">{r}</span>
-                                  <span className="esr-meta">Dining</span>
+                                <button key={r.name} type="button" className="esr-item" onClick={() => applySearchResult('restaurant', r.name)}>
+                                  <span className="esr-name">{r.name}</span>
+                                  <span className="esr-meta">{r.tag ?? 'Dining'}</span>
                                 </button>
                               ))}
                             </>}
@@ -2013,7 +2114,7 @@ function App() {
           </div>
         </section>}
 
-        {setupDone && (
+        {setupDone && !addEventOpen && (
           <div className="fab-group">
             <button
               type="button"
