@@ -5,6 +5,17 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-06T19:50:00Z — Fix: rides incorrectly showing dining links
+
+**What:**
+- Added `normalizedItem.type !== 'Ride'` guard to the `hasRestaurantLinks` condition
+
+**Why:**
+- `getRestaurantResources` always returns a URL (falls back to a Disney search URL for unknown names), so if `draft.restaurant` was non-empty when a ride was saved, the item stored with `menuUrl`/`bookingUrl` — causing "View menu" and "Book" to appear on ride cards
+- Checking `type !== 'Ride'` ensures dining links are never shown for ride-type items regardless of stored data
+
+---
+
 ## 2026-03-06T19:41:10Z — Ride official page links on timeline cards
 
 **What:**

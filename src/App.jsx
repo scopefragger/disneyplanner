@@ -1820,7 +1820,7 @@ function App() {
                               const label = buildEventLabel(normalizedItem)
                               const menuUrl = normalizedItem.menuUrl
                               const bookingUrl = normalizedItem.bookingUrl
-                              const hasRestaurantLinks = Boolean(normalizedItem.restaurant && (menuUrl || bookingUrl))
+                              const hasRestaurantLinks = Boolean(normalizedItem.type !== 'Ride' && normalizedItem.restaurant && (menuUrl || bookingUrl))
                               const rideName = normalizedItem.ride ? normalizedItem.ride.split('::').pop() : ''
                               const rideUrl = RIDE_URLS[rideName] || ''
                               const isEditing = editingDayItem?.date === date && editingDayItem?.index === item._idx
