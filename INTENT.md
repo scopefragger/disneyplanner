@@ -5,6 +5,22 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-06T19:35:52Z — Fuzzy search in add-event panel
+
+**What:**
+- Added `ALL_RESTAURANTS` module-level const (flattened from `RESTAURANT_GROUPS`)
+- Added `eventSearch` state; resets when the panel opens, closes, or an item is added
+- Inside each day render: computes `eventSearchResults` (shows, restaurants, rides filtered by `fuzzyMatch`) and `applySearchResult` handler
+- Added search input at top of the add-event panel; shows a grouped dropdown while typing
+- Selecting a show pre-fills type + note + time; selecting a restaurant pre-fills type (defaults to Dinner) + restaurant; selecting a ride pre-fills type + ride
+- Added CSS: `.event-search-wrap`, `.event-search-input`, `.event-search-results`, `.esr-group-label`, `.esr-item`, `.esr-name`, `.esr-meta`
+
+**Why:**
+- The old add-event flow required 2–3 dropdown interactions to add a common item (pick type → pick restaurant/ride)
+- A single fuzzy search input lets the user type the name of what they want and select it in one tap, which is faster and more natural on mobile
+
+---
+
 ## 2026-03-06T19:09:07Z — Test infrastructure + intent log
 
 **What:**

@@ -255,6 +255,8 @@ const RESTAURANT_GROUPS = {
   ]
 }
 
+const ALL_RESTAURANTS = Object.values(RESTAURANT_GROUPS).flat()
+
 const DISNEY_WORLD_BASE_URL = 'https://www.disneyworld.co.uk'
 
 function getRestaurantResources(restaurantName) {
@@ -657,6 +659,7 @@ function App() {
   const [activeDay, setActiveDay] = useState(0)
   const [editingDayItem, setEditingDayItem] = useState(null) // { date, index, draft }
   const [addEventOpen, setAddEventOpen] = useState(false)
+  const [eventSearch, setEventSearch] = useState('')
   const [liveShowData, setLiveShowData] = useState({}) // keyed by park name
   const [prefSearch, setPrefSearch] = useState('')
 
@@ -1332,6 +1335,38 @@ function App() {
                 })
               })()
 
+              const searchQ = eventSearch.trim()
+              const eventSearchResults = searchQ ? {
+                shows: getParkSuggestions(dayPlan.park, dayPlan.secondPark)
+                  .filter(s => fuzzyMatch(searchQ, s.label)).slice(0, 4),
+                restaurants: ALL_RESTAURANTS.filter(r => fuzzyMatch(searchQ, r)).slice(0, 4),
+                rides: rideOptions.filter(r => fuzzyMatch(searchQ, r.label)).slice(0, 4),
+              } : null
+              const hasSearchResults = eventSearchResults &&
+                (eventSearchResults.shows.length || eventSearchResults.restaurants.length || eventSearchResults.rides.length)
+
+              const applySearchResult = (kind, item) => {
+                const SHOW_TYPE_MAP = { Fireworks: 'Fireworks', Parade: 'Parade', Show: 'Fireworks', 'Character Meet': 'Character Meet' }
+                if (kind === 'show') {
+                  setDraftDayItems(cur => ({
+                    ...cur,
+                    [date]: { ...draft, type: SHOW_TYPE_MAP[item.type] || 'Fireworks', note: item.label, time: item.time }
+                  }))
+                } else if (kind === 'restaurant') {
+                  const mealType = ['Breakfast', 'Lunch', 'Dinner', 'Tea', 'Snack'].includes(draft.type) ? draft.type : 'Dinner'
+                  setDraftDayItems(cur => ({
+                    ...cur,
+                    [date]: { ...draft, type: mealType, restaurant: item, customRestaurant: '' }
+                  }))
+                } else if (kind === 'ride') {
+                  setDraftDayItems(cur => ({
+                    ...cur,
+                    [date]: { ...draft, type: 'Ride', ride: item.value }
+                  }))
+                }
+                setEventSearch('')
+              }
+
               return (
                 <>
                 <article key={date} className="date-card" style={getDayCardStyle(dayPlan)}>
@@ -1551,7 +1586,48 @@ function App() {
                     <div className="event-builder-panel">
                       <div className="event-builder-header">
                         <span>Add event</span>
-                        <button type="button" className="event-builder-close" onClick={() => setAddEventOpen(false)}>×</button>
+                        <button type="button" className="event-builder-close" onClick={() => { setAddEventOpen(false); setEventSearch('') }}>×</button>
+                      </div>
+                      <div className="event-search-wrap">
+                        <input
+                          className="event-search-input"
+                          type="search"
+                          placeholder="Search rides, shows, restaurants…"
+                          value={eventSearch}
+                          onChange={e => setEventSearch(e.target.value)}
+                          autoFocus
+                        />
+                        {hasSearchResults && (
+                          <div className="event-search-results">
+                            {eventSearchResults.shows.length > 0 && <>
+                              <div className="esr-group-label">Shows &amp; Events</div>
+                              {eventSearchResults.shows.map(s => (
+                                <button key={s.id} type="button" className="esr-item" onClick={() => applySearchResult('show', s)}>
+                                  <span className="esr-name">{s.label}</span>
+                                  <span className="esr-meta">{s.time} · {s.type}</span>
+                                </button>
+                              ))}
+                            </>}
+                            {eventSearchResults.restaurants.length > 0 && <>
+                              <div className="esr-group-label">Restaurants</div>
+                              {eventSearchResults.restaurants.map(r => (
+                                <button key={r} type="button" className="esr-item" onClick={() => applySearchResult('restaurant', r)}>
+                                  <span className="esr-name">{r}</span>
+                                  <span className="esr-meta">Dining</span>
+                                </button>
+                              ))}
+                            </>}
+                            {eventSearchResults.rides.length > 0 && <>
+                              <div className="esr-group-label">Rides</div>
+                              {eventSearchResults.rides.map(r => (
+                                <button key={r.value} type="button" className="esr-item" onClick={() => applySearchResult('ride', r)}>
+                                  <span className="esr-name">{r.label}</span>
+                                  <span className="esr-meta">Ride</span>
+                                </button>
+                              ))}
+                            </>}
+                          </div>
+                        )}
                       </div>
                       <div className="day-meta-row">
                         <label className="field-compact">
@@ -1681,7 +1757,7 @@ function App() {
                             }
                           />
                         </label>
-                        <button type="button" className="action action-compact" onClick={() => { addDayItem(date); setAddEventOpen(false) }}>
+                        <button type="button" className="action action-compact" onClick={() => { addDayItem(date); setAddEventOpen(false); setEventSearch('') }}>
                           Add event
                         </button>
                       </div>
@@ -1834,7 +1910,7 @@ function App() {
           <button
             type="button"
             className="fab-add-event"
-            onClick={() => setAddEventOpen(prev => !prev)}
+            onClick={() => { setAddEventOpen(prev => !prev); setEventSearch('') }}
             aria-label="Add event"
           >
             <span className={addEventOpen ? 'fab-icon fab-icon-close' : 'fab-icon'}>+</span>
