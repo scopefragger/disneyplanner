@@ -5,6 +5,20 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-06T20:06:00Z — Download ride images locally
+
+**What:**
+- Downloaded all 29 ride photos from Wikipedia Commons into `public/images/rides/` (JPEG, 79–424KB each)
+- Updated `RIDE_IMAGES` const to use local paths via `${RIDES_IMG}filename.jpg` instead of Disney CDN URLs
+- Removed the old `CDN`/`DAM` URL constants; added `RIDES_IMG = \`${IMG_BASE}rides/\``
+
+**Why:**
+- Disney Parks CDN uses IP-based hotlink protection — all direct download attempts returned 403 regardless of headers
+- Local images load faster, work offline, and don't risk future CDN URL changes or breakage
+- Wikipedia Commons images are freely licensed (CC / public domain) and usable with proper attribution
+
+---
+
 ## 2026-03-06T19:58:00Z — Ride background images on timeline cards
 
 **What:**

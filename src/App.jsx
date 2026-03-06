@@ -176,42 +176,41 @@ const RIDE_URLS = {
   'DINOSAUR':                           `${DW_ATTRACTIONS}/animal-kingdom/dinosaur/`,
 }
 
-const CDN = 'https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/900/500/75'
-const DAM = `${CDN}/dam/wdpro-assets/gallery/attractions`
+const RIDES_IMG = `${IMG_BASE}rides/`
 const RIDE_IMAGES = {
   // Magic Kingdom
-  'TRON Lightcycle / Run':              `${CDN}/vision-dam/digital/parks-platform/parks-global-assets/disney-world/attractions/magic-kingdom/tron-lightcycle-run/wdw-tron-lightcycle-run-00.jpg`,
-  'Seven Dwarfs Mine Train':            `${DAM}/magic-kingdom/seven-dwarfs-mine-train/seven-dwarfs-mine-train-gallery00.jpg`,
-  'Space Mountain':                     `${DAM}/magic-kingdom/space-mountain/space-mountain-gallery00.jpg`,
-  'Big Thunder Mountain Railroad':      `${DAM}/magic-kingdom/big-thunder-mountain-railroad/big-thunder-mountain-gallery00.jpg`,
-  'Pirates of the Caribbean':           `${DAM}/magic-kingdom/pirates-of-the-caribbean/pirates-of-the-caribbean-gallery00.jpg`,
-  'Haunted Mansion':                    `${DAM}/magic-kingdom/haunted-mansion/haunted-mansion-gallery00.jpg`,
-  "Peter Pan\u2019s Flight":            `${DAM}/magic-kingdom/peter-pans-flight/peter-pans-flight-gallery00.jpg`,
-  "Tiana's Bayou Adventure":            `${CDN}/vision-dam/digital/parks-platform/parks-global-assets/disney-world/attractions/magic-kingdom/tianas-bayou-adventure/wdw-tianas-bayou-adventure-00.jpg`,
-  'Jungle Cruise':                      `${DAM}/magic-kingdom/jungle-cruise/jungle-cruise-gallery00.jpg`,
+  'TRON Lightcycle / Run':              `${RIDES_IMG}tron.jpg`,
+  'Seven Dwarfs Mine Train':            `${RIDES_IMG}seven-dwarfs-mine-train.jpg`,
+  'Space Mountain':                     `${RIDES_IMG}space-mountain.jpg`,
+  'Big Thunder Mountain Railroad':      `${RIDES_IMG}big-thunder-mountain.jpg`,
+  'Pirates of the Caribbean':           `${RIDES_IMG}pirates-of-the-caribbean.jpg`,
+  'Haunted Mansion':                    `${RIDES_IMG}haunted-mansion.jpg`,
+  "Peter Pan\u2019s Flight":            `${RIDES_IMG}peter-pans-flight.jpg`,
+  "Tiana's Bayou Adventure":            `${RIDES_IMG}tianas-bayou-adventure.jpg`,
+  'Jungle Cruise':                      `${RIDES_IMG}jungle-cruise.jpg`,
   // EPCOT
-  'Guardians of the Galaxy: Cosmic Rewind': `${CDN}/vision-dam/digital/parks-platform/parks-global-assets/disney-world/attractions/epcot/guardians-of-the-galaxy-cosmic-rewind/wdw-guardians-of-the-galaxy-00.jpg`,
-  'Test Track':                         `${DAM}/epcot/test-track/test-track-gallery00.jpg`,
-  'Frozen Ever After':                  `${DAM}/epcot/frozen-ever-after/frozen-ever-after-gallery00.jpg`,
-  'Remys Ratatouille Adventure':        `${CDN}/vision-dam/digital/parks-platform/parks-global-assets/disney-world/attractions/epcot/remys-ratatouille-adventure/wdw-remys-ratatouille-adventure-00.jpg`,
-  'Soarin Around the World':            `${DAM}/epcot/soarin/soarin-gallery00.jpg`,
-  'Mission: SPACE':                     `${DAM}/epcot/mission-space/mission-space-gallery00.jpg`,
-  'Spaceship Earth':                    `${DAM}/epcot/spaceship-earth/spaceship-earth-gallery00.jpg`,
+  'Guardians of the Galaxy: Cosmic Rewind': `${RIDES_IMG}guardians-cosmic-rewind.jpg`,
+  'Test Track':                         `${RIDES_IMG}test-track.jpg`,
+  'Frozen Ever After':                  `${RIDES_IMG}frozen-ever-after.jpg`,
+  'Remys Ratatouille Adventure':        `${RIDES_IMG}remys-ratatouille-adventure.jpg`,
+  'Soarin Around the World':            `${RIDES_IMG}soarin.jpg`,
+  'Mission: SPACE':                     `${RIDES_IMG}mission-space.jpg`,
+  'Spaceship Earth':                    `${RIDES_IMG}spaceship-earth.jpg`,
   // Hollywood Studios
-  'Star Wars: Rise of the Resistance':  `${CDN}/vision-dam/digital/parks-platform/parks-global-assets/disney-world/attractions/hollywood-studios/star-wars-rise-of-the-resistance/wdw-star-wars-rise-of-the-resistance-00.jpg`,
-  'Millennium Falcon: Smugglers Run':   `${CDN}/vision-dam/digital/parks-platform/parks-global-assets/disney-world/attractions/hollywood-studios/millennium-falcon-smugglers-run/wdw-millennium-falcon-smugglers-run-00.jpg`,
-  'Slinky Dog Dash':                    `${DAM}/hollywood-studios/slinky-dog-dash/slinky-dog-dash-gallery00.jpg`,
-  'Tower of Terror':                    `${DAM}/hollywood-studios/the-twilight-zone-tower-of-terror/the-twilight-zone-tower-of-terror-gallery00.jpg`,
-  'Rock n Roller Coaster':              `${DAM}/hollywood-studios/rock-n-rollercoaster/rock-n-rollercoaster-gallery00.jpg`,
-  'Mickey and Minnies Runaway Railway': `${CDN}/vision-dam/digital/parks-platform/parks-global-assets/disney-world/attractions/hollywood-studios/mickey-minnies-runaway-railway/wdw-mickey-minnies-runaway-railway-00.jpg`,
-  'Toy Story Mania':                    `${DAM}/hollywood-studios/toy-story-mania/toy-story-mania-gallery00.jpg`,
+  'Star Wars: Rise of the Resistance':  `${RIDES_IMG}star-wars-rise-of-the-resistance.jpg`,
+  'Millennium Falcon: Smugglers Run':   `${RIDES_IMG}millennium-falcon-smugglers-run.jpg`,
+  'Slinky Dog Dash':                    `${RIDES_IMG}slinky-dog-dash.jpg`,
+  'Tower of Terror':                    `${RIDES_IMG}tower-of-terror.jpg`,
+  'Rock n Roller Coaster':              `${RIDES_IMG}rock-n-roller-coaster.jpg`,
+  'Mickey and Minnies Runaway Railway': `${RIDES_IMG}mickey-minnies-runaway-railway.jpg`,
+  'Toy Story Mania':                    `${RIDES_IMG}toy-story-mania.jpg`,
   // Animal Kingdom
-  'Avatar Flight of Passage':           `${CDN}/vision-dam/digital/parks-platform/parks-global-assets/disney-world/attractions/animal-kingdom/avatar-flight-of-passage/wdw-avatar-flight-of-passage-00.jpg`,
-  'Na vi River Journey':                `${DAM}/animal-kingdom/navi-river-journey/navi-river-journey-gallery00.jpg`,
-  'Expedition Everest':                 `${DAM}/animal-kingdom/expedition-everest/expedition-everest-gallery00.jpg`,
-  'Kilimanjaro Safaris':                `${DAM}/animal-kingdom/kilimanjaro-safaris/kilimanjaro-safaris-gallery00.jpg`,
-  'Kali River Rapids':                  `${DAM}/animal-kingdom/kali-river-rapids/kali-river-rapids-gallery00.jpg`,
-  'DINOSAUR':                           `${DAM}/animal-kingdom/dinosaur/dinosaur-gallery00.jpg`,
+  'Avatar Flight of Passage':           `${RIDES_IMG}avatar-flight-of-passage.jpg`,
+  'Na vi River Journey':                `${RIDES_IMG}navi-river-journey.jpg`,
+  'Expedition Everest':                 `${RIDES_IMG}expedition-everest.jpg`,
+  'Kilimanjaro Safaris':                `${RIDES_IMG}kilimanjaro-safaris.jpg`,
+  'Kali River Rapids':                  `${RIDES_IMG}kali-river-rapids.jpg`,
+  'DINOSAUR':                           `${RIDES_IMG}dinosaur.jpg`,
 }
 
 const EVENT_TYPES = [
