@@ -5,6 +5,19 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-06T19:58:00Z — Ride background images on timeline cards
+
+**What:**
+- Added `RIDE_IMAGES` const mapping all 30 rides to Disney Parks CDN photo URLs
+- In the timeline render, look up `RIDE_IMAGES[rideName]` for each ride card
+- Applied as a layered `backgroundImage` inline style: white semi-transparent gradient over the photo so text remains readable
+
+**Why:**
+- Gives ride cards a visual identity so users can instantly recognise which ride an entry is for
+- Uses the same Disney Parks CDN already used for restaurant hero images; if a URL 404s the card falls back to the theme-colour background with no visible breakage
+
+---
+
 ## 2026-03-06T19:50:00Z — Fix: rides incorrectly showing dining links
 
 **What:**
