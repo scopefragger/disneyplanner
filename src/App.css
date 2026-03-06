@@ -213,6 +213,31 @@ body {
   transform: scale(1.03);
 }
 
+.pref-search {
+  width: 100%;
+  padding: 0.55rem 0.9rem;
+  border: 1.5px solid rgba(0, 87, 184, 0.2);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: var(--dw-castle-blue);
+  background: rgba(0, 87, 184, 0.03);
+  outline: none;
+  margin-bottom: 0.25rem;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.pref-search:focus {
+  border-color: rgba(0, 87, 184, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 87, 184, 0.08);
+}
+
+.pref-no-results {
+  font-size: 0.85rem;
+  color: rgba(29, 42, 68, 0.4);
+  margin-top: 0.75rem;
+}
+
 .pref-section-label {
   font-size: 0.7rem;
   font-weight: 700;
@@ -300,6 +325,12 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.setup-summary-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .setup-summary-info {
@@ -1064,6 +1095,26 @@ textarea:focus {
   font-weight: 700;
   color: rgba(29, 42, 68, 0.5);
   letter-spacing: 0.03em;
+}
+
+.ghost-links {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.ghost-link {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: rgba(29, 42, 68, 0.4);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.15s;
+}
+
+.ghost-link:hover {
+  color: var(--event-theme-color, var(--dw-castle-blue));
+  text-decoration: underline;
 }
 
 .ghost-actions {

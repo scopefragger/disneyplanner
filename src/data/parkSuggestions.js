@@ -93,7 +93,7 @@ const PARK_MAP_URLS = {
 }
 
 // Infer theme from show name
-function inferTheme(name) {
+export function inferTheme(name) {
   const n = name.toLowerCase()
   if (n.includes('firework') || n.includes('illuminate') || n.includes('luminous') ||
       n.includes('fantasmic') || n.includes('galactic') || n.includes('harmonious') ||
@@ -109,7 +109,7 @@ function inferTheme(name) {
 
 // Infer hashtags from show name and theme
 // Builds 3 tags: franchise/IP → main character → event type
-function inferTags(name, theme) {
+export function inferTags(name, theme) {
   const n = name.toLowerCase()
   const franchise = []
   const characters = []
@@ -221,7 +221,7 @@ function inferTags(name, theme) {
 }
 
 // Parse ISO 8601 timestamp → "HH:MM" in local park time (EST/EDT)
-function parseShowTime(isoString) {
+export function parseShowTime(isoString) {
   if (!isoString) return null
   const match = isoString.match(/T(\d{2}):(\d{2})/)
   if (!match) return null

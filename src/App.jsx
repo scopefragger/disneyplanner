@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { RESTAURANT_METADATA } from './data/restaurantMetadata'
 import { getParkSuggestions, fetchLiveParkShows } from './data/parkSuggestions.js'
+import { fuzzyMatch } from './utils.js'
 
 const IMG_BASE = `${import.meta.env.BASE_URL}images/`
 
@@ -310,6 +311,7 @@ function loadAllProjects() {
   }
   return {}
 }
+
 
 function normalizePlan(rawPlan) {
   const normalizedDayPlans = Object.entries(rawPlan.dayPlans || {}).reduce((acc, [date, dayPlan]) => {
@@ -656,6 +658,7 @@ function App() {
   const [editingDayItem, setEditingDayItem] = useState(null) // { date, index, draft }
   const [addEventOpen, setAddEventOpen] = useState(false)
   const [liveShowData, setLiveShowData] = useState({}) // keyed by park name
+  const [prefSearch, setPrefSearch] = useState('')
 
   const nextStep = () => setCurrentStep(s => Math.min(s + 1, 6))
   const prevStep = () => setCurrentStep(s => Math.max(s - 1, 1))
@@ -1165,25 +1168,45 @@ function App() {
               <h2 className="step-question">What do you love most?</h2>
               <p className="step-sub">We'll use this to surface the shows, parades and meet & greets that matter to you.</p>
 
-              <p className="pref-section-label">Entertainment style</p>
-              <div className="pref-chip-grid">
-                {ENTERTAINMENT_TYPES.map(({ tag, label }) => (
-                  <button key={tag} type="button"
-                    className={plan.favoriteTags?.includes(tag) ? 'pref-chip selected' : 'pref-chip'}
-                    onClick={() => toggleFavoriteTag(tag)}
-                  >{label}</button>
-                ))}
-              </div>
+              <input
+                className="pref-search"
+                type="search"
+                placeholder="Search entertainment, franchises, characters…"
+                value={prefSearch}
+                onChange={e => setPrefSearch(e.target.value)}
+              />
 
-              <p className="pref-section-label">Favourite worlds & franchises</p>
-              <div className="pref-chip-grid">
-                {FRANCHISE_OPTIONS.map(({ tag, label }) => (
-                  <button key={tag} type="button"
-                    className={plan.favoriteTags?.includes(tag) ? 'pref-chip selected' : 'pref-chip'}
-                    onClick={() => toggleFavoriteTag(tag)}
-                  >{label}</button>
-                ))}
-              </div>
+              {(() => {
+                const filteredEntertainment = ENTERTAINMENT_TYPES.filter(({ label }) => fuzzyMatch(prefSearch, label))
+                const filteredFranchises    = FRANCHISE_OPTIONS.filter(({ label }) => fuzzyMatch(prefSearch, label))
+                const noResults = !filteredEntertainment.length && !filteredFranchises.length
+                return noResults ? (
+                  <p className="pref-no-results">No matches for "{prefSearch}"</p>
+                ) : <>
+                  {filteredEntertainment.length > 0 && <>
+                    <p className="pref-section-label">Entertainment style</p>
+                    <div className="pref-chip-grid">
+                      {filteredEntertainment.map(({ tag, label }) => (
+                        <button key={tag} type="button"
+                          className={plan.favoriteTags?.includes(tag) ? 'pref-chip selected' : 'pref-chip'}
+                          onClick={() => toggleFavoriteTag(tag)}
+                        >{label}</button>
+                      ))}
+                    </div>
+                  </>}
+                  {filteredFranchises.length > 0 && <>
+                    <p className="pref-section-label">Favourite worlds & franchises</p>
+                    <div className="pref-chip-grid">
+                      {filteredFranchises.map(({ tag, label }) => (
+                        <button key={tag} type="button"
+                          className={plan.favoriteTags?.includes(tag) ? 'pref-chip selected' : 'pref-chip'}
+                          onClick={() => toggleFavoriteTag(tag)}
+                        >{label}</button>
+                      ))}
+                    </div>
+                  </>}
+                </>
+              })()}
             </>}
 
             <div className="step-nav">
@@ -1218,7 +1241,10 @@ function App() {
                 <span>{formatPrettyDate(plan.startDate)} – {formatPrettyDate(plan.endDate)} · {tripLength} day{tripLength !== 1 ? 's' : ''}</span>
                 <span>{plan.adults} adult{plan.adults !== 1 ? 's' : ''}{plan.children > 0 ? `, ${plan.children} child${plan.children !== 1 ? 'ren' : ''}` : ''} · £{Number(plan.budget).toLocaleString()} · {plan.diningStyle}</span>
               </div>
-              <button className="chip" onClick={() => { setSetupDone(false); setCurrentStep(1) }}>Edit setup</button>
+              <div className="setup-summary-actions">
+                <button className="chip" onClick={() => { setSetupDone(false); setCurrentStep(1) }}>Edit setup</button>
+                <button className="chip" onClick={() => { setPrefSearch(''); setSetupDone(false); setCurrentStep(6) }}>✦ My preferences</button>
+              </div>
             </div>
           </div>
         )}
