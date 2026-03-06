@@ -5,6 +5,19 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-06T19:41:10Z — Ride official page links on timeline cards
+
+**What:**
+- Added `RIDE_URLS` const mapping every ride name to its `disneyworld.disney.go.com/attractions/` URL
+- In the timeline render, extract the ride name from `item.ride` (split on `::`) and look up `RIDE_URLS`
+- Show an "Official page" link on ride event cards (separate from the dining menu/book links)
+
+**Why:**
+- Ride cards previously showed no links, while dining cards had menu and booking links
+- An official page link lets users quickly check height requirements, accessibility info, and Lightning Lane availability
+
+---
+
 ## 2026-03-06T19:35:52Z — Fuzzy search in add-event panel
 
 **What:**

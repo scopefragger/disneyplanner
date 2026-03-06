@@ -138,6 +138,44 @@ const RIDES_BY_PARK = {
   ],
   'Disney Springs': ['Aerophile - The World Leader in Balloon Flight']
 }
+
+const DW_ATTRACTIONS = 'https://disneyworld.disney.go.com/attractions'
+const RIDE_URLS = {
+  // Magic Kingdom
+  'TRON Lightcycle / Run':              `${DW_ATTRACTIONS}/magic-kingdom/tron-lightcycle-run/`,
+  'Seven Dwarfs Mine Train':            `${DW_ATTRACTIONS}/magic-kingdom/seven-dwarfs-mine-train/`,
+  'Space Mountain':                     `${DW_ATTRACTIONS}/magic-kingdom/space-mountain/`,
+  'Big Thunder Mountain Railroad':      `${DW_ATTRACTIONS}/magic-kingdom/big-thunder-mountain-railroad/`,
+  'Pirates of the Caribbean':           `${DW_ATTRACTIONS}/magic-kingdom/pirates-of-the-caribbean/`,
+  'Haunted Mansion':                    `${DW_ATTRACTIONS}/magic-kingdom/haunted-mansion/`,
+  "Peter Pan\u2019s Flight":            `${DW_ATTRACTIONS}/magic-kingdom/peter-pans-flight/`,
+  "Tiana's Bayou Adventure":            `${DW_ATTRACTIONS}/magic-kingdom/tianas-bayou-adventure/`,
+  'Jungle Cruise':                      `${DW_ATTRACTIONS}/magic-kingdom/jungle-cruise/`,
+  // EPCOT
+  'Guardians of the Galaxy: Cosmic Rewind': `${DW_ATTRACTIONS}/epcot/guardians-of-the-galaxy-cosmic-rewind/`,
+  'Test Track':                         `${DW_ATTRACTIONS}/epcot/test-track/`,
+  'Frozen Ever After':                  `${DW_ATTRACTIONS}/epcot/frozen-ever-after/`,
+  'Remys Ratatouille Adventure':        `${DW_ATTRACTIONS}/epcot/remys-ratatouille-adventure/`,
+  'Soarin Around the World':            `${DW_ATTRACTIONS}/epcot/soarin/`,
+  'Mission: SPACE':                     `${DW_ATTRACTIONS}/epcot/mission-space/`,
+  'Spaceship Earth':                    `${DW_ATTRACTIONS}/epcot/spaceship-earth/`,
+  // Hollywood Studios
+  'Star Wars: Rise of the Resistance':  `${DW_ATTRACTIONS}/hollywood-studios/star-wars-rise-of-the-resistance/`,
+  'Millennium Falcon: Smugglers Run':   `${DW_ATTRACTIONS}/hollywood-studios/millennium-falcon-smugglers-run/`,
+  'Slinky Dog Dash':                    `${DW_ATTRACTIONS}/hollywood-studios/slinky-dog-dash/`,
+  'Tower of Terror':                    `${DW_ATTRACTIONS}/hollywood-studios/the-twilight-zone-tower-of-terror/`,
+  'Rock n Roller Coaster':              `${DW_ATTRACTIONS}/hollywood-studios/rock-n-roller-coaster-starring-aerosmith/`,
+  'Mickey and Minnies Runaway Railway': `${DW_ATTRACTIONS}/hollywood-studios/mickey-minnies-runaway-railway/`,
+  'Toy Story Mania':                    `${DW_ATTRACTIONS}/hollywood-studios/toy-story-mania/`,
+  // Animal Kingdom
+  'Avatar Flight of Passage':           `${DW_ATTRACTIONS}/animal-kingdom/avatar-flight-of-passage/`,
+  'Na vi River Journey':                `${DW_ATTRACTIONS}/animal-kingdom/navi-river-journey/`,
+  'Expedition Everest':                 `${DW_ATTRACTIONS}/animal-kingdom/expedition-everest-legend-of-the-forbidden-mountain/`,
+  'Kilimanjaro Safaris':                `${DW_ATTRACTIONS}/animal-kingdom/kilimanjaro-safaris/`,
+  'Kali River Rapids':                  `${DW_ATTRACTIONS}/animal-kingdom/kali-river-rapids/`,
+  'DINOSAUR':                           `${DW_ATTRACTIONS}/animal-kingdom/dinosaur/`,
+}
+
 const EVENT_TYPES = [
   { value: 'Breakfast', theme: 'dining', requiresRestaurant: true },
   { value: 'Lunch', theme: 'dining', requiresRestaurant: true },
@@ -1783,6 +1821,8 @@ function App() {
                               const menuUrl = normalizedItem.menuUrl
                               const bookingUrl = normalizedItem.bookingUrl
                               const hasRestaurantLinks = Boolean(normalizedItem.restaurant && (menuUrl || bookingUrl))
+                              const rideName = normalizedItem.ride ? normalizedItem.ride.split('::').pop() : ''
+                              const rideUrl = RIDE_URLS[rideName] || ''
                               const isEditing = editingDayItem?.date === date && editingDayItem?.index === item._idx
                               return (
                                 <div key={`event-${item._idx}`} className="timeline-event">
@@ -1843,6 +1883,11 @@ function App() {
                                             {bookingUrl && (
                                               <a href={bookingUrl} target="_blank" rel="noreferrer noopener">Book</a>
                                             )}
+                                          </div>
+                                        )}
+                                        {rideUrl && (
+                                          <div className="event-links">
+                                            <a href={rideUrl} target="_blank" rel="noreferrer noopener">Official page</a>
                                           </div>
                                         )}
                                       </div>
