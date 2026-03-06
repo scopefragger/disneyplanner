@@ -1531,6 +1531,7 @@ textarea:focus {
   transform: translateY(-1px);
 }
 
+/* ── Tablet / large phone (≤720px) ── */
 @media (max-width: 720px) {
   .page-shell {
     width: min(1100px, 94vw);
@@ -1547,7 +1548,131 @@ textarea:focus {
     display: grid;
   }
 
+  /* Setup: tighter padding */
+  .setup-step {
+    padding: 1.5rem 1.25rem;
+  }
+
+  /* Setup summary: stack info + action buttons */
+  .setup-summary-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .setup-summary-actions {
+    flex-wrap: wrap;
+  }
+
+  /* Event builder panel: full-width bottom sheet */
+  .event-builder-panel {
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+    max-height: 85dvh;
+    overflow-y: auto;
+  }
+
+  /* FAB group: account for safe area */
+  .fab-group {
+    bottom: calc(1.25rem + env(safe-area-inset-bottom));
+    right: 1rem;
+  }
+
+  /* Timeline: narrower time column */
+  .timeline-slot {
+    grid-template-columns: 4rem 1.5rem 1fr;
+  }
+
+  .day-timeline::before {
+    left: calc(4rem - 1px);
+  }
+
+  /* Date card: less right padding for badges */
+  .date-card-head {
+    padding-right: 3.5rem;
+  }
+
   .date-card {
     padding-bottom: 3.55rem;
+  }
+
+  /* Event links: allow wrapping */
+  .event-links {
+    flex-wrap: wrap;
+  }
+}
+
+/* ── Small phones (≤480px) ── */
+@media (max-width: 480px) {
+  .page-shell {
+    width: 100vw;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .card,
+  .card-wide {
+    border-radius: 12px;
+  }
+
+  /* Tighter setup step */
+  .setup-step {
+    padding: 1.25rem 1rem;
+    min-height: unset;
+  }
+
+  .step-question {
+    font-size: 1.4rem;
+  }
+
+  /* Timeline: minimal time column — drop AM/PM label */
+  .timeline-slot {
+    grid-template-columns: 3.25rem 1.25rem 1fr;
+  }
+
+  .day-timeline::before {
+    left: calc(3.25rem - 1px);
+  }
+
+  .timeline-anchor-time {
+    font-size: 0.65rem;
+  }
+
+  .timeline-anchor-label {
+    display: none;
+  }
+
+  /* Date card: minimal right reserve */
+  .date-card-head {
+    padding-right: 2.75rem;
+  }
+
+  /* Event card text: allow slightly larger tap targets */
+  .timeline-event-content {
+    padding: 0.4rem 0.4rem 0.4rem 0.65rem;
+  }
+
+  .timeline-event-content .event-text p {
+    white-space: normal;
+  }
+
+  /* Chips in summary bar: smaller */
+  .setup-summary-actions .chip {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.65rem;
+  }
+
+  /* Day nav pills: compact */
+  .day-nav-pill {
+    min-width: 2.75rem;
+    padding: 0.3rem 0.4rem;
+  }
+
+  .day-nav-date {
+    font-size: 0.65rem;
   }
 }
