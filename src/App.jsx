@@ -540,6 +540,15 @@ const PARK_TINTS = {
   'Disney Springs': 'rgba(167, 118, 208, 0.2)'
 }
 
+const PARKS_IMG = `${IMG_BASE}parks/`
+const PARK_IMAGES = {
+  'Magic Kingdom':              `${PARKS_IMG}magic-kingdom.jpg`,
+  EPCOT:                        `${PARKS_IMG}epcot.jpg`,
+  "Disney's Hollywood Studios": `${PARKS_IMG}hollywood-studios.jpg`,
+  "Disney's Animal Kingdom":    `${PARKS_IMG}animal-kingdom.jpg`,
+  'Disney Springs':             `${PARKS_IMG}disney-springs.jpg`,
+}
+
 const PARK_LOGO_BACKGROUNDS = {
   'Magic Kingdom': `${IMG_BASE}park-logos/magic-kingdom.svg`,
   EPCOT: `${IMG_BASE}park-logos/epcot.svg`,
@@ -617,17 +626,21 @@ function getDayCardStyle(dayPlan) {
   let tintOverlay = `linear-gradient(135deg, ${tint}, ${tint})`
   let logo = ''
   let logo2 = ''
+  let parkPhoto = ''
+  let parkPhoto2 = ''
 
   if (dayPlan.dayType === 'Park' && dayPlan.park) {
     const firstTint = PARK_TINTS[dayPlan.park] || tint
     tint = firstTint
     tintOverlay = `linear-gradient(135deg, ${firstTint}, ${firstTint})`
     logo = PARK_LOGO_BACKGROUNDS[dayPlan.park] || ''
+    parkPhoto = PARK_IMAGES[dayPlan.park] || ''
 
     if (dayPlan.parkHop && dayPlan.secondPark) {
       const secondTint = PARK_TINTS[dayPlan.secondPark] || firstTint
       tintOverlay = `linear-gradient(135deg, ${firstTint} 0 49%, ${secondTint} 51% 100%)`
       logo2 = PARK_LOGO_BACKGROUNDS[dayPlan.secondPark] || ''
+      parkPhoto2 = PARK_IMAGES[dayPlan.secondPark] || ''
     }
   } else if (dayPlan.dayType === 'Swimming' && dayPlan.swimSpot) {
     tint = SWIM_TINTS[dayPlan.swimSpot] || tint
@@ -643,7 +656,9 @@ function getDayCardStyle(dayPlan) {
   }
 
   return {
-    '--day-bg-image': `url(${dayTypeImage})`,
+    '--day-bg-image': parkPhoto ? `url(${parkPhoto})` : `url(${dayTypeImage})`,
+    '--day-bg-image-2': parkPhoto2 ? `url(${parkPhoto2})` : 'none',
+    '--day-park-blend': parkPhoto2 ? 'linear-gradient(135deg, white 35%, transparent 65%)' : 'none',
     '--day-tint': tint,
     '--day-tint-overlay': tintOverlay,
     '--park-logo-image': logo ? `url(${logo})` : 'none',
@@ -737,6 +752,8 @@ function App() {
   const [eventSearch, setEventSearch] = useState('')
   const [liveShowData, setLiveShowData] = useState({}) // keyed by park name
   const [prefSearch, setPrefSearch] = useState('')
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [resetConfirm, setResetConfirm] = useState(false)
 
   const nextStep = () => setCurrentStep(s => Math.min(s + 1, 6))
   const prevStep = () => setCurrentStep(s => Math.max(s - 1, 1))
@@ -1322,6 +1339,7 @@ function App() {
               <div className="setup-summary-actions">
                 <button className="chip" onClick={() => { setSetupDone(false); setCurrentStep(1) }}>Edit setup</button>
                 <button className="chip" onClick={() => { setPrefSearch(''); setSetupDone(false); setCurrentStep(6) }}>✦ My preferences</button>
+                <button className="chip" onClick={() => { setSettingsOpen(true); setResetConfirm(false) }}>⚙ Settings</button>
               </div>
             </div>
           </div>
@@ -1861,6 +1879,11 @@ function App() {
                               const rideName = normalizedItem.ride ? normalizedItem.ride.split('::').pop() : ''
                               const rideUrl = RIDE_URLS[rideName] || ''
                               const rideImage = RIDE_IMAGES[rideName] || ''
+                              const mapSearchTerm = rideName || normalizedItem.restaurant || normalizedItem.note || dayPlan.park || 'Walt Disney World'
+                              const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapSearchTerm + ' Walt Disney World')}`
+                              const viewInfoUrl = !menuUrl
+                                ? (rideUrl || `https://www.google.com/search?q=${encodeURIComponent(mapSearchTerm + ' Walt Disney World')}`)
+                                : ''
                               const isEditing = editingDayItem?.date === date && editingDayItem?.index === item._idx
                               return (
                                 <div key={`event-${item._idx}`} className="timeline-event">
@@ -1910,28 +1933,25 @@ function App() {
                                     <div
                                       className="timeline-event-content"
                                       data-theme={normalizedItem.theme}
-                                      style={rideImage ? { backgroundImage: `linear-gradient(rgba(255,255,255,0.82), rgba(255,255,255,0.82)), url(${rideImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+                                      style={rideImage ? { backgroundImage: `linear-gradient(to bottom right, rgba(255,255,255,1) 30%, rgba(255,255,255,0.6) 65%, rgba(255,255,255,0) 100%), url(${rideImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' } : undefined}
                                     >
                                       <div className="event-text">
                                         {normalizedItem.time && (
                                           <span className="event-time">{formatTime(normalizedItem.time)}</span>
                                         )}
                                         <p>{label}</p>
-                                        {hasRestaurantLinks && (
-                                          <div className="event-links">
-                                            {menuUrl && (
-                                              <a href={menuUrl} target="_blank" rel="noreferrer noopener">View menu</a>
-                                            )}
-                                            {bookingUrl && (
-                                              <a href={bookingUrl} target="_blank" rel="noreferrer noopener">Book</a>
-                                            )}
-                                          </div>
-                                        )}
-                                        {rideUrl && (
-                                          <div className="event-links">
-                                            <a href={rideUrl} target="_blank" rel="noreferrer noopener">Official page</a>
-                                          </div>
-                                        )}
+                                        <div className="event-links">
+                                          {hasRestaurantLinks && menuUrl && (
+                                            <a href={menuUrl} target="_blank" rel="noreferrer noopener">View menu</a>
+                                          )}
+                                          {hasRestaurantLinks && bookingUrl && (
+                                            <a href={bookingUrl} target="_blank" rel="noreferrer noopener">Book</a>
+                                          )}
+                                          {viewInfoUrl && (
+                                            <a href={viewInfoUrl} target="_blank" rel="noreferrer noopener">View info</a>
+                                          )}
+                                          <a href={mapUrl} target="_blank" rel="noreferrer noopener">View on map</a>
+                                        </div>
                                       </div>
                                       <button
                                         type="button"
@@ -1939,7 +1959,7 @@ function App() {
                                         title="Edit"
                                         onClick={() => setEditingDayItem({ date, index: item._idx, draft: { time: normalizedItem.time || '', note: normalizedItem.note || '' } })}
                                       >✏</button>
-                                      <button type="button" onClick={() => removeDayItem(date, item._idx)}>×</button>
+                                      <button type="button" className="event-delete-btn" onClick={() => removeDayItem(date, item._idx)}>×</button>
                                     </div>
                                   )}
                                 </div>
@@ -1994,24 +2014,65 @@ function App() {
         </section>}
 
         {setupDone && (
-          <button
-            type="button"
-            className="fab-add-event"
-            onClick={() => { setAddEventOpen(prev => !prev); setEventSearch('') }}
-            aria-label="Add event"
-          >
-            <span className={addEventOpen ? 'fab-icon fab-icon-close' : 'fab-icon'}>+</span>
-          </button>
+          <div className="fab-group">
+            <button
+              type="button"
+              className="fab-day-map"
+              aria-label="View day on map"
+              onClick={() => {
+                const date = tripDates[activeDay]
+                const dayPlan = plan.dayPlans?.[date]
+                const items = (dayPlan?.items || [])
+                const stops = [
+                  dayPlan?.park,
+                  ...items.map(item => {
+                    const n = normalizeEventItem(item)
+                    return n.ride ? n.ride.split('::').pop() : (n.restaurant || n.note || null)
+                  })
+                ].filter(Boolean).map(s => encodeURIComponent(s + ' Walt Disney World'))
+                const url = stops.length
+                  ? `https://www.google.com/maps/dir/${stops.join('/')}`
+                  : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((dayPlan?.park || 'Walt Disney World') + ' Walt Disney World')}`
+                window.open(url, '_blank', 'noreferrer')
+              }}
+            >🗺</button>
+            <button
+              type="button"
+              className="fab-add-event"
+              onClick={() => { setAddEventOpen(prev => !prev); setEventSearch('') }}
+              aria-label="Add event"
+            >
+              <span className={addEventOpen ? 'fab-icon fab-icon-close' : 'fab-icon'}>+</span>
+            </button>
+          </div>
         )}
 
           </main>
 
-          <footer className="footer-bar">
-            <p>Saved automatically in your browser.</p>
-            <button type="button" className="danger" onClick={resetPlan}>
-              Reset planner
-            </button>
-          </footer>
+          {settingsOpen && (
+            <div className="settings-overlay" onClick={() => setSettingsOpen(false)}>
+              <div className="settings-panel card" onClick={e => e.stopPropagation()}>
+                <div className="settings-header">
+                  <h3>Trip settings</h3>
+                  <button type="button" className="close-panel-btn" onClick={() => setSettingsOpen(false)}>✕</button>
+                </div>
+                <p className="settings-note">Your plan is saved automatically in your browser.</p>
+                <hr className="settings-divider" />
+                <div className="settings-section">
+                  <strong>Danger zone</strong>
+                  {resetConfirm ? (
+                    <div className="settings-confirm-row">
+                      <span>This will erase everything. Are you sure?</span>
+                      <button type="button" className="danger" onClick={() => { resetPlan(); setSettingsOpen(false) }}>Yes, reset</button>
+                      <button type="button" className="chip" onClick={() => setResetConfirm(false)}>Cancel</button>
+                    </div>
+                  ) : (
+                    <button type="button" className="danger" onClick={() => setResetConfirm(true)}>Reset planner</button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
