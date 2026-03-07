@@ -5,6 +5,19 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-07T20:14:00Z — TD-036: Extract JSX sections into named render functions (App.jsx)
+
+**What:**
+- Defined 7 named functions above `App()` in `src/App.jsx`: `HomeScreen`, `SetupWizard`, `SetupSummary`, `SearchBar`, `DayPlanSection`, `WhatsNext`, `SettingsPanel`
+- Each accepts explicit props — no closures over App state, no new files
+- Converted the IIFE inside the day plan section into the `DayPlanSection` function body
+- Added `setPark` named handler to `App()` to replace the inline `setPlan` call in the park `<select>` onChange
+- `App()` return is now a clear table of contents: 6 component calls, all props explicit
+
+**Why:** TD-036 — App.jsx return() was a 900-line monolith with a deeply nested IIFE. Extracting render functions makes the structure scannable, makes each section independently readable, and sets up future componentisation without creating file bloat.
+
+---
+
 ## 2026-03-07T09:25:00Z — Resolve all 10 tech debt items (TD-001 through TD-010)
 
 **What:**
