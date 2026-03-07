@@ -181,3 +181,14 @@ Each entry is appended after every prompt.
 - References refactoring.guru design patterns to guide future architectural choices
 
 ---
+
+## 2026-03-07T09:35:00Z — Tech debt batch 1 (TD-011, TD-012, TD-013)
+
+**What:**
+- TD-011: Moved `SHOW_TYPE_MAP` from inside `App()` to module level — was recreated on every render
+- TD-012: Simplified `updateDayPlan` to delegate to `patchDayPlan` — eliminated manual spread duplicate
+- TD-013: Replaced `getDayTypeChipColor` if-chain with `DAY_CHIP_COLORS` declarative lookup object
+
+**Why:** Remove render-time waste, eliminate duplicated spread logic, and apply the declarative keyword-table pattern consistently (matching TD-005 approach from prior session).
+
+---

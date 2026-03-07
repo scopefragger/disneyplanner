@@ -760,12 +760,15 @@ function getLocationDisplay(dayPlan, myHotel) {
   return null
 }
 
+const DAY_CHIP_COLORS = {
+  Park:             'rgba(0, 87, 184, 0.2)',
+  Swimming:         'rgba(0, 157, 200, 0.2)',
+  'Hotel/Shopping': 'rgba(144, 109, 201, 0.24)',
+  Travel:           'rgba(92, 134, 201, 0.22)',
+}
+
 function getDayTypeChipColor(dayType) {
-  if (dayType === 'Park') return 'rgba(0, 87, 184, 0.2)'
-  if (dayType === 'Swimming') return 'rgba(0, 157, 200, 0.2)'
-  if (dayType === 'Hotel/Shopping') return 'rgba(144, 109, 201, 0.24)'
-  if (dayType === 'Travel') return 'rgba(92, 134, 201, 0.22)'
-  return 'rgba(0, 87, 184, 0.14)'
+  return DAY_CHIP_COLORS[dayType] ?? 'rgba(0, 87, 184, 0.14)'
 }
 
 function hashtagLabel(value) {
@@ -894,6 +897,9 @@ function formatShortDate(dateStr) {
 // ── Default blank draft item — single source of truth (TD-003) ──────────────
 const DEFAULT_DRAFT = { type: 'Fireworks', restaurant: '', customRestaurant: '', ride: '', note: '', time: '' }
 
+// ── Show-type normaliser for quickAdd (TD-011) ────────────────────────────────
+const SHOW_TYPE_MAP = { Fireworks: 'Fireworks', Parade: 'Parade', Show: 'Fireworks', 'Character Meet': 'Character Meet' }
+
 // ── Helper: reset draft fields when the event type changes (TD-007) ──────────
 function resetDraftForType(draft, newType) {
   return { ...DEFAULT_DRAFT, type: newType, note: draft?.note || '' }
@@ -1004,19 +1010,8 @@ function App() {
 
   const updateDayPlan = (date, key, value) => {
     setPlan((current) => {
-      const currentDay = current.dayPlans?.[date]
-      if (!currentDay) return current
-
-      return {
-        ...current,
-        dayPlans: {
-          ...current.dayPlans,
-          [date]: {
-            ...currentDay,
-            [key]: value
-          }
-        }
-      }
+      if (!current.dayPlans?.[date]) return current
+      return patchDayPlan(current, date, { [key]: value })
     })
   }
 
@@ -1084,8 +1079,6 @@ function App() {
       dismissedSuggestions: [...(current.dayPlans[date]?.dismissedSuggestions || []), suggestionId]
     }))
   }
-
-  const SHOW_TYPE_MAP = { Fireworks: 'Fireworks', Parade: 'Parade', Show: 'Fireworks', 'Character Meet': 'Character Meet' }
 
   const quickAddToDay = (date, kind, item) => {
     let newItem
@@ -2148,4 +2141,4 @@ function App() {
 }
 
 export default App
-export { createEventItem, parseRideSelection, patchDayPlan, DEFAULT_DRAFT, resetDraftForType, normalizeEventItem, formatTime, buildEventLabel, detectTheme }
+export { createEventItem, parseRideSelection, patchDayPlan, DEFAULT_DRAFT, resetDraftForType, normalizeEventItem, formatTime, buildEventLabel, detectTheme, getDayTypeChipColor, DAY_CHIP_COLORS, SHOW_TYPE_MAP }
