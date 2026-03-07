@@ -305,3 +305,10 @@ Each entry is appended after every prompt.
 - TD-036 (JSX render function extraction) deferred to a follow-up
 
 **Why:** All pure display/style constants and helpers now live in a dedicated module. toggleParkHop completes the named-handler pattern for day-level mutations.
+
+## 2026-03-07T14:35:00Z — Strengthen INTENT.md requirement in CLAUDE.md
+
+**What:**
+- Added "INTENT.md MUST be updated before every commit — no exceptions." as an explicit bolded rule in the Workflow Rules section of CLAUDE.md
+
+**Why:** User flagged that the requirement to update INTENT.md before committing needed to be more prominently stated in the agent instructions to prevent it from being skipped.

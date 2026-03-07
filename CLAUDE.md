@@ -34,10 +34,12 @@ No backend, no auth — all state is persisted to `localStorage`.
 3. Append an entry to `INTENT.md` — timestamp, what was changed, why
 4. Commit and push with a descriptive message
 
+**INTENT.md MUST be updated before every commit — no exceptions.**
+
 ```bash
 /opt/homebrew/bin/node node_modules/.bin/vite build
 /opt/homebrew/bin/node node_modules/.bin/vitest run --coverage
-# append entry to INTENT.md
+# append entry to INTENT.md (REQUIRED before git commit)
 git add -A && git commit -m "..." && git push
 ```
 
