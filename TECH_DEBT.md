@@ -5,19 +5,6 @@ It is removed from this file once fixed and verified by a passing build + test r
 
 ---
 
-## TD-017 — Blank day plan object constructed in three places
-The blank day plan shape `{ dayType:'', park:'', secondPark:'', parkHop:false, swimSpot:'',
-staySpot:'', items:[], dismissedSuggestions:[] }` appears in `normalizePlan`, in the tripDates
-`useEffect` (existing entry branch and else branch). Extract `createBlankDayPlan()` factory as
-SSOT. Also fixes a bug: the `useEffect` existing-entry branch drops `dismissedSuggestions`.
-
-## TD-018 — `getDateRange`, `formatPrettyDate`, `formatShortDate` have no tests
-These pure functions are untested. Export them from App.jsx and add tests in
-`src/__tests__/appHelpers.test.js`.
-
-## TD-019 — `getItemSlot`, `getEventTypeConfig`, `getSecondParkOptions` have no tests
-Pure functions with no test coverage. Export and test.
-
 ## TD-020 — `hashtagLabel`, `getDayTypeChipColor`, `getDayTypeIcon` have no tests
 Pure functions with no test coverage. Export and test.
 

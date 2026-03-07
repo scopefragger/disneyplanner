@@ -359,7 +359,7 @@ function loadAllProjects() {
 
 function normalizePlan(rawPlan) {
   const normalizedDayPlans = Object.entries(rawPlan.dayPlans || {}).reduce((acc, [date, dayPlan]) => {
-    acc[date] = {
+    acc[date] = createBlankDayPlan({
       dayType: dayPlan.dayType || '',
       park: dayPlan.park || '',
       secondPark: dayPlan.secondPark || '',
@@ -368,7 +368,7 @@ function normalizePlan(rawPlan) {
       staySpot: dayPlan.staySpot || '',
       items: dayPlan.items || [],
       dismissedSuggestions: dayPlan.dismissedSuggestions || []
-    }
+    })
     return acc
   }, {})
 
@@ -456,6 +456,15 @@ function formatTime(time) {
   const period = h >= 12 ? 'pm' : 'am'
   const hour = h % 12 || 12
   return `${hour}:${m.toString().padStart(2, '0')}${period}`
+}
+
+// ── Factory: blank day plan shape — single source of truth (TD-017) ─────────
+function createBlankDayPlan(overrides) {
+  return {
+    dayType: '', park: '', secondPark: '', parkHop: false,
+    swimSpot: '', staySpot: '', items: [], dismissedSuggestions: [],
+    ...overrides
+  }
 }
 
 // ── Factory: creates a blank event item merged with overrides (TD-002) ──────
@@ -794,26 +803,20 @@ function App() {
 
       tripDates.forEach((date) => {
         if (currentPlans[date]) {
-          nextDayPlans[date] = {
+          // TD-017: use factory to ensure all fields present, including dismissedSuggestions (was missing — bug fix)
+          nextDayPlans[date] = createBlankDayPlan({
             dayType: currentPlans[date].dayType || '',
             park: currentPlans[date].park || '',
             secondPark: currentPlans[date].secondPark || '',
             parkHop: Boolean(currentPlans[date].parkHop),
             swimSpot: currentPlans[date].swimSpot || '',
             staySpot: currentPlans[date].staySpot || '',
-            items: currentPlans[date].items || []
-          }
+            items: currentPlans[date].items || [],
+            dismissedSuggestions: currentPlans[date].dismissedSuggestions || []
+          })
         } else {
           hasChanges = true
-          nextDayPlans[date] = {
-            dayType: '',
-            park: '',
-            secondPark: '',
-            parkHop: false,
-            swimSpot: '',
-            staySpot: '',
-            items: []
-          }
+          nextDayPlans[date] = createBlankDayPlan()
         }
       })
 
@@ -1979,4 +1982,4 @@ function App() {
 }
 
 export default App
-export { createEventItem, parseRideSelection, patchDayPlan, DEFAULT_DRAFT, resetDraftForType, normalizeEventItem, formatTime, buildEventLabel, detectTheme, getDayTypeChipColor, DAY_CHIP_COLORS, SHOW_TYPE_MAP }
+export { createEventItem, createBlankDayPlan, parseRideSelection, patchDayPlan, DEFAULT_DRAFT, resetDraftForType, normalizeEventItem, formatTime, buildEventLabel, detectTheme, getDayTypeChipColor, DAY_CHIP_COLORS, SHOW_TYPE_MAP, getDateRange, formatPrettyDate, formatShortDate, getItemSlot, getEventTypeConfig, getSecondParkOptions }

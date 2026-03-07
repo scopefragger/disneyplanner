@@ -203,3 +203,14 @@ Each entry is appended after every prompt.
 **Why:** Co-locate data with its logical home (same file = one place to update). `useMemo` eliminates search recalculation on unrelated re-renders.
 
 ---
+
+## 2026-03-07T13:45:00Z — Tech debt batch 3 (TD-017, TD-018, TD-019)
+
+**What:**
+- TD-017: Extracted `createBlankDayPlan()` factory; used in `normalizePlan` and tripDates `useEffect`; fixed bug where `dismissedSuggestions` was silently dropped on date-range changes
+- TD-018: Exported `getDateRange`, `formatPrettyDate`, `formatShortDate`; added 10 tests covering date range generation, edge cases, and formatting
+- TD-019: Exported `getItemSlot`, `getEventTypeConfig`, `getSecondParkOptions`; added 12 tests covering slot inference, event config lookup, and park filtering
+
+**Why:** Single source of truth for day plan shape prevents field drift. Tests on date and slot helpers catch regressions in critical scheduling logic.
+
+---

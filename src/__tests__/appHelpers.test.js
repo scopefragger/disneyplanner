@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   createEventItem,
+  createBlankDayPlan,
   parseRideSelection,
   patchDayPlan,
   DEFAULT_DRAFT,
@@ -9,6 +10,12 @@ import {
   formatTime,
   buildEventLabel,
   detectTheme,
+  getDateRange,
+  formatPrettyDate,
+  formatShortDate,
+  getItemSlot,
+  getEventTypeConfig,
+  getSecondParkOptions,
 } from '../App.jsx'
 
 // ── createEventItem ──────────────────────────────────────────────────────────
@@ -231,5 +238,150 @@ describe('detectTheme', () => {
 
   it('falls back to default for unmatched text', () => {
     expect(detectTheme('Lunch at the resort')).toBe('default')
+  })
+})
+
+// ── createBlankDayPlan (TD-017) ───────────────────────────────────────────────
+
+describe('createBlankDayPlan', () => {
+  it('returns a blank day plan with all required fields', () => {
+    const dp = createBlankDayPlan()
+    expect(dp.dayType).toBe('')
+    expect(dp.park).toBe('')
+    expect(dp.secondPark).toBe('')
+    expect(dp.parkHop).toBe(false)
+    expect(dp.swimSpot).toBe('')
+    expect(dp.staySpot).toBe('')
+    expect(Array.isArray(dp.items)).toBe(true)
+    expect(Array.isArray(dp.dismissedSuggestions)).toBe(true)
+  })
+
+  it('merges overrides over defaults', () => {
+    const dp = createBlankDayPlan({ dayType: 'Park', park: 'Magic Kingdom' })
+    expect(dp.dayType).toBe('Park')
+    expect(dp.park).toBe('Magic Kingdom')
+    expect(dp.parkHop).toBe(false)
+  })
+
+  it('returns a new object each call', () => {
+    expect(createBlankDayPlan()).not.toBe(createBlankDayPlan())
+  })
+})
+
+// ── getDateRange (TD-018) ─────────────────────────────────────────────────────
+
+describe('getDateRange', () => {
+  it('returns an array of date strings between start and end inclusive', () => {
+    const dates = getDateRange('2026-03-01', '2026-03-03')
+    expect(dates).toEqual(['2026-03-01', '2026-03-02', '2026-03-03'])
+  })
+
+  it('returns a single-element array for same start and end', () => {
+    expect(getDateRange('2026-03-10', '2026-03-10')).toEqual(['2026-03-10'])
+  })
+
+  it('returns empty array when end is before start', () => {
+    expect(getDateRange('2026-03-10', '2026-03-01')).toEqual([])
+  })
+
+  it('returns empty array for empty/null input', () => {
+    expect(getDateRange('', '')).toEqual([])
+    expect(getDateRange(null, null)).toEqual([])
+  })
+})
+
+// ── formatPrettyDate (TD-018) ─────────────────────────────────────────────────
+
+describe('formatPrettyDate', () => {
+  it('returns a localised short date string', () => {
+    const result = formatPrettyDate('2026-03-07')
+    expect(result).toContain('Mar')
+    expect(result).toContain('7')
+  })
+
+  it('includes the weekday abbreviation', () => {
+    const result = formatPrettyDate('2026-03-07')
+    expect(result).toMatch(/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)/)
+  })
+})
+
+// ── formatShortDate (TD-018) ──────────────────────────────────────────────────
+
+describe('formatShortDate', () => {
+  it('returns "M/D" format without leading zeros', () => {
+    expect(formatShortDate('2026-03-07')).toBe('3/7')
+    expect(formatShortDate('2026-12-25')).toBe('12/25')
+    expect(formatShortDate('2026-01-01')).toBe('1/1')
+  })
+
+  it('returns empty string for falsy input', () => {
+    expect(formatShortDate('')).toBe('')
+    expect(formatShortDate(null)).toBe('')
+  })
+})
+
+// ── getItemSlot (TD-019) ──────────────────────────────────────────────────────
+
+describe('getItemSlot', () => {
+  it('derives slot from time when present', () => {
+    expect(getItemSlot({ time: '09:00', type: 'Dinner' })).toBe('morning')
+    expect(getItemSlot({ time: '12:30', type: 'Ride' })).toBe('midday')
+    expect(getItemSlot({ time: '15:00', type: 'Ride' })).toBe('afternoon')
+    expect(getItemSlot({ time: '18:00', type: 'Ride' })).toBe('evening')
+    expect(getItemSlot({ time: '21:00', type: 'Fireworks' })).toBe('night')
+  })
+
+  it('falls back to type-based default when no time', () => {
+    expect(getItemSlot({ time: '', type: 'Fireworks' })).toBe('night')
+    expect(getItemSlot({ time: '', type: 'Dinner' })).toBe('evening')
+    expect(getItemSlot({ time: '', type: 'Lunch' })).toBe('midday')
+  })
+
+  it('falls back to "midday" for unknown type with no time', () => {
+    expect(getItemSlot({ time: '', type: 'Unknown' })).toBe('midday')
+  })
+})
+
+// ── getEventTypeConfig (TD-019) ───────────────────────────────────────────────
+
+describe('getEventTypeConfig', () => {
+  it('returns config matching the given type', () => {
+    const config = getEventTypeConfig('Dinner')
+    expect(config.value).toBe('Dinner')
+    expect(config.theme).toBe('dining')
+    expect(config.requiresRestaurant).toBe(true)
+  })
+
+  it('returns first config (Breakfast) for unknown type', () => {
+    const config = getEventTypeConfig('UnknownType')
+    expect(config.value).toBe('Breakfast')
+  })
+
+  it('ride type does not require restaurant', () => {
+    const config = getEventTypeConfig('Ride')
+    expect(config.requiresRestaurant).toBe(false)
+    expect(config.theme).toBe('ride')
+  })
+})
+
+// ── getSecondParkOptions (TD-019) ─────────────────────────────────────────────
+
+describe('getSecondParkOptions', () => {
+  it('excludes the first park from the options', () => {
+    const options = getSecondParkOptions('Magic Kingdom')
+    expect(options).not.toContain('Magic Kingdom')
+    expect(options.length).toBeGreaterThan(0)
+  })
+
+  it('includes all other parks when a park is selected', () => {
+    const options = getSecondParkOptions('EPCOT')
+    expect(options).toContain('Magic Kingdom')
+    expect(options).toContain("Disney's Hollywood Studios")
+    expect(options).not.toContain('EPCOT')
+  })
+
+  it('returns all parks when first park is unknown/null', () => {
+    const options = getSecondParkOptions(null)
+    expect(options.length).toBeGreaterThan(0)
   })
 })
