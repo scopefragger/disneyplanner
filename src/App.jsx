@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { RESTAURANT_METADATA, RESTAURANT_TAGS, RESTAURANT_GROUPS, ALL_RESTAURANTS } from './data/restaurantMetadata'
 import { getParkSuggestions, fetchLiveParkShows, ALL_SHOWS } from './data/parkSuggestions.js'
 import { RIDE_TAGS, getRideUrl, RIDES_BY_PARK, RIDE_IMAGES } from './data/rideData.js'
-import { fuzzyMatch } from './utils.js'
+import { fuzzyMatch, getDateRange, formatPrettyDate, formatShortDate, formatTime } from './utils.js'
 import { PARK_OPTIONS, DINING_OPTIONS, DAY_TYPES, SWIM_OPTIONS, DISNEY_HOTELS, ENTERTAINMENT_TYPES, FRANCHISE_OPTIONS, EVENT_TYPES } from './data/tripOptions.js'
+import { DEFAULT_PLAN, DEFAULT_DRAFT, SHOW_TYPE_MAP, normalizePlan, detectTheme, getEventTypeConfig, buildEventLabel, createBlankDayPlan, createEventItem, parseRideSelection, patchDayPlan, normalizeEventItem, resetDraftForType } from './data/planHelpers.js'
+import { STORAGE_KEY, PROJECTS_KEY, generateId, loadAllProjects } from './data/storage.js'
 
 const IMG_BASE = `${import.meta.env.BASE_URL}images/`
 
@@ -20,212 +22,6 @@ function getRestaurantResources(restaurantName) {
     bookingUrl: searchUrl,
     heroImage: ''
   }
-}
-
-const DEFAULT_PLAN = {
-  tripName: 'Our Disney Holiday',
-  startDate: '',
-  endDate: '',
-  myHotel: '',
-  adults: 2,
-  children: 0,
-  budget: 3500,
-  priorities: ['Magic Kingdom'],
-  diningStyle: 'No dining plan',
-  notes: '',
-  dayPlans: {},
-  checklist: ['Park tickets', 'Resort booking', 'Genie+ plan']
-}
-
-const STORAGE_KEY = 'disney-holiday-planner'
-const PROJECTS_KEY = 'disney-holiday-projects'
-
-function generateId() {
-  return `proj-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
-}
-
-function loadAllProjects() {
-  const saved = localStorage.getItem(PROJECTS_KEY)
-  if (saved) {
-    try { return JSON.parse(saved) } catch { return {} }
-  }
-  // Migrate old single-plan format
-  const old = localStorage.getItem(STORAGE_KEY)
-  if (old) {
-    try {
-      const plan = normalizePlan(JSON.parse(old))
-      const id = generateId()
-      const projects = { [id]: { id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), plan } }
-      localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects))
-      localStorage.removeItem(STORAGE_KEY)
-      return projects
-    } catch { return {} }
-  }
-  return {}
-}
-
-
-function normalizePlan(rawPlan) {
-  const normalizedDayPlans = Object.entries(rawPlan.dayPlans || {}).reduce((acc, [date, dayPlan]) => {
-    acc[date] = createBlankDayPlan({
-      dayType: dayPlan.dayType || '',
-      park: dayPlan.park || '',
-      secondPark: dayPlan.secondPark || '',
-      parkHop: Boolean(dayPlan.parkHop),
-      swimSpot: dayPlan.swimSpot || '',
-      staySpot: dayPlan.staySpot || '',
-      items: dayPlan.items || [],
-      dismissedSuggestions: dayPlan.dismissedSuggestions || []
-    })
-    return acc
-  }, {})
-
-  return {
-    ...DEFAULT_PLAN,
-    ...rawPlan,
-    priorities: rawPlan.priorities?.length ? rawPlan.priorities : DEFAULT_PLAN.priorities,
-    checklist: rawPlan.checklist?.length ? rawPlan.checklist : DEFAULT_PLAN.checklist,
-    favoriteTags: rawPlan.favoriteTags || [],
-    dayPlans: normalizedDayPlans
-  }
-}
-
-function getDateRange(startDate, endDate) {
-  if (!startDate || !endDate) return []
-  const start = new Date(`${startDate}T00:00:00`)
-  const end = new Date(`${endDate}T00:00:00`)
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end < start) return []
-
-  const dates = []
-  const cursor = new Date(start)
-  while (cursor <= end) {
-    dates.push(cursor.toISOString().slice(0, 10))
-    cursor.setDate(cursor.getDate() + 1)
-  }
-
-  return dates
-}
-
-function formatPrettyDate(dateString) {
-  return new Date(`${dateString}T00:00:00`).toLocaleDateString('en-GB', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short'
-  })
-}
-
-function detectTheme(text) {
-  const value = text.toLowerCase()
-
-  if (
-    value.includes('firework') ||
-    value.includes('night show') ||
-    value.includes('parade')
-  ) {
-    return 'fireworks'
-  }
-  if (value.includes('dining') || value.includes('restaurant') || value.includes('breakfast')) {
-    return 'dining'
-  }
-  if (value.includes('ride') || value.includes('coaster') || value.includes('genie+')) {
-    return 'ride'
-  }
-  if (value.includes('character') || value.includes('princess') || value.includes('meet')) {
-    return 'character'
-  }
-  if (value.includes('trail') || value.includes('safari') || value.includes('animal')) {
-    return 'nature'
-  }
-
-  return 'default'
-}
-
-function getEventTypeConfig(type) {
-  return EVENT_TYPES.find((eventType) => eventType.value === type) || EVENT_TYPES[0]
-}
-
-function buildEventLabel(item) {
-  if (item.type === 'Ride' && item.ride) {
-    return `Ride: ${item.ride}${item.ridePark ? ` (${item.ridePark})` : ''}`
-  }
-  if (item.type && item.restaurant) {
-    return `${item.type} at ${item.restaurant}`
-  }
-  if (item.type && item.note) {
-    return `${item.type}: ${item.note}`
-  }
-  if (item.type) return item.type
-  return item.text || 'Event'
-}
-
-function formatTime(time) {
-  if (!time) return ''
-  const [h, m] = time.split(':').map(Number)
-  const period = h >= 12 ? 'pm' : 'am'
-  const hour = h % 12 || 12
-  return `${hour}:${m.toString().padStart(2, '0')}${period}`
-}
-
-// ── Factory: blank day plan shape — single source of truth (TD-017) ─────────
-function createBlankDayPlan(overrides) {
-  return {
-    dayType: '', park: '', secondPark: '', parkHop: false,
-    swimSpot: '', staySpot: '', items: [], dismissedSuggestions: [],
-    ...overrides
-  }
-}
-
-// ── Factory: creates a blank event item merged with overrides (TD-002) ──────
-function createEventItem(overrides) {
-  return {
-    type: '', restaurant: '', customRestaurant: '',
-    menuUrl: '', bookingUrl: '', heroImage: '',
-    ride: '', ridePark: '', note: '', time: '', theme: '',
-    ...overrides
-  }
-}
-
-// ── Utility: parse "Park::RideName" value into its parts (TD-004) ────────────
-function parseRideSelection(value) {
-  const [ridePark = '', ride = ''] = (value || '').split('::')
-  return { ridePark, ride }
-}
-
-// ── Pure state helper: patch a single day's plan (TD-001) ───────────────────
-function patchDayPlan(current, date, patch) {
-  return {
-    ...current,
-    dayPlans: {
-      ...current.dayPlans,
-      [date]: { ...current.dayPlans[date], ...patch }
-    }
-  }
-}
-
-function normalizeEventItem(item) {
-  if (item?.type) {
-    return createEventItem({
-      type: item.type,
-      restaurant: item.restaurant || '',
-      customRestaurant: item.customRestaurant || '',
-      menuUrl: item.menuUrl || '',
-      bookingUrl: item.bookingUrl || '',
-      heroImage: item.heroImage || '',
-      ride: item.ride || '',
-      ridePark: item.ridePark || '',
-      note: item.note || '',
-      time: item.time || '',
-      theme: item.theme || getEventTypeConfig(item.type).theme
-    })
-  }
-
-  const text = item?.text || ''
-  return createEventItem({
-    note: text,
-    time: item?.time || '',
-    theme: item?.theme || detectTheme(text),
-    text
-  })
 }
 
 const DAY_TYPE_BACKGROUNDS = {
@@ -437,23 +233,6 @@ function getTimeSlots(dayType) {
     { slot: 'night',     time: '9:00pm',   label: isPark ? 'Night shows' : 'Night' },
     { slot: 'latenight', time: 'Midnight', label: 'Late night' },
   ]
-}
-
-function formatShortDate(dateStr) {
-  if (!dateStr) return ''
-  const [, month, day] = dateStr.split('-')
-  return `${parseInt(month, 10)}/${parseInt(day, 10)}`
-}
-
-// ── Default blank draft item — single source of truth (TD-003) ──────────────
-const DEFAULT_DRAFT = { type: 'Fireworks', restaurant: '', customRestaurant: '', ride: '', note: '', time: '' }
-
-// ── Show-type normaliser for quickAdd (TD-011) ────────────────────────────────
-const SHOW_TYPE_MAP = { Fireworks: 'Fireworks', Parade: 'Parade', Show: 'Fireworks', 'Character Meet': 'Character Meet' }
-
-// ── Helper: reset draft fields when the event type changes (TD-007) ──────────
-function resetDraftForType(draft, newType) {
-  return { ...DEFAULT_DRAFT, type: newType, note: draft?.note || '' }
 }
 
 function App() {

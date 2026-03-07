@@ -283,3 +283,14 @@ Each entry is appended after every prompt.
 - Updated `appHelpers.test.js` to import `RIDES_BY_PARK`/`RIDE_IMAGES` from `rideData.js`
 
 **Why:** App.jsx was 1 973 lines; data constants scattered throughout the file violated single-responsibility. Moving them to co-located data modules reduces App.jsx to ~1 681 lines and gives every constant a named home.
+
+## 2026-03-07T14:26:00Z — Batch 2 refactor: extract logic modules from App.jsx (TD-032, TD-033, TD-034)
+
+**What:**
+- TD-032: Created `src/data/storage.js` — `STORAGE_KEY`, `PROJECTS_KEY`, `generateId`, `loadAllProjects`
+- TD-033: Added `getDateRange`, `formatPrettyDate`, `formatShortDate`, `formatTime` to `src/utils.js`
+- TD-034: Created `src/data/planHelpers.js` — `DEFAULT_PLAN`, `DEFAULT_DRAFT`, `SHOW_TYPE_MAP`, `createBlankDayPlan`, `createEventItem`, `parseRideSelection`, `patchDayPlan`, `detectTheme`, `getEventTypeConfig`, `normalizeEventItem`, `buildEventLabel`, `normalizePlan`, `resetDraftForType`
+- Updated App.jsx imports; removed ~222 lines of function definitions
+- App.jsx now at ~1 461 lines (down from 1 973 before Batch 1)
+
+**Why:** Second batch of the readability refactor. Pure logic functions with zero React dependencies now live in dedicated modules. `storage.js` imports `normalizePlan` from `planHelpers.js` (not vice versa) to avoid circular dependencies.
