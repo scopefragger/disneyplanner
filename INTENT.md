@@ -5,6 +5,17 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-07T20:27:00Z — TD-039/040/041: Add tests for storage.js, rideData.js, displayHelpers.js
+
+**What:**
+- Created `src/__tests__/storage.test.js`: tests for `generateId` and all 5 branches of `loadAllProjects` (empty, existing projects, invalid JSON, old-format migration, invalid old JSON). Uses `vi.stubGlobal` for a reliable localStorage mock.
+- Added `getRideUrl` and `getRideTags` test suites to `appHelpers.test.js` (known + unknown ride cases)
+- Added `getDayCardStyle` Disney Springs branch test and `getItemSlot` latenight + unknown-type tests
+
+**Why:** TD-039/040/041 — `storage.js` was at 15.78%, `rideData.js` functions at 0%, `displayHelpers.js` had two uncovered branches. All three now at 100% statement/function/line coverage. Overall coverage: 80.84% → 87.98%.
+
+---
+
 ## 2026-03-07T20:22:00Z — TD-038: Move getRestaurantResources to restaurantMetadata.js
 
 **What:**

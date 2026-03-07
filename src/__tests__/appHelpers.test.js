@@ -27,7 +27,7 @@ import {
   getRestaurantResources,
   getDayCardStyle,
 } from '../App.jsx'
-import { RIDE_URLS, RIDE_TAGS, RIDES_BY_PARK, RIDE_IMAGES } from '../data/rideData.js'
+import { RIDE_URLS, RIDE_TAGS, RIDES_BY_PARK, RIDE_IMAGES, getRideUrl, getRideTags } from '../data/rideData.js'
 
 // ── createEventItem ──────────────────────────────────────────────────────────
 
@@ -796,5 +796,55 @@ describe('detectTheme additional branches', () => {
 
   it('detects nature theme from "safari"', () => {
     expect(detectTheme('Kilimanjaro Safari')).toBe('nature')
+  })
+})
+
+// ── getRideUrl (TD-040) ───────────────────────────────────────────────────────
+
+describe('getRideUrl', () => {
+  it('returns a URL string for a known ride', () => {
+    const url = getRideUrl('Space Mountain')
+    expect(typeof url).toBe('string')
+    expect(url).toMatch(/^https?:\/\//)
+  })
+
+  it('returns null for an unknown ride', () => {
+    expect(getRideUrl('Fake Ride That Does Not Exist')).toBeNull()
+  })
+})
+
+// ── getRideTags (TD-040) ──────────────────────────────────────────────────────
+
+describe('getRideTags', () => {
+  it('returns a non-empty array for a known ride', () => {
+    const tags = getRideTags('Space Mountain')
+    expect(Array.isArray(tags)).toBe(true)
+    expect(tags.length).toBeGreaterThan(0)
+  })
+
+  it('returns an empty array for an unknown ride', () => {
+    expect(getRideTags('Fake Ride That Does Not Exist')).toEqual([])
+  })
+})
+
+// ── getDayCardStyle Disney Springs branch (TD-041) ────────────────────────────
+
+describe('getDayCardStyle — Hotel/Shopping Disney Springs', () => {
+  it('applies Disney Springs tint for staySpot=Disney Springs', () => {
+    const style = getDayCardStyle({ dayType: 'Hotel/Shopping', staySpot: 'Disney Springs' })
+    // Disney Springs uses the purple park tint, not the generic hotel tint
+    expect(style['--day-tint']).toContain('167')
+  })
+})
+
+// ── getItemSlot — latenight and DEFAULT_SLOT fallback (TD-041) ───────────────
+
+describe('getItemSlot — latenight and DEFAULT_SLOT fallback', () => {
+  it('returns "latenight" for a time before 9am', () => {
+    expect(getItemSlot({ time: '07:30' })).toBe('latenight')
+  })
+
+  it('returns "midday" for an item type not in DEFAULT_SLOT and no time set', () => {
+    expect(getItemSlot({ type: 'SomeUnknownType' })).toBe('midday')
   })
 })
