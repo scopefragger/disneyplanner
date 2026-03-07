@@ -1,5 +1,4 @@
-// Ride reference data — URLs and search tags (TD-015)
-// RIDES_BY_PARK and RIDE_IMAGES remain in App.jsx (RIDE_IMAGES depends on IMG_BASE)
+// Ride reference data — all ride constants live here (TD-029 completes TD-015)
 
 const DW_ATTRACTIONS = 'https://disneyworld.disney.go.com/attractions'
 
@@ -81,4 +80,84 @@ export function getRideUrl(ride) {
 
 export function getRideTags(ride) {
   return RIDE_TAGS[ride] ?? []
+}
+
+const IMG_BASE = `${import.meta.env.BASE_URL}images/`
+const RIDES_IMG = `${IMG_BASE}rides/`
+
+export const RIDES_BY_PARK = {
+  'Magic Kingdom': [
+    'TRON Lightcycle / Run',
+    'Seven Dwarfs Mine Train',
+    'Space Mountain',
+    'Big Thunder Mountain Railroad',
+    "Pirates of the Caribbean",
+    'Haunted Mansion',
+    "Peter Pan\u2019s Flight",
+    "Tiana's Bayou Adventure",
+    'Jungle Cruise'
+  ],
+  'EPCOT': [
+    'Guardians of the Galaxy: Cosmic Rewind',
+    'Test Track',
+    'Frozen Ever After',
+    'Remys Ratatouille Adventure',
+    'Soarin Around the World',
+    'Mission: SPACE',
+    'Spaceship Earth'
+  ],
+  "Disney's Hollywood Studios": [
+    'Star Wars: Rise of the Resistance',
+    'Millennium Falcon: Smugglers Run',
+    'Slinky Dog Dash',
+    'Tower of Terror',
+    'Rock n Roller Coaster',
+    'Mickey and Minnies Runaway Railway',
+    'Toy Story Mania'
+  ],
+  "Disney's Animal Kingdom": [
+    'Avatar Flight of Passage',
+    'Na vi River Journey',
+    'Expedition Everest',
+    'Kilimanjaro Safaris',
+    "Kali River Rapids",
+    "DINOSAUR"
+  ],
+  'Disney Springs': ['Aerophile - The World Leader in Balloon Flight']
+}
+
+export const RIDE_IMAGES = {
+  // Magic Kingdom
+  'TRON Lightcycle / Run':              `${RIDES_IMG}tron.jpg`,
+  'Seven Dwarfs Mine Train':            `${RIDES_IMG}seven-dwarfs-mine-train.jpg`,
+  'Space Mountain':                     `${RIDES_IMG}space-mountain.jpg`,
+  'Big Thunder Mountain Railroad':      `${RIDES_IMG}big-thunder-mountain.jpg`,
+  'Pirates of the Caribbean':           `${RIDES_IMG}pirates-of-the-caribbean.jpg`,
+  'Haunted Mansion':                    `${RIDES_IMG}haunted-mansion.jpg`,
+  "Peter Pan\u2019s Flight":            `${RIDES_IMG}peter-pans-flight.jpg`,
+  "Tiana's Bayou Adventure":            `${RIDES_IMG}tianas-bayou-adventure.jpg`,
+  'Jungle Cruise':                      `${RIDES_IMG}jungle-cruise.jpg`,
+  // EPCOT
+  'Guardians of the Galaxy: Cosmic Rewind': `${RIDES_IMG}guardians-cosmic-rewind.jpg`,
+  'Test Track':                         `${RIDES_IMG}test-track.jpg`,
+  'Frozen Ever After':                  `${RIDES_IMG}frozen-ever-after.jpg`,
+  'Remys Ratatouille Adventure':        `${RIDES_IMG}remys-ratatouille-adventure.jpg`,
+  'Soarin Around the World':            `${RIDES_IMG}soarin.jpg`,
+  'Mission: SPACE':                     `${RIDES_IMG}mission-space.jpg`,
+  'Spaceship Earth':                    `${RIDES_IMG}spaceship-earth.jpg`,
+  // Hollywood Studios
+  'Star Wars: Rise of the Resistance':  `${RIDES_IMG}star-wars-rise-of-the-resistance.jpg`,
+  'Millennium Falcon: Smugglers Run':   `${RIDES_IMG}millennium-falcon-smugglers-run.jpg`,
+  'Slinky Dog Dash':                    `${RIDES_IMG}slinky-dog-dash.jpg`,
+  'Tower of Terror':                    `${RIDES_IMG}tower-of-terror.jpg`,
+  'Rock n Roller Coaster':              `${RIDES_IMG}rock-n-roller-coaster.jpg`,
+  'Mickey and Minnies Runaway Railway': `${RIDES_IMG}mickey-minnies-runaway-railway.jpg`,
+  'Toy Story Mania':                    `${RIDES_IMG}toy-story-mania.jpg`,
+  // Animal Kingdom
+  'Avatar Flight of Passage':           `${RIDES_IMG}avatar-flight-of-passage.jpg`,
+  'Na vi River Journey':                `${RIDES_IMG}navi-river-journey.jpg`,
+  'Expedition Everest':                 `${RIDES_IMG}expedition-everest.jpg`,
+  'Kilimanjaro Safaris':                `${RIDES_IMG}kilimanjaro-safaris.jpg`,
+  'Kali River Rapids':                  `${RIDES_IMG}kali-river-rapids.jpg`,
+  'DINOSAUR':                           `${RIDES_IMG}dinosaur.jpg`,
 }

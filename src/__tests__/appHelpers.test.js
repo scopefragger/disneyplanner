@@ -23,13 +23,11 @@ import {
   getRideOptionsForDay,
   getTimeSlots,
   getLocationDisplay,
-  RIDES_BY_PARK,
-  RIDE_IMAGES,
   generateId,
   getRestaurantResources,
   getDayCardStyle,
 } from '../App.jsx'
-import { RIDE_URLS, RIDE_TAGS } from '../data/rideData.js'
+import { RIDE_URLS, RIDE_TAGS, RIDES_BY_PARK, RIDE_IMAGES } from '../data/rideData.js'
 
 // ── createEventItem ──────────────────────────────────────────────────────────
 

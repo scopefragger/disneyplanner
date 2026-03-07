@@ -272,3 +272,14 @@ Each entry is appended after every prompt.
 **Why:** Consolidates all event-adding entry points into the search bar — one place for both quick-search adding and the full advanced form. Typing in the search bar collapses the advanced form and vice versa, keeping the UI uncluttered.
 
 ---
+
+## 2026-03-07T14:20:00Z — Batch 1 refactor: extract data constants from App.jsx (TD-029, TD-030, TD-031)
+
+**What:**
+- TD-029: Moved `RIDES_BY_PARK` and `RIDE_IMAGES` from App.jsx into `src/data/rideData.js`; rideData.js now owns all ride reference data
+- TD-030: Moved `RESTAURANT_GROUPS` and `ALL_RESTAURANTS` from App.jsx into `src/data/restaurantMetadata.js`; restaurantMetadata.js now owns all restaurant reference data
+- TD-031: Created `src/data/tripOptions.js` with eight static UI option arrays (`PARK_OPTIONS`, `DINING_OPTIONS`, `DAY_TYPES`, `SWIM_OPTIONS`, `DISNEY_HOTELS`, `ENTERTAINMENT_TYPES`, `FRANCHISE_OPTIONS`, `EVENT_TYPES`)
+- Updated App.jsx imports and export list; removed ~292 lines of constant blocks
+- Updated `appHelpers.test.js` to import `RIDES_BY_PARK`/`RIDE_IMAGES` from `rideData.js`
+
+**Why:** App.jsx was 1 973 lines; data constants scattered throughout the file violated single-responsibility. Moving them to co-located data modules reduces App.jsx to ~1 681 lines and gives every constant a named home.
