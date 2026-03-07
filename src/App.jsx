@@ -1105,6 +1105,47 @@ function App() {
     }))
   }
 
+  const quickAddToDay = (date, kind, item) => {
+    const SHOW_TYPE_MAP = { Fireworks: 'Fireworks', Parade: 'Parade', Show: 'Fireworks', 'Character Meet': 'Character Meet' }
+    let newItem
+    if (kind === 'show') {
+      newItem = {
+        type: SHOW_TYPE_MAP[item.type] || 'Fireworks',
+        restaurant: '', customRestaurant: '', menuUrl: '', bookingUrl: '', heroImage: '',
+        ride: '', ridePark: '', note: item.label, time: item.time, theme: item.theme
+      }
+    } else if (kind === 'restaurant') {
+      const res = getRestaurantResources(item)
+      newItem = {
+        type: 'Dinner',
+        restaurant: item, customRestaurant: '',
+        menuUrl: res?.menuUrl || '', bookingUrl: res?.bookingUrl || '', heroImage: res?.heroImage || '',
+        ride: '', ridePark: '', note: '', time: '',
+        theme: getEventTypeConfig('Dinner').theme
+      }
+    } else if (kind === 'ride') {
+      const [ridePark = '', ride = ''] = item.value.split('::')
+      newItem = {
+        type: 'Ride',
+        restaurant: '', customRestaurant: '', menuUrl: '', bookingUrl: '', heroImage: '',
+        ride, ridePark, note: '', time: '',
+        theme: getEventTypeConfig('Ride').theme
+      }
+    }
+    if (!newItem) return
+    setPlan(current => ({
+      ...current,
+      dayPlans: {
+        ...current.dayPlans,
+        [date]: {
+          ...current.dayPlans[date],
+          items: [...(current.dayPlans[date]?.items || []), newItem]
+        }
+      }
+    }))
+    setEventSearch('')
+  }
+
   const clearDayType = (date) => {
     updateDayPlan(date, 'dayType', '')
   }
@@ -1225,6 +1266,31 @@ function App() {
   const goHome = () => {
     setActiveProjectId(null)
   }
+
+  const activeDate = tripDates[activeDay]
+  const activeDayPlan = plan.dayPlans?.[activeDate] || {}
+  const activeRideOptions = getRideOptionsForDay(activeDayPlan)
+  const topSearchQ = eventSearch.trim()
+  const topSearchResults = setupDone && topSearchQ ? {
+    shows: getParkSuggestions(activeDayPlan.park, activeDayPlan.secondPark)
+      .map(s => {
+        const cleanTags = (s.tags || []).map(t => t.replace(/^#/, ''))
+        const matchingTags = cleanTags.filter(t => fuzzyMatch(topSearchQ, t))
+        return (fuzzyMatch(topSearchQ, s.label) || matchingTags.length) ? { ...s, matchingTags } : null
+      }).filter(Boolean).slice(0, 4),
+    restaurants: ALL_RESTAURANTS.map(r => {
+      const tags = RESTAURANT_TAGS[r] || []
+      const matchingTags = tags.filter(t => fuzzyMatch(topSearchQ, t))
+      return (fuzzyMatch(topSearchQ, r) || matchingTags.length) ? { name: r, matchingTags } : null
+    }).filter(Boolean).slice(0, 6),
+    rides: activeRideOptions.map(r => {
+      const tags = RIDE_TAGS[r.label] || []
+      const matchingTags = tags.filter(t => fuzzyMatch(topSearchQ, t))
+      return (fuzzyMatch(topSearchQ, r.label) || matchingTags.length) ? { ...r, matchingTags } : null
+    }).filter(Boolean).slice(0, 5),
+  } : null
+  const hasTopSearchResults = topSearchResults &&
+    (topSearchResults.shows.length || topSearchResults.restaurants.length || topSearchResults.rides.length)
 
   return (
     <div className="page-shell">
@@ -1478,6 +1544,57 @@ function App() {
           </div>
         )}
 
+        {setupDone && (
+          <div className="top-searchbar-card card card-wide">
+            <div className="top-searchbar-wrap">
+              <span className="top-searchbar-icon">🔍</span>
+              <input
+                className="top-searchbar-input"
+                type="search"
+                placeholder={activeDayPlan.dayType === 'Park'
+                  ? `Search rides, shows & restaurants for Day ${activeDay + 1}…`
+                  : `Search restaurants & shows for Day ${activeDay + 1}…`}
+                value={eventSearch}
+                onChange={e => setEventSearch(e.target.value)}
+              />
+              {eventSearch && (
+                <button type="button" className="top-searchbar-clear" onClick={() => setEventSearch('')}>×</button>
+              )}
+            </div>
+            {hasTopSearchResults && (
+              <div className="top-search-results">
+                {topSearchResults.shows.length > 0 && <>
+                  <div className="esr-group-label">Shows &amp; Events</div>
+                  {topSearchResults.shows.map(s => (
+                    <button key={s.id} type="button" className="esr-item" onClick={() => quickAddToDay(activeDate, 'show', s)}>
+                      <span className="esr-name">{s.label}</span>
+                      <span className="esr-meta">{s.matchingTags.length > 0 ? s.matchingTags.join(' · ') : `${s.time} · ${s.type}`}</span>
+                    </button>
+                  ))}
+                </>}
+                {topSearchResults.restaurants.length > 0 && <>
+                  <div className="esr-group-label">Restaurants</div>
+                  {topSearchResults.restaurants.map(r => (
+                    <button key={r.name} type="button" className="esr-item" onClick={() => quickAddToDay(activeDate, 'restaurant', r.name)}>
+                      <span className="esr-name">{r.name}</span>
+                      {r.matchingTags.length > 0 && <span className="esr-meta">{r.matchingTags.join(' · ')}</span>}
+                    </button>
+                  ))}
+                </>}
+                {topSearchResults.rides.length > 0 && <>
+                  <div className="esr-group-label">Rides</div>
+                  {topSearchResults.rides.map(r => (
+                    <button key={r.value} type="button" className="esr-item" onClick={() => quickAddToDay(activeDate, 'ride', r)}>
+                      <span className="esr-name">{r.label}</span>
+                      {r.matchingTags.length > 0 && <span className="esr-meta">{r.matchingTags.join(' · ')}</span>}
+                    </button>
+                  ))}
+                </>}
+              </div>
+            )}
+          </div>
+        )}
+
         {setupDone && <section className="card card-wide">
           <div className="card-title-row day-header">
             <h2>Daily Plan by Date</h2>
@@ -1560,50 +1677,6 @@ function App() {
                   return s.tags?.some(t => favSet.has(t))
                 })
               })()
-
-              const searchQ = eventSearch.trim()
-              const eventSearchResults = searchQ ? {
-                shows: getParkSuggestions(dayPlan.park, dayPlan.secondPark)
-                  .map(s => {
-                    const cleanTags = (s.tags || []).map(t => t.replace(/^#/, ''))
-                    const matchingTags = cleanTags.filter(t => fuzzyMatch(searchQ, t))
-                    return (fuzzyMatch(searchQ, s.label) || matchingTags.length) ? { ...s, matchingTags } : null
-                  }).filter(Boolean).slice(0, 4),
-                restaurants: ALL_RESTAURANTS.map(r => {
-                  const tags = RESTAURANT_TAGS[r] || []
-                  const matchingTags = tags.filter(t => fuzzyMatch(searchQ, t))
-                  return (fuzzyMatch(searchQ, r) || matchingTags.length) ? { name: r, matchingTags } : null
-                }).filter(Boolean).slice(0, 6),
-                rides: rideOptions.map(r => {
-                  const tags = RIDE_TAGS[r.label] || []
-                  const matchingTags = tags.filter(t => fuzzyMatch(searchQ, t))
-                  return (fuzzyMatch(searchQ, r.label) || matchingTags.length) ? { ...r, matchingTags } : null
-                }).filter(Boolean).slice(0, 5),
-              } : null
-              const hasSearchResults = eventSearchResults &&
-                (eventSearchResults.shows.length || eventSearchResults.restaurants.length || eventSearchResults.rides.length)
-
-              const applySearchResult = (kind, item) => {
-                const SHOW_TYPE_MAP = { Fireworks: 'Fireworks', Parade: 'Parade', Show: 'Fireworks', 'Character Meet': 'Character Meet' }
-                if (kind === 'show') {
-                  setDraftDayItems(cur => ({
-                    ...cur,
-                    [date]: { ...draft, type: SHOW_TYPE_MAP[item.type] || 'Fireworks', note: item.label, time: item.time }
-                  }))
-                } else if (kind === 'restaurant') {
-                  const mealType = ['Breakfast', 'Lunch', 'Dinner', 'Tea', 'Snack'].includes(draft.type) ? draft.type : 'Dinner'
-                  setDraftDayItems(cur => ({
-                    ...cur,
-                    [date]: { ...draft, type: mealType, restaurant: item, customRestaurant: '' }
-                  }))
-                } else if (kind === 'ride') {
-                  setDraftDayItems(cur => ({
-                    ...cur,
-                    [date]: { ...draft, type: 'Ride', ride: item.value }
-                  }))
-                }
-                setEventSearch('')
-              }
 
               return (
                 <>
@@ -1825,47 +1898,6 @@ function App() {
                       <div className="event-builder-header">
                         <span>Add event</span>
                         <button type="button" className="event-builder-close" onClick={() => { setAddEventOpen(false); setEventSearch('') }}>×</button>
-                      </div>
-                      <div className="event-search-wrap">
-                        <input
-                          className="event-search-input"
-                          type="search"
-                          placeholder="Search rides, shows, restaurants…"
-                          value={eventSearch}
-                          onChange={e => setEventSearch(e.target.value)}
-                          autoFocus
-                        />
-                        {hasSearchResults && (
-                          <div className="event-search-results">
-                            {eventSearchResults.shows.length > 0 && <>
-                              <div className="esr-group-label">Shows &amp; Events</div>
-                              {eventSearchResults.shows.map(s => (
-                                <button key={s.id} type="button" className="esr-item" onClick={() => applySearchResult('show', s)}>
-                                  <span className="esr-name">{s.label}</span>
-                                  <span className="esr-meta">{s.matchingTags.length > 0 ? s.matchingTags.join(' · ') : `${s.time} · ${s.type}`}</span>
-                                </button>
-                              ))}
-                            </>}
-                            {eventSearchResults.restaurants.length > 0 && <>
-                              <div className="esr-group-label">Restaurants</div>
-                              {eventSearchResults.restaurants.map(r => (
-                                <button key={r.name} type="button" className="esr-item" onClick={() => applySearchResult('restaurant', r.name)}>
-                                  <span className="esr-name">{r.name}</span>
-                                  {r.matchingTags.length > 0 && <span className="esr-meta">{r.matchingTags.join(' · ')}</span>}
-                                </button>
-                              ))}
-                            </>}
-                            {eventSearchResults.rides.length > 0 && <>
-                              <div className="esr-group-label">Rides</div>
-                              {eventSearchResults.rides.map(r => (
-                                <button key={r.value} type="button" className="esr-item" onClick={() => applySearchResult('ride', r)}>
-                                  <span className="esr-name">{r.label}</span>
-                                  {r.matchingTags.length > 0 && <span className="esr-meta">{r.matchingTags.join(' · ')}</span>}
-                                </button>
-                              ))}
-                            </>}
-                          </div>
-                        )}
                       </div>
                       <div className="day-meta-row">
                         <label className="field-compact">
@@ -2148,9 +2180,16 @@ function App() {
                       )]
                     })}
                     {!dayPlan.items?.length && (
-                      <p className="timeline-empty">Tap + to add your first event</p>
+                      <p className="timeline-empty">Search above to add your first event</p>
                     )}
                   </div>
+                </div>
+                <div className="timeline-manual-add">
+                  {addEventOpen ? (
+                    <button type="button" className="chip" onClick={() => setAddEventOpen(false)}>✕ Close</button>
+                  ) : (
+                    <button type="button" className="chip" onClick={() => setAddEventOpen(true)}>+ Add manually</button>
+                  )}
                 </div>
                 </>
               )
@@ -2158,37 +2197,33 @@ function App() {
           </div>
         </section>}
 
-        {setupDone && !addEventOpen && (
-          <div className="fab-group">
-            <button
-              type="button"
-              className="fab-day-map"
-              aria-label="View day on map"
-              onClick={() => {
-                const date = tripDates[activeDay]
-                const dayPlan = plan.dayPlans?.[date]
-                const items = (dayPlan?.items || [])
-                const stops = [
-                  dayPlan?.park,
-                  ...items.map(item => {
-                    const n = normalizeEventItem(item)
-                    return n.ride ? n.ride.split('::').pop() : (n.restaurant || n.note || null)
-                  })
-                ].filter(Boolean).map(s => encodeURIComponent(s + ' Walt Disney World'))
-                const url = stops.length
-                  ? `https://www.google.com/maps/dir/${stops.join('/')}`
-                  : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((dayPlan?.park || 'Walt Disney World') + ' Walt Disney World')}`
-                window.open(url, '_blank', 'noreferrer')
-              }}
-            >🗺</button>
-            <button
-              type="button"
-              className="fab-add-event"
-              onClick={() => { setAddEventOpen(prev => !prev); setEventSearch('') }}
-              aria-label="Add event"
-            >
-              <span className={addEventOpen ? 'fab-icon fab-icon-close' : 'fab-icon'}>+</span>
-            </button>
+        {setupDone && (
+          <div className="whats-next-card card card-wide">
+            <h3 className="whats-next-title">What's next</h3>
+            <div className="whats-next-actions">
+              <button
+                type="button"
+                className="whats-next-btn"
+                onClick={() => {
+                  const dayPlan = plan.dayPlans?.[activeDate]
+                  const items = dayPlan?.items || []
+                  const stops = [
+                    dayPlan?.park,
+                    ...items.map(item => {
+                      const n = normalizeEventItem(item)
+                      return n.ride ? n.ride.split('::').pop() : (n.restaurant || n.note || null)
+                    })
+                  ].filter(Boolean).map(s => encodeURIComponent(s + ' Walt Disney World'))
+                  const url = stops.length
+                    ? `https://www.google.com/maps/dir/${stops.join('/')}`
+                    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((dayPlan?.park || 'Walt Disney World') + ' Walt Disney World')}`
+                  window.open(url, '_blank', 'noreferrer')
+                }}
+              >
+                <span className="whats-next-btn-icon">🗺</span>
+                <span>View Day {activeDay + 1} on map</span>
+              </button>
+            </div>
           </div>
         )}
 

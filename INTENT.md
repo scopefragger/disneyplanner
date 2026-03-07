@@ -5,6 +5,22 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-07T09:08:00Z — Google-style search bar + What's next section
+
+**What:**
+- Moved event search from the floating panel to a prominent pill-shaped search bar between the setup summary and the daily planner
+- Clicking a search result immediately adds the event to the active day via `quickAddToDay` (no draft step)
+- Removed the green + FAB and 🗺 map FAB entirely
+- Added an inline "Add manually" chip at the bottom of the timeline card to access the form-based event builder
+- Added a "What's next" card below the daily planner with a "View Day on map" button
+- Restyled the event-builder-panel as an inline card (was a fixed floating panel anchored to the FAB)
+- Removed now-unused `.event-search-wrap`, `.event-search-input`, `.event-search-results`, `.fab-group`, `.fab-add-event`, `.fab-day-map` CSS
+- Updated empty-state timeline hint copy
+
+**Why:** User requested the search bar move to a more prominent top-level position similar to a Google search bar, and wanted a cleaner home for the map action rather than a floating button.
+
+---
+
 ## 2026-03-06T20:06:00Z — Download ride images locally
 
 **What:**
