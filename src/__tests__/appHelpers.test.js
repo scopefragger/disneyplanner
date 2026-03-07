@@ -22,7 +22,13 @@ import {
   normalizePlan,
   getRideOptionsForDay,
   getTimeSlots,
+  getLocationDisplay,
+  RIDES_BY_PARK,
+  RIDE_IMAGES,
+  generateId,
+  getRestaurantResources,
 } from '../App.jsx'
+import { RIDE_URLS, RIDE_TAGS } from '../data/rideData.js'
 
 // ── createEventItem ──────────────────────────────────────────────────────────
 
@@ -567,5 +573,109 @@ describe('getTimeSlots', () => {
       expect(s).toHaveProperty('time')
       expect(s).toHaveProperty('label')
     })
+  })
+})
+
+// ── getLocationDisplay (TD-023) ───────────────────────────────────────────────
+
+describe('getLocationDisplay', () => {
+  it('returns park label and icon for a Park day', () => {
+    const result = getLocationDisplay({ dayType: 'Park', park: 'Magic Kingdom', parkHop: false, secondPark: '' }, '')
+    expect(result.label).toBe('Magic Kingdom')
+    expect(result.icon).toBeTruthy()
+  })
+
+  it('shows "Park to SecondPark" label on a park-hop day', () => {
+    const result = getLocationDisplay({ dayType: 'Park', park: 'Magic Kingdom', parkHop: true, secondPark: 'EPCOT' }, '')
+    expect(result.label).toBe('Magic Kingdom to EPCOT')
+  })
+
+  it('returns swim spot label for Swimming day', () => {
+    const result = getLocationDisplay({ dayType: 'Swimming', swimSpot: "Disney's Typhoon Lagoon Water Park" }, '')
+    expect(result.label).toBe("Disney's Typhoon Lagoon Water Park")
+  })
+
+  it('returns staySpot label for Hotel/Shopping day', () => {
+    const result = getLocationDisplay({ dayType: 'Hotel/Shopping', staySpot: "Disney's Contemporary Resort" }, '')
+    expect(result.label).toContain("Disney's Contemporary Resort")
+  })
+
+  it('prefixes "My hotel:" when staySpot matches myHotel', () => {
+    const hotel = "Disney's Grand Floridian Resort & Spa"
+    const result = getLocationDisplay({ dayType: 'Hotel/Shopping', staySpot: hotel }, hotel)
+    expect(result.label).toBe(`My hotel: ${hotel}`)
+  })
+
+  it('returns null for Travel or unset day type', () => {
+    expect(getLocationDisplay({ dayType: 'Travel' }, '')).toBeNull()
+    expect(getLocationDisplay({ dayType: '' }, '')).toBeNull()
+  })
+
+  it('returns Disney Springs badge icon for Disney Springs stay', () => {
+    const result = getLocationDisplay({ dayType: 'Hotel/Shopping', staySpot: 'Disney Springs' }, '')
+    expect(result.label).toBe('Disney Springs')
+    expect(result.icon).toBeTruthy()
+  })
+})
+
+// ── Ride data integrity (TD-024) ──────────────────────────────────────────────
+
+describe('Ride data integrity', () => {
+  const allRides = Object.values(RIDES_BY_PARK).flat()
+
+  it('every ride in RIDES_BY_PARK has a matching RIDE_URLS entry', () => {
+    // Disney Springs balloon is not a typical attraction — exclude
+    const ridesToCheck = allRides.filter(r => r !== 'Aerophile - The World Leader in Balloon Flight')
+    ridesToCheck.forEach(ride => {
+      expect(RIDE_URLS).toHaveProperty(ride)
+    })
+  })
+
+  it('every ride in RIDES_BY_PARK has a matching RIDE_IMAGES entry', () => {
+    const ridesToCheck = allRides.filter(r => r !== 'Aerophile - The World Leader in Balloon Flight')
+    ridesToCheck.forEach(ride => {
+      expect(RIDE_IMAGES).toHaveProperty(ride)
+    })
+  })
+
+  it('every ride in RIDES_BY_PARK has a matching RIDE_TAGS entry', () => {
+    const ridesToCheck = allRides.filter(r => r !== 'Aerophile - The World Leader in Balloon Flight')
+    ridesToCheck.forEach(ride => {
+      expect(RIDE_TAGS).toHaveProperty(ride)
+      expect(Array.isArray(RIDE_TAGS[ride])).toBe(true)
+      expect(RIDE_TAGS[ride].length).toBeGreaterThan(0)
+    })
+  })
+})
+
+// ── getRestaurantResources (TD-025) ───────────────────────────────────────────
+
+describe('getRestaurantResources', () => {
+  it('returns metadata object for a known restaurant', () => {
+    const result = getRestaurantResources('Be Our Guest Restaurant')
+    expect(result).toHaveProperty('menuUrl')
+    expect(result).toHaveProperty('bookingUrl')
+    expect(result).toHaveProperty('heroImage')
+    expect(result.menuUrl).toContain('be-our-guest')
+  })
+
+  it('falls back to a search URL for an unknown restaurant', () => {
+    const result = getRestaurantResources('Unknown Place')
+    expect(result.menuUrl).toContain('Unknown')
+    expect(result.bookingUrl).toContain('Unknown')
+    expect(result.heroImage).toBe('')
+  })
+})
+
+// ── generateId (TD-025) ───────────────────────────────────────────────────────
+
+describe('generateId', () => {
+  it('starts with "proj-"', () => {
+    expect(generateId()).toMatch(/^proj-/)
+  })
+
+  it('generates unique IDs on successive calls', () => {
+    const ids = new Set(Array.from({ length: 20 }, () => generateId()))
+    expect(ids.size).toBe(20)
   })
 })

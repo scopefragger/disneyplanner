@@ -225,3 +225,14 @@ Each entry is appended after every prompt.
 **Why:** normalizePlan is the critical localStorage recovery path — any regression there corrupts saved plans. Tests on ride options and slot helpers guard against scheduling bugs.
 
 ---
+
+## 2026-03-07T13:48:00Z — Tech debt batch 5 (TD-023, TD-024, TD-025)
+
+**What:**
+- TD-023: Exported `getLocationDisplay`; added 7 tests covering all day-type branches including park-hop, "My hotel" prefix, and Disney Springs icon
+- TD-024: Added ride data integrity tests — verify every ride in RIDES_BY_PARK has a matching RIDE_URLS, RIDE_IMAGES, and RIDE_TAGS entry; catches silent missing-data bugs
+- TD-025: Added tests for `getRestaurantResources` (metadata hit + search URL fallback) and `generateId` (format + uniqueness)
+
+**Why:** Data integrity tests make it impossible to add a ride to the selector without also providing its URL, image, and tags. generateId uniqueness prevents duplicate project IDs corrupting the project list.
+
+---
