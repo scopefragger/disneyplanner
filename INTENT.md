@@ -247,3 +247,15 @@ Each entry is appended after every prompt.
 **Why:** getDayCardStyle drives the visual identity of every day card — regression there would silently break all card backgrounds. Edge-case normalizePlan tests guard the localStorage recovery path against corrupted or partially-migrated data.
 
 ---
+
+## 2026-03-07T13:53:00Z — Search all WDW shows regardless of active day's park
+
+**What:**
+- Added `ALL_SHOWS` export to `parkSuggestions.js` — flat list of every static show decorated with its `park` field
+- Changed `topSearchResults.shows` in App.jsx from `getParkSuggestions(activeDayPlan.park, ...)` to `ALL_SHOWS` so all 9 WDW shows are always searchable
+- Updated search result meta to show park name + time (e.g. "Magic Kingdom · 21:00") instead of show type
+- Removed `activeDayPlan.park`/`activeDayPlan.secondPark` from `useMemo` deps (no longer referenced inside memo); increased show slice cap from 4 → 6
+
+**Why:** Previously you could only find shows for the active day's park — if the day had no park set, or you were looking for a show at a different park, nothing appeared. Now the search works across all WDW shows at all times.
+
+---

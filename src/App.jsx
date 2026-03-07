@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { RESTAURANT_METADATA, RESTAURANT_TAGS } from './data/restaurantMetadata'
-import { getParkSuggestions, fetchLiveParkShows } from './data/parkSuggestions.js'
+import { getParkSuggestions, fetchLiveParkShows, ALL_SHOWS } from './data/parkSuggestions.js'
 import { RIDE_TAGS, getRideUrl } from './data/rideData.js'
 import { fuzzyMatch } from './utils.js'
 
@@ -1027,12 +1027,12 @@ function App() {
   const topSearchResults = useMemo(() => {
     if (!setupDone || !topSearchQ) return null
     return {
-      shows: getParkSuggestions(activeDayPlan.park, activeDayPlan.secondPark)
+      shows: ALL_SHOWS
         .map(s => {
           const cleanTags = (s.tags || []).map(t => t.replace(/^#/, ''))
           const matchingTags = cleanTags.filter(t => fuzzyMatch(topSearchQ, t))
           return (fuzzyMatch(topSearchQ, s.label) || matchingTags.length) ? { ...s, matchingTags } : null
-        }).filter(Boolean).slice(0, 4),
+        }).filter(Boolean).slice(0, 6),
       restaurants: ALL_RESTAURANTS.map(r => {
         const tags = RESTAURANT_TAGS[r] || []
         const matchingTags = tags.filter(t => fuzzyMatch(topSearchQ, t))
@@ -1044,7 +1044,7 @@ function App() {
         return (fuzzyMatch(topSearchQ, r.label) || matchingTags.length) ? { ...r, matchingTags } : null
       }).filter(Boolean).slice(0, 5),
     }
-  }, [setupDone, topSearchQ, activeDayPlan.park, activeDayPlan.secondPark, activeRideOptions])
+  }, [setupDone, topSearchQ, activeRideOptions])
   const hasTopSearchResults = topSearchResults &&
     (topSearchResults.shows.length || topSearchResults.restaurants.length || topSearchResults.rides.length)
 
@@ -1324,7 +1324,7 @@ function App() {
                   {topSearchResults.shows.map(s => (
                     <button key={s.id} type="button" className="esr-item" onClick={() => quickAddToDay(activeDate, 'show', s)}>
                       <span className="esr-name">{s.label}</span>
-                      <span className="esr-meta">{s.matchingTags.length > 0 ? s.matchingTags.join(' · ') : `${s.time} · ${s.type}`}</span>
+                      <span className="esr-meta">{s.matchingTags.length > 0 ? s.matchingTags.join(' · ') : `${s.park.replace("Disney's ", '')} · ${s.time}`}</span>
                     </button>
                   ))}
                 </>}

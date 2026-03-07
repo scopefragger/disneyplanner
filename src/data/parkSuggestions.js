@@ -288,6 +288,10 @@ export async function fetchLiveParkShows(parkName) {
   }
 }
 
+// All static shows across every park, each decorated with a `park` field for display
+export const ALL_SHOWS = Object.entries(PARK_SUGGESTIONS)
+  .flatMap(([park, shows]) => shows.map(s => ({ ...s, park })))
+
 export function getParkSuggestions(park, secondPark) {
   return [park, secondPark]
     .filter(Boolean)
