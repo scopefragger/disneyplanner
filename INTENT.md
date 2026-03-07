@@ -214,3 +214,14 @@ Each entry is appended after every prompt.
 **Why:** Single source of truth for day plan shape prevents field drift. Tests on date and slot helpers catch regressions in critical scheduling logic.
 
 ---
+
+## 2026-03-07T13:47:00Z — Tech debt batch 4 (TD-020, TD-021, TD-022)
+
+**What:**
+- TD-020: Exported `hashtagLabel`, `getDayTypeChipColor`, `getDayTypeIcon`; added 11 tests
+- TD-021: Exported `normalizePlan`; added 6 tests covering default fill, dayPlans normalisation, edge cases
+- TD-022: Exported `getRideOptionsForDay`, `getTimeSlots`; added 8 tests covering park-hop, slot labels
+
+**Why:** normalizePlan is the critical localStorage recovery path — any regression there corrupts saved plans. Tests on ride options and slot helpers guard against scheduling bugs.
+
+---

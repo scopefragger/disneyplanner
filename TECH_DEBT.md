@@ -5,16 +5,6 @@ It is removed from this file once fixed and verified by a passing build + test r
 
 ---
 
-## TD-020 — `hashtagLabel`, `getDayTypeChipColor`, `getDayTypeIcon` have no tests
-Pure functions with no test coverage. Export and test.
-
-## TD-021 — `normalizePlan` has no tests
-Critical data-recovery function with no coverage. Export and add tests covering default values,
-partial input, and the `dayPlans` normalisation path.
-
-## TD-022 — `getRideOptionsForDay` and `getTimeSlots` have no tests
-Pure functions with no test coverage. Export and test both.
-
 ## TD-023 — `getLocationDisplay` has no tests
 Pure function used to compute the location chip label and icon. Export and add tests for each
 day-type branch (Park, Park-hop, Swimming, Hotel/Shopping, Travel, null).

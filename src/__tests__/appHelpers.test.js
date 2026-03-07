@@ -16,6 +16,12 @@ import {
   getItemSlot,
   getEventTypeConfig,
   getSecondParkOptions,
+  hashtagLabel,
+  getDayTypeChipColor,
+  getDayTypeIcon,
+  normalizePlan,
+  getRideOptionsForDay,
+  getTimeSlots,
 } from '../App.jsx'
 
 // ── createEventItem ──────────────────────────────────────────────────────────
@@ -383,5 +389,183 @@ describe('getSecondParkOptions', () => {
   it('returns all parks when first park is unknown/null', () => {
     const options = getSecondParkOptions(null)
     expect(options.length).toBeGreaterThan(0)
+  })
+})
+
+// ── hashtagLabel (TD-020) ─────────────────────────────────────────────────────
+
+describe('hashtagLabel', () => {
+  it('prepends # and strips spaces', () => {
+    expect(hashtagLabel('Magic Kingdom')).toBe('#MagicKingdom')
+  })
+
+  it('returns "#Choose" for falsy input', () => {
+    expect(hashtagLabel('')).toBe('#Choose')
+    expect(hashtagLabel(null)).toBe('#Choose')
+    expect(hashtagLabel(undefined)).toBe('#Choose')
+  })
+
+  it('handles single word without modification', () => {
+    expect(hashtagLabel('EPCOT')).toBe('#EPCOT')
+  })
+})
+
+// ── getDayTypeChipColor (TD-020) ──────────────────────────────────────────────
+
+describe('getDayTypeChipColor', () => {
+  it('returns the Park colour', () => {
+    expect(getDayTypeChipColor('Park')).toBe('rgba(0, 87, 184, 0.2)')
+  })
+
+  it('returns the Swimming colour', () => {
+    expect(getDayTypeChipColor('Swimming')).toBe('rgba(0, 157, 200, 0.2)')
+  })
+
+  it('returns the Hotel/Shopping colour', () => {
+    expect(getDayTypeChipColor('Hotel/Shopping')).toBe('rgba(144, 109, 201, 0.24)')
+  })
+
+  it('returns the Travel colour', () => {
+    expect(getDayTypeChipColor('Travel')).toBe('rgba(92, 134, 201, 0.22)')
+  })
+
+  it('returns fallback colour for unknown day type', () => {
+    expect(getDayTypeChipColor('Unknown')).toBe('rgba(0, 87, 184, 0.14)')
+    expect(getDayTypeChipColor('')).toBe('rgba(0, 87, 184, 0.14)')
+  })
+})
+
+// ── getDayTypeIcon (TD-020) ───────────────────────────────────────────────────
+
+describe('getDayTypeIcon', () => {
+  it('returns a non-empty string for known day types', () => {
+    expect(getDayTypeIcon('Park')).toBeTruthy()
+    expect(getDayTypeIcon('Swimming')).toBeTruthy()
+    expect(getDayTypeIcon('Travel')).toBeTruthy()
+  })
+
+  it('returns empty string for unknown day type', () => {
+    expect(getDayTypeIcon('Unknown')).toBe('')
+    expect(getDayTypeIcon('')).toBe('')
+  })
+})
+
+// ── normalizePlan (TD-021) ────────────────────────────────────────────────────
+
+describe('normalizePlan', () => {
+  it('fills missing top-level fields with DEFAULT_PLAN values', () => {
+    const result = normalizePlan({})
+    expect(result.tripName).toBe('Our Disney Holiday')
+    expect(result.adults).toBe(2)
+    expect(Array.isArray(result.priorities)).toBe(true)
+    expect(Array.isArray(result.checklist)).toBe(true)
+    expect(Array.isArray(result.favoriteTags)).toBe(true)
+  })
+
+  it('preserves provided top-level fields', () => {
+    const result = normalizePlan({ tripName: 'Epic Trip', adults: 4 })
+    expect(result.tripName).toBe('Epic Trip')
+    expect(result.adults).toBe(4)
+  })
+
+  it('normalises dayPlans entries — fills blank strings and arrays', () => {
+    const raw = {
+      dayPlans: {
+        '2026-03-10': { dayType: 'Park', park: 'Magic Kingdom' }
+      }
+    }
+    const result = normalizePlan(raw)
+    const day = result.dayPlans['2026-03-10']
+    expect(day.dayType).toBe('Park')
+    expect(day.park).toBe('Magic Kingdom')
+    expect(day.secondPark).toBe('')
+    expect(day.parkHop).toBe(false)
+    expect(Array.isArray(day.items)).toBe(true)
+    expect(Array.isArray(day.dismissedSuggestions)).toBe(true)
+  })
+
+  it('handles missing dayPlans gracefully', () => {
+    const result = normalizePlan({ tripName: 'Test' })
+    expect(result.dayPlans).toEqual({})
+  })
+
+  it('preserves existing items and dismissedSuggestions in dayPlans', () => {
+    const items = [{ type: 'Fireworks', note: 'test' }]
+    const dismissed = ['mk-happily-ever-after']
+    const raw = {
+      dayPlans: { '2026-03-10': { dayType: 'Park', park: 'EPCOT', items, dismissedSuggestions: dismissed } }
+    }
+    const result = normalizePlan(raw)
+    expect(result.dayPlans['2026-03-10'].items).toEqual(items)
+    expect(result.dayPlans['2026-03-10'].dismissedSuggestions).toEqual(dismissed)
+  })
+
+  it('uses default priorities when rawPlan.priorities is empty', () => {
+    const result = normalizePlan({ priorities: [] })
+    expect(result.priorities).toEqual(['Magic Kingdom'])
+  })
+})
+
+// ── getRideOptionsForDay (TD-022) ─────────────────────────────────────────────
+
+describe('getRideOptionsForDay', () => {
+  it('returns an empty array for non-Park day types', () => {
+    expect(getRideOptionsForDay({ dayType: 'Swimming', park: '' })).toEqual([])
+    expect(getRideOptionsForDay({ dayType: '', park: '' })).toEqual([])
+  })
+
+  it('returns ride options for a single park', () => {
+    const options = getRideOptionsForDay({ dayType: 'Park', park: 'Magic Kingdom', parkHop: false, secondPark: '' })
+    expect(options.length).toBeGreaterThan(0)
+    options.forEach(o => {
+      expect(o.value).toContain('Magic Kingdom::')
+      expect(o.label).toBeTruthy()
+    })
+  })
+
+  it('combines rides from both parks on a park-hop day', () => {
+    const options = getRideOptionsForDay({ dayType: 'Park', park: 'Magic Kingdom', parkHop: true, secondPark: 'EPCOT' })
+    const mkRides = options.filter(o => o.value.startsWith('Magic Kingdom::'))
+    const epRides = options.filter(o => o.value.startsWith('EPCOT::'))
+    expect(mkRides.length).toBeGreaterThan(0)
+    expect(epRides.length).toBeGreaterThan(0)
+  })
+
+  it('does not duplicate rides when secondPark equals park', () => {
+    const single = getRideOptionsForDay({ dayType: 'Park', park: 'Magic Kingdom', parkHop: false, secondPark: '' })
+    const hopSame = getRideOptionsForDay({ dayType: 'Park', park: 'Magic Kingdom', parkHop: true, secondPark: 'Magic Kingdom' })
+    expect(hopSame.length).toBe(single.length)
+  })
+})
+
+// ── getTimeSlots (TD-022) ─────────────────────────────────────────────────────
+
+describe('getTimeSlots', () => {
+  it('returns 6 time slots', () => {
+    expect(getTimeSlots('Park').length).toBe(6)
+    expect(getTimeSlots('Swimming').length).toBe(6)
+  })
+
+  it('uses "Rope drop" as the morning label for Park days', () => {
+    const slots = getTimeSlots('Park')
+    expect(slots[0].label).toBe('Rope drop')
+  })
+
+  it('uses "Water park opens" for Swimming days', () => {
+    const slots = getTimeSlots('Swimming')
+    expect(slots[0].label).toBe('Water park opens')
+  })
+
+  it('uses generic "Morning" for non-park days', () => {
+    const slots = getTimeSlots('Travel')
+    expect(slots[0].label).toBe('Morning')
+  })
+
+  it('every slot has slot, time, and label fields', () => {
+    getTimeSlots('Park').forEach(s => {
+      expect(s).toHaveProperty('slot')
+      expect(s).toHaveProperty('time')
+      expect(s).toHaveProperty('label')
+    })
   })
 })
