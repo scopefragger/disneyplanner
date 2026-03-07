@@ -22,6 +22,7 @@ No backend, no auth — all state is persisted to `localStorage`.
 | `src/__tests__/` | All test files (Vitest) |
 | `CLAUDE.md` | This file |
 | `INTENT.md` | Timestamped log of what was changed and why |
+| `TECH_DEBT.md` | Register of known quality issues and action plans |
 
 ---
 
@@ -127,6 +128,32 @@ Apply these patterns where they naturally reduce complexity. Do not force a patt
   - `"Disney's Animal Kingdom"`
 - **Suggestion object shape** — every suggestion must have: `id`, `label`, `time` (HH:MM), `type`, `theme`, `tags[]`, `infoUrl`, `mapUrl`
 - **Tag format** — lowercase hashtag strings: `'#frozen'`, `'#fireworks'`, `'#meetandgreet'`
+
+---
+
+## Tech Debt Tracking
+
+When new tech debt is introduced (by necessity or oversight), add an entry to `TECH_DEBT.md`:
+
+```
+## TD-NNN · Short title
+
+**Severity:** High / Medium / Low / Trivial
+**File:** path/to/file.js
+**Violation:** Which rule from CLAUDE.md is broken
+
+**Problem:** What the issue is and why it matters.
+
+**Fix:** Concrete description of the change required (code snippet if useful).
+
+**Pattern:** Relevant design pattern from CLAUDE.md (if applicable)
+**Effort:** Trivial / Low / Medium / High
+```
+
+When a debt item is fixed:
+1. Verify the build passes and coverage stays ≥ 60%
+2. **Remove the entry from `TECH_DEBT.md`** entirely
+3. Note the fix in `INTENT.md` referencing the TD number (e.g. "Fix TD-001: extract patchDayPlan helper")
 
 ---
 

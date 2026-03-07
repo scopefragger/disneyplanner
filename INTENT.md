@@ -5,6 +5,16 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-07T09:20:00Z — Establish tech debt register
+
+**What:**
+- Created `TECH_DEBT.md` with 10 identified issues (TD-001 through TD-010) from a full codebase audit against CLAUDE.md quality standards
+- Updated `CLAUDE.md`: added `TECH_DEBT.md` to the key files table; added "Tech Debt Tracking" section with format and removal rules
+
+**Why:** Codebase has grown organically and accumulated quality debt (DRY violations, missing factory patterns, untested pure functions). Formalising the register ensures debt is tracked, prioritised, and removed rather than silently accumulating.
+
+---
+
 ## 2026-03-07T09:08:00Z — Google-style search bar + What's next section
 
 **What:**
