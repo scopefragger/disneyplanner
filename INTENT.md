@@ -5,6 +5,16 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-07T20:22:00Z — TD-038: Move getRestaurantResources to restaurantMetadata.js
+
+**What:**
+- Moved `getRestaurantResources` and `DISNEY_WORLD_BASE_URL` from `App.jsx` into `restaurantMetadata.js`
+- Updated App.jsx import; removed now-unused `RESTAURANT_METADATA` from App.jsx imports
+
+**Why:** TD-038 — the function's only dependency is `RESTAURANT_METADATA`; all restaurant lookup logic now lives in one module.
+
+---
+
 ## 2026-03-07T20:14:00Z — TD-036: Extract JSX sections into named render functions (App.jsx)
 
 **What:**

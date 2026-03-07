@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { RESTAURANT_METADATA, RESTAURANT_TAGS, RESTAURANT_GROUPS, ALL_RESTAURANTS } from './data/restaurantMetadata'
+import { RESTAURANT_TAGS, RESTAURANT_GROUPS, ALL_RESTAURANTS, getRestaurantResources } from './data/restaurantMetadata'
 import { getParkSuggestions, fetchLiveParkShows, ALL_SHOWS } from './data/parkSuggestions.js'
 import { RIDE_TAGS, getRideUrl, RIDES_BY_PARK, RIDE_IMAGES } from './data/rideData.js'
 import { fuzzyMatch, getDateRange, formatPrettyDate, formatShortDate, formatTime } from './utils.js'
@@ -7,21 +7,6 @@ import { PARK_OPTIONS, DINING_OPTIONS, DAY_TYPES, SWIM_OPTIONS, DISNEY_HOTELS, E
 import { DEFAULT_PLAN, DEFAULT_DRAFT, SHOW_TYPE_MAP, normalizePlan, detectTheme, getEventTypeConfig, buildEventLabel, createBlankDayPlan, createEventItem, parseRideSelection, patchDayPlan, normalizeEventItem, resetDraftForType } from './data/planHelpers.js'
 import { STORAGE_KEY, PROJECTS_KEY, generateId, loadAllProjects } from './data/storage.js'
 import { DAY_CHIP_COLORS, getDayTypeChipColor, hashtagLabel, getDayCardStyle, getDayTypeIcon, getSecondParkOptions, getRideOptionsForDay, getItemSlot, getTimeSlots, getLocationDisplay } from './data/displayHelpers.js'
-
-const DISNEY_WORLD_BASE_URL = 'https://www.disneyworld.co.uk'
-
-function getRestaurantResources(restaurantName) {
-  const metadata = RESTAURANT_METADATA[restaurantName]
-  if (metadata) return metadata
-
-  const query = encodeURIComponent(restaurantName)
-  const searchUrl = `${DISNEY_WORLD_BASE_URL}/search/?q=${query}`
-  return {
-    menuUrl: searchUrl,
-    bookingUrl: searchUrl,
-    heroImage: ''
-  }
-}
 
 // ── HomeScreen ────────────────────────────────────────────────────────────────
 function HomeScreen({ projects, openProject, deleteProject, createProject }) {

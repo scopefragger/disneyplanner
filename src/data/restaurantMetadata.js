@@ -536,3 +536,18 @@ export const RESTAURANT_GROUPS = {
 }
 
 export const ALL_RESTAURANTS = Object.values(RESTAURANT_GROUPS).flat()
+
+const DISNEY_WORLD_BASE_URL = 'https://www.disneyworld.co.uk'
+
+export function getRestaurantResources(restaurantName) {
+  const metadata = RESTAURANT_METADATA[restaurantName]
+  if (metadata) return metadata
+
+  const query = encodeURIComponent(restaurantName)
+  const searchUrl = `${DISNEY_WORLD_BASE_URL}/search/?q=${query}`
+  return {
+    menuUrl: searchUrl,
+    bookingUrl: searchUrl,
+    heroImage: ''
+  }
+}
