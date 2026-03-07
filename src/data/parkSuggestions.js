@@ -107,104 +107,114 @@ export function inferTheme(name) {
   return 'default'
 }
 
-// Infer hashtags from show name and theme
-// Builds 3 tags: franchise/IP → main character → event type
+// ── Declarative keyword tables for inferTags (TD-005) ───────────────────────
+const FRANCHISE_KEYWORDS = {
+  '#starwars':            ['star wars', 'galactic', 'jedi', 'stormtrooper'],
+  '#frozen':              ['frozen', 'arendelle', 'sing-along'],
+  '#indianajones':        ['indiana jones', 'indy', 'stunt spectacular'],
+  '#lionking':            ['lion king', 'simba', 'timon', 'pumbaa', 'hakuna'],
+  '#littlemermaid':       ['little mermaid', 'ursula', 'under the sea'],
+  '#beautyandthebeast':   ['beauty and the beast', 'lumiere', 'cogsworth'],
+  '#toystory':            ['toy story', 'woody', 'buzz lightyear', 'jessie', 'lotso'],
+  '#findingnemo':         ['finding nemo', 'finding dory', 'big blue'],
+  '#up':                  ['bird adventure', 'kevin', 'dug', 'russell'],
+  '#bigherosix':          ['big hero', 'baymax', 'hiro'],
+  '#tangled':             ['tangled', 'rapunzel', 'pascal', 'flynn'],
+  '#moana':               ['moana', 'maui', 'motunui'],
+  '#aladdin':             ['aladdin', 'genie', 'agrabah', 'abu'],
+  '#cinderella':          ['cinderella', 'glass slipper', 'bibbidi'],
+  '#sleepingbeauty':      ['sleeping beauty', 'maleficent', 'aurora', 'prince phillip'],
+  '#snowwhite':           ['snow white', 'seven dwarfs', 'dwarfs mine'],
+  '#brave':               ['brave', 'merida', 'dunbroch'],
+  '#princessandthefrog':  ['princess and the frog', 'tiana', 'naveen', 'louis the alligator'],
+  '#liloandstitch':       ['lilo', 'stitch', 'experiment 626'],
+  '#pooh':                ['winnie', 'hundred acre', 'pooh', 'tigger', 'eeyore', 'piglet'],
+  '#muppets':             ['muppet', 'kermit', 'miss piggy', 'gonzo'],
+  '#figment':             ['figment', 'journey into imagination'],
+  '#coco':                ['coco', 'miguel', 'día de'],
+  '#encanto':             ['encanto', 'mirabel', 'isabela', 'luisa', 'madrigal'],
+  '#ratatouille':         ['ratatouille', 'remy', 'gusteau'],
+  '#cars':                ['lightning mcqueen', 'mater', 'radiator springs'],
+  '#monsters':            ['monsters', 'sulley', 'boo', 'monstropolis'],
+  '#insideout':           ['inside out', 'joy', 'sadness', 'bing bong'],
+  '#incredibles':         ['incredibles', 'mr. incredible', 'elastigirl', 'dash'],
+  '#guardiansofthegalaxy':['guardians', 'rocket raccoon', 'gamora', 'cosmic rewind'],
+  '#spiderman':           ['spider-man', 'spiderman', 'peter parker', 'web-slinger'],
+  '#blackpanther':        ['black panther', 'wakanda', "t'challa"],
+  '#thor':                ['thor', 'asgard', 'loki'],
+  '#captainamerica':      ['captain america', 'steve rogers', 'shield'],
+  '#ironman':             ['iron man', 'tony stark', 'stark'],
+  '#doctorstrange':       ['doctor strange', 'sanctum'],
+  '#antman':              ['ant-man', 'antman', 'scott lang'],
+  '#mulan':               ['mulan', 'mushu', 'shang'],
+  '#junglecruise':        ['jungle cruise'],
+}
+
+const CHARACTER_KEYWORDS = {
+  '#mickey':      ['mickey'],
+  '#minnie':      ['minnie'],
+  '#donald':      ['donald'],
+  '#goofy':       ['goofy'],
+  '#pluto':       ['pluto'],
+  '#chipanddale': ['chip', 'dale'],
+  '#elsa':        ['elsa'],
+  '#olaf':        ['olaf'],
+  '#ariel':       ['ariel'],
+  '#belle':       ['belle'],
+  '#rapunzel':    ['rapunzel'],
+  '#tiana':       ['tiana'],
+  '#jasmine':     ['jasmine'],
+  '#aurora':      ['aurora'],
+  '#merida':      ['merida'],
+  '#woody':       ['woody'],
+  '#buzz':        ['buzz lightyear'],
+  '#nemo':        ['nemo'],
+  '#simba':       ['simba'],
+  '#stitch':      ['stitch'],
+  '#baymax':      ['baymax'],
+  '#groot':       ['groot'],
+  '#tigger':      ['tigger'],
+  '#pooh':        ['winnie', 'pooh'],
+}
+
+const ACTIVITY_KEYWORDS = {
+  '#fireworks':   ['firework', 'luminous', 'galactic', 'happily ever', 'harmonious', 'fantasmic', 'illuminate'],
+  '#parade':      ['parade', 'cavalcade'],
+  '#meetandgreet':['meet', 'greet', 'encounter'],
+  '#adventure':   ['stunt', 'adventure'],
+  '#nature':      ['nature', 'wildlife', 'bird'],
+  '#nighttime':   ['nighttime'],
+}
+
+const PRINCESS_NAMES  = ['cinderella','belle','ariel','rapunzel','moana','tiana','merida','aurora','jasmine','snow white','anna','elsa','mulan']
+const PIXAR_IPS       = ['toy story','nemo','dory','bird adventure','big hero','inside out','coco','ratatouille','cars','monsters','brave','incredibles','turning red','lightyear']
+const MARVEL_HEROES   = ['spider-man','spiderman','thor','iron man','captain america','black panther','guardians','groot','doctor strange','ant-man','hawkeye','avenger']
+
+function matchKeywords(n, table) {
+  return Object.entries(table)
+    .filter(([, kws]) => kws.some(kw => n.includes(kw)))
+    .map(([tag]) => tag)
+}
+
+// Infer hashtags from show name and theme.
+// Template: collect franchise → character → activity, assemble max 3.
 export function inferTags(name, theme) {
   const n = name.toLowerCase()
-  const franchise = []
-  const characters = []
-  const activity = []
 
-  // ── Franchises / Films ──────────────────────────────────────────────────
-  if (n.includes('star wars') || n.includes('galactic') || n.includes('jedi') || n.includes('stormtrooper')) franchise.push('#starwars')
-  if (n.includes('frozen') || n.includes('arendelle') || n.includes('sing-along')) franchise.push('#frozen')
-  if (n.includes('indiana jones') || n.includes('indy') || n.includes('stunt spectacular')) franchise.push('#indianajones')
-  if (n.includes('lion king') || n.includes('simba') || n.includes('timon') || n.includes('pumbaa') || n.includes('hakuna')) franchise.push('#lionking')
-  if (n.includes('little mermaid') || n.includes('ursula') || n.includes('under the sea')) franchise.push('#littlemermaid')
-  if (n.includes('beauty and the beast') || n.includes('lumiere') || n.includes('cogsworth')) franchise.push('#beautyandthebeast')
-  if (n.includes('toy story') || n.includes('woody') || n.includes('buzz lightyear') || n.includes('jessie') || n.includes('lotso')) franchise.push('#toystory')
-  if (n.includes('finding nemo') || n.includes('finding dory') || n.includes('big blue')) franchise.push('#findingnemo')
-  if (n.includes('bird adventure') || n.includes('kevin') || n.includes('dug') || n.includes('russell')) franchise.push('#up')
-  if (n.includes('big hero') || n.includes('baymax') || n.includes('hiro')) franchise.push('#bigherosix')
-  if (n.includes('tangled') || n.includes('rapunzel') || n.includes('pascal') || n.includes('flynn')) franchise.push('#tangled')
-  if (n.includes('moana') || n.includes('maui') || n.includes('motunui')) franchise.push('#moana')
-  if (n.includes('aladdin') || n.includes('genie') || n.includes('agrabah') || n.includes('abu')) franchise.push('#aladdin')
-  if (n.includes('cinderella') || n.includes('glass slipper') || n.includes('bibbidi')) franchise.push('#cinderella')
-  if (n.includes('sleeping beauty') || n.includes('maleficent') || n.includes('aurora') || n.includes('prince phillip')) franchise.push('#sleepingbeauty')
-  if (n.includes('snow white') || n.includes('seven dwarfs') || n.includes('dwarfs mine')) franchise.push('#snowwhite')
-  if (n.includes('brave') || n.includes('merida') || n.includes('dunbroch')) franchise.push('#brave')
-  if (n.includes('princess and the frog') || n.includes('tiana') || n.includes('naveen') || n.includes('louis the alligator')) franchise.push('#princessandthefrog')
-  if (n.includes('lilo') || n.includes('stitch') || n.includes('experiment 626')) franchise.push('#liloandstitch')
-  if (n.includes('winnie') || n.includes('hundred acre') || n.includes('pooh') || n.includes('tigger') || n.includes('eeyore') || n.includes('piglet')) franchise.push('#pooh')
-  if (n.includes('muppet') || n.includes('kermit') || n.includes('miss piggy') || n.includes('gonzo')) franchise.push('#muppets')
-  if (n.includes('figment') || n.includes('journey into imagination')) franchise.push('#figment')
-  if (n.includes('coco') || n.includes('miguel') || n.includes('día de')) franchise.push('#coco')
-  if (n.includes('encanto') || n.includes('mirabel') || n.includes('isabela') || n.includes('luisa') || n.includes('madrigal')) franchise.push('#encanto')
-  if (n.includes('ratatouille') || n.includes('remy') || n.includes('gusteau')) franchise.push('#ratatouille')
-  if (n.includes('cars') || n.includes('lightning mcqueen') || n.includes('mater') || n.includes('radiator springs')) franchise.push('#cars')
-  if (n.includes('monsters') || n.includes('sulley') || n.includes('boo') || n.includes('monstropolis')) franchise.push('#monsters')
-  if (n.includes('inside out') || n.includes('joy') || n.includes('sadness') || n.includes('bing bong')) franchise.push('#insideout')
-  if (n.includes('incredibles') || n.includes('mr. incredible') || n.includes('elastigirl') || n.includes('dash')) franchise.push('#incredibles')
-  if (n.includes('guardians') || n.includes('rocket raccoon') || n.includes('gamora') || n.includes('cosmic rewind')) franchise.push('#guardiansofthegalaxy')
-  if (n.includes('spider-man') || n.includes('spiderman') || n.includes('peter parker') || n.includes('web-slinger')) franchise.push('#spiderman')
-  if (n.includes('black panther') || n.includes('wakanda') || n.includes("t'challa")) franchise.push('#blackpanther')
-  if (n.includes('thor') || n.includes('asgard') || n.includes('loki')) franchise.push('#thor')
-  if (n.includes('captain america') || n.includes('steve rogers') || n.includes('shield')) franchise.push('#captainamerica')
-  if (n.includes('iron man') || n.includes('tony stark') || n.includes('stark')) franchise.push('#ironman')
-  if (n.includes('doctor strange') || n.includes('sanctum')) franchise.push('#doctorstrange')
-  if (n.includes('ant-man') || n.includes('antman') || n.includes('scott lang')) franchise.push('#antman')
-  if (n.includes('mulan') || n.includes('mushu') || n.includes('shang')) franchise.push('#mulan')
-  if (n.includes('jungle cruise') || n.includes('jungle') && n.includes('skipper')) franchise.push('#junglecruise')
+  const franchise  = matchKeywords(n, FRANCHISE_KEYWORDS)
+  const characters = Object.entries(CHARACTER_KEYWORDS)
+    .filter(([tag, kws]) => {
+      // '#anna' needs negative check to avoid false matches
+      if (tag === '#anna') return n.includes('anna') && !n.includes('savanna') && !n.includes('banana')
+      return kws.some(kw => n.includes(kw))
+    })
+    .map(([tag]) => tag)
 
-  // ── Characters ──────────────────────────────────────────────────────────
-  if (n.includes('mickey')) characters.push('#mickey')
-  if (n.includes('minnie')) characters.push('#minnie')
-  if (n.includes('donald')) characters.push('#donald')
-  if (n.includes('goofy')) characters.push('#goofy')
-  if (n.includes('pluto')) characters.push('#pluto')
-  if (n.includes('chip') || (n.includes('chip') && n.includes('dale'))) characters.push('#chipanddale')
-  if (n.includes('elsa')) characters.push('#elsa')
-  if (n.includes('anna') && !n.includes('savanna') && !n.includes('banana')) characters.push('#anna')
-  if (n.includes('olaf')) characters.push('#olaf')
-  if (n.includes('ariel')) characters.push('#ariel')
-  if (n.includes('belle')) characters.push('#belle')
-  if (n.includes('rapunzel')) characters.push('#rapunzel')
-  if (n.includes('moana')) characters.push('#moana')
-  if (n.includes('tiana')) characters.push('#tiana')
-  if (n.includes('jasmine')) characters.push('#jasmine')
-  if (n.includes('aurora')) characters.push('#aurora')
-  if (n.includes('merida')) characters.push('#merida')
-  if (n.includes('snow white')) characters.push('#snowwhite')
-  if (n.includes('mulan')) characters.push('#mulan')
-  if (n.includes('woody')) characters.push('#woody')
-  if (n.includes('buzz')) characters.push('#buzz')
-  if (n.includes('jessie')) characters.push('#jessie')
-  if (n.includes('nemo')) characters.push('#nemo')
-  if (n.includes('dory')) characters.push('#dory')
-  if (n.includes('simba')) characters.push('#simba')
-  if (n.includes('stitch')) characters.push('#stitch')
-  if (n.includes('baymax')) characters.push('#baymax')
-  if (n.includes('groot')) characters.push('#groot')
-  if (n.includes('figment')) characters.push('#figment')
-  if (n.includes('tigger')) characters.push('#tigger')
-  if (n.includes('pooh')) characters.push('#pooh')
-  if (n.includes('winnie')) characters.push('#winnie')
-
-  // ── Event type / activity ───────────────────────────────────────────────
-  if (n.includes('firework') || n.includes('luminous') || n.includes('galactic') ||
-      n.includes('happily ever') || n.includes('harmonious') || n.includes('fantasmic') ||
-      n.includes('illuminate')) activity.push('#fireworks')
-  if (n.includes('parade') || n.includes('cavalcade')) activity.push('#parade')
-  if (n.includes('meet') || n.includes('greet') || n.includes('encounter')) activity.push('#meetandgreet')
-  if (n.includes('stunt') || n.includes('adventure')) activity.push('#adventure')
-  if (n.includes('nature') || n.includes('wildlife') || n.includes('bird') || theme === 'nature') activity.push('#nature')
-  if (n.includes('nighttime') || theme === 'fireworks') activity.push('#nighttime')
-  // Category catches
-  const PRINCESS_NAMES = ['cinderella','belle','ariel','rapunzel','moana','tiana','merida','aurora','jasmine','snow white','anna','elsa','mulan']
+  const activity = matchKeywords(n, ACTIVITY_KEYWORDS)
+  if (theme === 'nature')    activity.push('#nature')
+  if (theme === 'fireworks') activity.push('#nighttime')
   if (PRINCESS_NAMES.some(p => n.includes(p))) activity.push('#princess')
-  const PIXAR_IPS = ['toy story','nemo','dory','bird adventure','big hero','inside out','coco','ratatouille','cars','monsters','brave','incredibles','turning red','lightyear']
   if (PIXAR_IPS.some(ip => n.includes(ip)) || n.includes('pixar')) activity.push('#pixar')
-  const MARVEL_HEROES = ['spider-man','spiderman','thor','iron man','captain america','black panther','guardians','groot','doctor strange','ant-man','hawkeye','avenger']
   if (MARVEL_HEROES.some(h => n.includes(h)) || n.includes('marvel')) activity.push('#marvel')
 
   // ── Assemble: franchise → character → activity (max 3, deduplicated) ───
@@ -213,7 +223,6 @@ export function inferTags(name, theme) {
   push(franchise[0])
   push(characters[0])
   for (const a of activity) { if (result.length >= 3) break; push(a) }
-  // Fill remaining slots from overflow
   if (result.length < 3) { for (const c of characters.slice(1)) { if (result.length >= 3) break; push(c) } }
   if (result.length < 3) { for (const f of franchise.slice(1)) { if (result.length >= 3) break; push(f) } }
   if (result.length === 0) result.push('#liveshow')
@@ -226,6 +235,25 @@ export function parseShowTime(isoString) {
   const match = isoString.match(/T(\d{2}):(\d{2})/)
   if (!match) return null
   return `${match[1]}:${match[2]}`
+}
+
+// Adapter: converts a single themeparks.wiki live-show entity to our internal shape (TD-008)
+function adaptLiveShow(e, parkName) {
+  const firstTime = parseShowTime(e.showtimes[0]?.startTime)
+  if (!firstTime) return null
+  const theme = inferTheme(e.name)
+  const encodedName = encodeURIComponent(e.name + ' Walt Disney World')
+  return {
+    id: `live-${e.id}`,
+    label: e.name,
+    time: firstTime,
+    type: 'Show',
+    theme,
+    tags: inferTags(e.name, theme),
+    showtimes: e.showtimes.map(s => parseShowTime(s.startTime)).filter(Boolean),
+    infoUrl: `https://www.google.com/search?q=${encodedName}`,
+    mapUrl: PARK_MAP_URLS[parkName] ?? `${MAPS}${encodedName}`,
+  }
 }
 
 // Fetch live show data for a park from themeparks.wiki
@@ -249,23 +277,7 @@ export async function fetchLiveParkShows(parkName) {
 
     const shows = (json.liveData || [])
       .filter(e => e.entityType === 'SHOW' && e.showtimes?.length)
-      .map(e => {
-        const firstTime = parseShowTime(e.showtimes[0]?.startTime)
-        if (!firstTime) return null
-        const theme = inferTheme(e.name)
-        const encodedName = encodeURIComponent(e.name + ' Walt Disney World')
-        return {
-          id: `live-${e.id}`,
-          label: e.name,
-          time: firstTime,
-          type: 'Show',
-          theme,
-          tags: inferTags(e.name, theme),
-          showtimes: e.showtimes.map(s => parseShowTime(s.startTime)).filter(Boolean),
-          infoUrl: `https://www.google.com/search?q=${encodedName}`,
-          mapUrl:  PARK_MAP_URLS[parkName] ?? `${MAPS}${encodedName}`,
-        }
-      })
+      .map(e => adaptLiveShow(e, parkName))
       .filter(Boolean)
       .sort((a, b) => a.time.localeCompare(b.time))
 

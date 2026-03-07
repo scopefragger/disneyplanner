@@ -5,6 +5,26 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-07T09:25:00Z — Resolve all 10 tech debt items (TD-001 through TD-010)
+
+**What:**
+- **TD-001** — Extracted `patchDayPlan(current, date, patch)` helper; replaced 12 identical dayPlans spread-patterns across all state handlers and two inline JSX callbacks
+- **TD-002** — Extracted `createEventItem(overrides)` factory; all 6 event-item object literals now delegate to it
+- **TD-003** — Added `DEFAULT_DRAFT` constant; all three draft-default objects now reference it, fixing the silent `time` field inconsistency
+- **TD-004** — Extracted `parseRideSelection(value)` utility; removed the two duplicated destructuring lines
+- **TD-005** — Replaced 70+ imperative `if` blocks in `inferTags` with three declarative lookup tables (`FRANCHISE_KEYWORDS`, `CHARACTER_KEYWORDS`, `ACTIVITY_KEYWORDS`) and a shared `matchKeywords` helper
+- **TD-006** — `normalizeEventItem` both return paths now call `createEventItem`
+- **TD-007** — Extracted `resetDraftForType(draft, newType)` command; event-type dropdown `onChange` now calls it
+- **TD-008** — Extracted `adaptLiveShow(e, parkName)` adapter; `fetchLiveParkShows` `.map()` delegates to it
+- **TD-009** — Added `src/__tests__/appHelpers.test.js` with 30 tests covering all new pure helpers; coverage 62% → 68–73%
+- **TD-010** — Quoted `'EPCOT'` key in `RIDES_BY_PARK` for consistency
+- Exported all new pure helpers from App.jsx for testability
+- Cleared TECH_DEBT.md (all items resolved)
+
+**Why:** Full tech debt paydown — eliminates DRY violations, applies Factory Method, Command, Adapter, and Template Method patterns, raises test coverage.
+
+---
+
 ## 2026-03-07T09:20:00Z — Establish tech debt register
 
 **What:**

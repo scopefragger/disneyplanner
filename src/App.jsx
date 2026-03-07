@@ -110,7 +110,7 @@ const RIDES_BY_PARK = {
     "Tiana's Bayou Adventure",
     'Jungle Cruise'
   ],
-  EPCOT: [
+  'EPCOT': [
     'Guardians of the Galaxy: Cosmic Rewind',
     'Test Track',
     'Frozen Ever After',
@@ -624,9 +624,36 @@ function formatTime(time) {
   return `${hour}:${m.toString().padStart(2, '0')}${period}`
 }
 
+// ── Factory: creates a blank event item merged with overrides (TD-002) ──────
+function createEventItem(overrides) {
+  return {
+    type: '', restaurant: '', customRestaurant: '',
+    menuUrl: '', bookingUrl: '', heroImage: '',
+    ride: '', ridePark: '', note: '', time: '', theme: '',
+    ...overrides
+  }
+}
+
+// ── Utility: parse "Park::RideName" value into its parts (TD-004) ────────────
+function parseRideSelection(value) {
+  const [ridePark = '', ride = ''] = (value || '').split('::')
+  return { ridePark, ride }
+}
+
+// ── Pure state helper: patch a single day's plan (TD-001) ───────────────────
+function patchDayPlan(current, date, patch) {
+  return {
+    ...current,
+    dayPlans: {
+      ...current.dayPlans,
+      [date]: { ...current.dayPlans[date], ...patch }
+    }
+  }
+}
+
 function normalizeEventItem(item) {
   if (item?.type) {
-    return {
+    return createEventItem({
       type: item.type,
       restaurant: item.restaurant || '',
       customRestaurant: item.customRestaurant || '',
@@ -638,24 +665,16 @@ function normalizeEventItem(item) {
       note: item.note || '',
       time: item.time || '',
       theme: item.theme || getEventTypeConfig(item.type).theme
-    }
+    })
   }
 
   const text = item?.text || ''
-  return {
-    type: '',
-    restaurant: '',
-    customRestaurant: '',
-    menuUrl: '',
-    bookingUrl: '',
-    heroImage: '',
-    ride: '',
-    ridePark: '',
+  return createEventItem({
     note: text,
     time: item?.time || '',
     theme: item?.theme || detectTheme(text),
     text
-  }
+  })
 }
 
 const DAY_TYPE_BACKGROUNDS = {
@@ -872,6 +891,14 @@ function formatShortDate(dateStr) {
   return `${parseInt(month, 10)}/${parseInt(day, 10)}`
 }
 
+// ── Default blank draft item — single source of truth (TD-003) ──────────────
+const DEFAULT_DRAFT = { type: 'Fireworks', restaurant: '', customRestaurant: '', ride: '', note: '', time: '' }
+
+// ── Helper: reset draft fields when the event type changes (TD-007) ──────────
+function resetDraftForType(draft, newType) {
+  return { ...DEFAULT_DRAFT, type: newType, note: draft?.note || '' }
+}
+
 function App() {
   const [projects, setProjects] = useState(() => loadAllProjects())
   const [activeProjectId, setActiveProjectId] = useState(null)
@@ -994,20 +1021,14 @@ function App() {
   }
 
   const addDayItem = (date) => {
-    const draft = draftDayItems[date] || {
-      type: 'Fireworks',
-      restaurant: '',
-      customRestaurant: '',
-      ride: '',
-      note: ''
-    }
+    const draft = draftDayItems[date] || DEFAULT_DRAFT
     const eventType = getEventTypeConfig(draft.type)
     const restaurant =
       draft.restaurant === '__custom__'
         ? (draft.customRestaurant || '').trim()
         : (draft.restaurant || '').trim()
     const rideSelection = draft.ride || ''
-    const [ridePark = '', ride = ''] = rideSelection.split('::')
+    const { ridePark, ride } = parseRideSelection(rideSelection)
     const note = (draft.note || '').trim()
     const restaurantResources = restaurant ? getRestaurantResources(restaurant) : null
 
@@ -1015,133 +1036,78 @@ function App() {
     if (draft.type === 'Ride' && !rideSelection) return
     if (!eventType.requiresRestaurant && !note && !draft.type) return
 
-    setPlan((current) => ({
-      ...current,
-      dayPlans: {
-        ...current.dayPlans,
-        [date]: {
-          ...current.dayPlans[date],
-          items: [
-            ...(current.dayPlans[date]?.items || []),
-            {
-              type: draft.type,
-              restaurant,
-              customRestaurant: draft.restaurant === '__custom__' ? restaurant : '',
-              menuUrl: restaurantResources?.menuUrl || '',
-              bookingUrl: restaurantResources?.bookingUrl || '',
-              heroImage: restaurantResources?.heroImage || '',
-              ride,
-              ridePark,
-              note,
-              time: draft.time || '',
-              theme: eventType.theme
-            }
-          ]
-        }
-      }
+    const newItem = createEventItem({
+      type: draft.type,
+      restaurant,
+      customRestaurant: draft.restaurant === '__custom__' ? restaurant : '',
+      menuUrl: restaurantResources?.menuUrl || '',
+      bookingUrl: restaurantResources?.bookingUrl || '',
+      heroImage: restaurantResources?.heroImage || '',
+      ride, ridePark, note,
+      time: draft.time || '',
+      theme: eventType.theme
+    })
+
+    setPlan(current => patchDayPlan(current, date, {
+      items: [...(current.dayPlans[date]?.items || []), newItem]
     }))
-    setDraftDayItems((current) => ({
-      ...current,
-      [date]: { type: draft.type, restaurant: '', customRestaurant: '', ride: '', note: '', time: '' }
-    }))
+    setDraftDayItems(current => ({ ...current, [date]: { ...DEFAULT_DRAFT, type: draft.type } }))
   }
 
   const updateDayItem = (date, itemIndex, updates) => {
-    setPlan((current) => ({
-      ...current,
-      dayPlans: {
-        ...current.dayPlans,
-        [date]: {
-          ...current.dayPlans[date],
-          items: current.dayPlans[date].items.map((item, idx) =>
-            idx === itemIndex ? { ...item, ...updates } : item
-          )
-        }
-      }
+    setPlan(current => patchDayPlan(current, date, {
+      items: current.dayPlans[date].items.map((item, idx) =>
+        idx === itemIndex ? { ...item, ...updates } : item
+      )
     }))
   }
 
   const removeDayItem = (date, itemIndex) => {
-    setPlan((current) => ({
-      ...current,
-      dayPlans: {
-        ...current.dayPlans,
-        [date]: {
-          ...current.dayPlans[date],
-          items: (current.dayPlans[date]?.items || []).filter((_, idx) => idx !== itemIndex)
-        }
-      }
+    setPlan(current => patchDayPlan(current, date, {
+      items: (current.dayPlans[date]?.items || []).filter((_, idx) => idx !== itemIndex)
     }))
   }
 
   const acceptSuggestion = (date, suggestion) => {
-    setPlan((current) => ({
-      ...current,
-      dayPlans: {
-        ...current.dayPlans,
-        [date]: {
-          ...current.dayPlans[date],
-          items: [
-            ...(current.dayPlans[date]?.items || []),
-            { type: suggestion.type, restaurant: '', customRestaurant: '', menuUrl: '', bookingUrl: '',
-              heroImage: '', ride: '', ridePark: '', note: suggestion.label, time: suggestion.time, theme: suggestion.theme }
-          ],
-          dismissedSuggestions: [...(current.dayPlans[date]?.dismissedSuggestions || []), suggestion.id]
-        }
-      }
+    const newItem = createEventItem({
+      type: suggestion.type, note: suggestion.label,
+      time: suggestion.time, theme: suggestion.theme
+    })
+    setPlan(current => patchDayPlan(current, date, {
+      items: [...(current.dayPlans[date]?.items || []), newItem],
+      dismissedSuggestions: [...(current.dayPlans[date]?.dismissedSuggestions || []), suggestion.id]
     }))
   }
 
   const dismissSuggestion = (date, suggestionId) => {
-    setPlan((current) => ({
-      ...current,
-      dayPlans: {
-        ...current.dayPlans,
-        [date]: {
-          ...current.dayPlans[date],
-          dismissedSuggestions: [...(current.dayPlans[date]?.dismissedSuggestions || []), suggestionId]
-        }
-      }
+    setPlan(current => patchDayPlan(current, date, {
+      dismissedSuggestions: [...(current.dayPlans[date]?.dismissedSuggestions || []), suggestionId]
     }))
   }
 
+  const SHOW_TYPE_MAP = { Fireworks: 'Fireworks', Parade: 'Parade', Show: 'Fireworks', 'Character Meet': 'Character Meet' }
+
   const quickAddToDay = (date, kind, item) => {
-    const SHOW_TYPE_MAP = { Fireworks: 'Fireworks', Parade: 'Parade', Show: 'Fireworks', 'Character Meet': 'Character Meet' }
     let newItem
     if (kind === 'show') {
-      newItem = {
+      newItem = createEventItem({
         type: SHOW_TYPE_MAP[item.type] || 'Fireworks',
-        restaurant: '', customRestaurant: '', menuUrl: '', bookingUrl: '', heroImage: '',
-        ride: '', ridePark: '', note: item.label, time: item.time, theme: item.theme
-      }
+        note: item.label, time: item.time, theme: item.theme
+      })
     } else if (kind === 'restaurant') {
       const res = getRestaurantResources(item)
-      newItem = {
-        type: 'Dinner',
-        restaurant: item, customRestaurant: '',
+      newItem = createEventItem({
+        type: 'Dinner', restaurant: item,
         menuUrl: res?.menuUrl || '', bookingUrl: res?.bookingUrl || '', heroImage: res?.heroImage || '',
-        ride: '', ridePark: '', note: '', time: '',
         theme: getEventTypeConfig('Dinner').theme
-      }
+      })
     } else if (kind === 'ride') {
-      const [ridePark = '', ride = ''] = item.value.split('::')
-      newItem = {
-        type: 'Ride',
-        restaurant: '', customRestaurant: '', menuUrl: '', bookingUrl: '', heroImage: '',
-        ride, ridePark, note: '', time: '',
-        theme: getEventTypeConfig('Ride').theme
-      }
+      const { ridePark, ride } = parseRideSelection(item.value)
+      newItem = createEventItem({ type: 'Ride', ride, ridePark, theme: getEventTypeConfig('Ride').theme })
     }
     if (!newItem) return
-    setPlan(current => ({
-      ...current,
-      dayPlans: {
-        ...current.dayPlans,
-        [date]: {
-          ...current.dayPlans[date],
-          items: [...(current.dayPlans[date]?.items || []), newItem]
-        }
-      }
+    setPlan(current => patchDayPlan(current, date, {
+      items: [...(current.dayPlans[date]?.items || []), newItem]
     }))
     setEventSearch('')
   }
@@ -1151,18 +1117,7 @@ function App() {
   }
 
   const clearPark = (date) => {
-    setPlan((current) => ({
-      ...current,
-      dayPlans: {
-        ...current.dayPlans,
-        [date]: {
-          ...current.dayPlans[date],
-          park: '',
-          secondPark: '',
-          parkHop: false
-        }
-      }
-    }))
+    setPlan(current => patchDayPlan(current, date, { park: '', secondPark: '', parkHop: false }))
   }
 
   const clearSwimSpot = (date) => {
@@ -1175,53 +1130,20 @@ function App() {
 
   const resetDay = (date) => {
     setPlan((current) => {
-      const currentDay = current.dayPlans?.[date]
-      if (!currentDay) return current
-
-      return {
-        ...current,
-        dayPlans: {
-          ...current.dayPlans,
-          [date]: {
-            ...currentDay,
-            dayType: '',
-            park: '',
-            secondPark: '',
-            parkHop: false,
-            swimSpot: '',
-            staySpot: '',
-            items: []
-          }
-        }
-      }
+      if (!current.dayPlans?.[date]) return current
+      return patchDayPlan(current, date, {
+        dayType: '', park: '', secondPark: '', parkHop: false, swimSpot: '', staySpot: '', items: []
+      })
     })
-
-    setDraftDayItems((current) => ({
-      ...current,
-      [date]: { type: 'Fireworks', restaurant: '', customRestaurant: '', ride: '', note: '' }
-    }))
+    setDraftDayItems(current => ({ ...current, [date]: DEFAULT_DRAFT }))
   }
 
   const setDayType = (date, dayType) => {
     setPlan((current) => {
-      const currentDay = current.dayPlans?.[date]
-      if (!currentDay) return current
-
-      return {
-        ...current,
-        dayPlans: {
-          ...current.dayPlans,
-          [date]: {
-            ...currentDay,
-            dayType,
-            park: '',
-            secondPark: '',
-            parkHop: false,
-            swimSpot: '',
-            staySpot: ''
-          }
-        }
-      }
+      if (!current.dayPlans?.[date]) return current
+      return patchDayPlan(current, date, {
+        dayType, park: '', secondPark: '', parkHop: false, swimSpot: '', staySpot: ''
+      })
     })
   }
 
@@ -1648,14 +1570,7 @@ function App() {
                   .filter((hotel) => hotel !== plan.myHotel.trim())
                   .map((hotel) => ({ value: hotel, label: hotel }))
               ]
-              const draft = draftDayItems[date] || {
-                type: 'Fireworks',
-                restaurant: '',
-                customRestaurant: '',
-                ride: '',
-                note: '',
-                time: ''
-              }
+              const draft = draftDayItems[date] || DEFAULT_DRAFT
               const selectedEventType = getEventTypeConfig(draft.type)
               const locationDisplay = getLocationDisplay(dayPlan, plan.myHotel.trim())
               const dayTypeChipColor = getDayTypeChipColor(dayPlan.dayType)
@@ -1776,23 +1691,10 @@ function App() {
                             onChange={(event) => {
                               const selectedPark = event.target.value
                               setPlan((current) => {
-                                const currentDay = current.dayPlans?.[date]
-                                if (!currentDay) return current
-
+                                if (!current.dayPlans?.[date]) return current
                                 const nextSecondPark =
-                                  currentDay.secondPark === selectedPark ? '' : currentDay.secondPark
-
-                                return {
-                                  ...current,
-                                  dayPlans: {
-                                    ...current.dayPlans,
-                                    [date]: {
-                                      ...currentDay,
-                                      park: selectedPark,
-                                      secondPark: nextSecondPark
-                                    }
-                                  }
-                                }
+                                  current.dayPlans[date].secondPark === selectedPark ? '' : current.dayPlans[date].secondPark
+                                return patchDayPlan(current, date, { park: selectedPark, secondPark: nextSecondPark })
                               })
                             }}
                           >
@@ -1863,20 +1765,12 @@ function App() {
                       onClick={() => {
                         if (dayPlan.dayType !== 'Park') return
                         setPlan((current) => {
-                          const currentDay = current.dayPlans?.[date]
-                          if (!currentDay) return current
-                          const nextHop = !currentDay.parkHop
-                          return {
-                            ...current,
-                            dayPlans: {
-                              ...current.dayPlans,
-                              [date]: {
-                                ...currentDay,
-                                parkHop: nextHop,
-                                secondPark: nextHop ? currentDay.secondPark : ''
-                              }
-                            }
-                          }
+                          if (!current.dayPlans?.[date]) return current
+                          const nextHop = !current.dayPlans[date].parkHop
+                          return patchDayPlan(current, date, {
+                            parkHop: nextHop,
+                            secondPark: nextHop ? current.dayPlans[date].secondPark : ''
+                          })
                         })
                       }}
                     >
@@ -1905,15 +1799,9 @@ function App() {
                           <select
                             value={draft.type}
                             onChange={(event) =>
-                              setDraftDayItems((current) => ({
+                              setDraftDayItems(current => ({
                                 ...current,
-                                [date]: {
-                                  type: event.target.value,
-                                  restaurant: '',
-                                  customRestaurant: '',
-                                  ride: '',
-                                  note: current[date]?.note || ''
-                                }
+                                [date]: resetDraftForType(current[date], event.target.value)
                               }))
                             }
                           >
@@ -2260,3 +2148,4 @@ function App() {
 }
 
 export default App
+export { createEventItem, parseRideSelection, patchDayPlan, DEFAULT_DRAFT, resetDraftForType, normalizeEventItem, formatTime, buildEventLabel, detectTheme }
