@@ -1022,6 +1022,8 @@ function App() {
   const activeDate = tripDates[activeDay]
   const activeDayPlan = plan.dayPlans?.[activeDate] || {}
   const activeRideOptions = getRideOptionsForDay(activeDayPlan)
+  const activeDraft = draftDayItems[activeDate] || DEFAULT_DRAFT
+  const activeSelectedEventType = getEventTypeConfig(activeDraft.type)
   const topSearchQ = eventSearch.trim()
   // TD-016: wrap in useMemo — only recalculates when query, park, or ride options change
   const topSearchResults = useMemo(() => {
@@ -1311,11 +1313,18 @@ function App() {
                   ? `Search rides, shows & restaurants for Day ${activeDay + 1}…`
                   : `Search restaurants & shows for Day ${activeDay + 1}…`}
                 value={eventSearch}
-                onChange={e => setEventSearch(e.target.value)}
+                onChange={e => { setEventSearch(e.target.value); if (addEventOpen) setAddEventOpen(false) }}
               />
               {eventSearch && (
                 <button type="button" className="top-searchbar-clear" onClick={() => setEventSearch('')}>×</button>
               )}
+              <button
+                type="button"
+                className={`searchbar-advanced-btn${addEventOpen ? ' active' : ''}`}
+                onClick={() => { setAddEventOpen(o => !o); setEventSearch('') }}
+              >
+                {addEventOpen ? '✕' : '+ Add'}
+              </button>
             </div>
             {hasTopSearchResults && (
               <div className="top-search-results">
@@ -1346,6 +1355,130 @@ function App() {
                     </button>
                   ))}
                 </>}
+              </div>
+            )}
+            {addEventOpen && (
+              <div className="event-builder-panel">
+                <div className="event-builder-header">
+                  <span>Add event — Day {activeDay + 1}</span>
+                </div>
+                <div className="day-meta-row">
+                  <label className="field-compact">
+                    Event type
+                    <select
+                      value={activeDraft.type}
+                      onChange={(e) =>
+                        setDraftDayItems(current => ({
+                          ...current,
+                          [activeDate]: resetDraftForType(current[activeDate], e.target.value)
+                        }))
+                      }
+                    >
+                      {EVENT_TYPES.map((et) => (
+                        <option key={et.value} value={et.value}>{et.value}</option>
+                      ))}
+                    </select>
+                  </label>
+
+                  {activeSelectedEventType.requiresRestaurant ? (
+                    <label className="field-compact">
+                      Restaurant
+                      <select
+                        value={activeDraft.restaurant}
+                        onChange={(e) =>
+                          setDraftDayItems((current) => ({
+                            ...current,
+                            [activeDate]: {
+                              ...activeDraft,
+                              restaurant: e.target.value,
+                              customRestaurant: e.target.value === '__custom__'
+                                ? current[activeDate]?.customRestaurant || ''
+                                : ''
+                            }
+                          }))
+                        }
+                      >
+                        <option value="">Choose restaurant</option>
+                        {Object.entries(RESTAURANT_GROUPS).map(([group, restaurants]) => (
+                          <optgroup key={group} label={group}>
+                            {restaurants.map((r) => (
+                              <option key={r} value={r}>{r}</option>
+                            ))}
+                          </optgroup>
+                        ))}
+                        <option value="__custom__">Other (type manually)</option>
+                      </select>
+                    </label>
+                  ) : activeDraft.type === 'Ride' ? (
+                    <label className="field-compact">
+                      Ride
+                      <select
+                        value={activeDraft.ride}
+                        onChange={(e) =>
+                          setDraftDayItems((current) => ({
+                            ...current,
+                            [activeDate]: { ...activeDraft, ride: e.target.value }
+                          }))
+                        }
+                        disabled={!activeRideOptions.length}
+                      >
+                        <option value="">
+                          {activeRideOptions.length ? 'Choose ride' : 'Select park(s) for this day first'}
+                        </option>
+                        {activeRideOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
+                    </label>
+                  ) : (
+                    <label className="field-compact">
+                      Notes
+                      <input
+                        value={activeDraft.note}
+                        onChange={(e) =>
+                          setDraftDayItems((current) => ({
+                            ...current,
+                            [activeDate]: { ...activeDraft, note: e.target.value }
+                          }))
+                        }
+                        placeholder="Optional details"
+                      />
+                    </label>
+                  )}
+                </div>
+                {activeSelectedEventType.requiresRestaurant && activeDraft.restaurant === '__custom__' && (
+                  <label className="field-compact">
+                    Custom restaurant
+                    <input
+                      value={activeDraft.customRestaurant}
+                      onChange={(e) =>
+                        setDraftDayItems((current) => ({
+                          ...current,
+                          [activeDate]: { ...activeDraft, customRestaurant: e.target.value }
+                        }))
+                      }
+                      placeholder="Type restaurant name"
+                    />
+                  </label>
+                )}
+                <div className="event-action-row">
+                  <label className="field-compact field-time">
+                    Time
+                    <input
+                      type="time"
+                      value={activeDraft.time || ''}
+                      onChange={(e) =>
+                        setDraftDayItems((current) => ({
+                          ...current,
+                          [activeDate]: { ...activeDraft, time: e.target.value }
+                        }))
+                      }
+                    />
+                  </label>
+                  <button type="button" className="action action-compact" onClick={() => { addDayItem(activeDate); setAddEventOpen(false) }}>
+                    Add event
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -1404,12 +1537,9 @@ function App() {
                   .filter((hotel) => hotel !== plan.myHotel.trim())
                   .map((hotel) => ({ value: hotel, label: hotel }))
               ]
-              const draft = draftDayItems[date] || DEFAULT_DRAFT
-              const selectedEventType = getEventTypeConfig(draft.type)
               const locationDisplay = getLocationDisplay(dayPlan, plan.myHotel.trim())
               const dayTypeChipColor = getDayTypeChipColor(dayPlan.dayType)
               const secondParkOptions = getSecondParkOptions(dayPlan.park)
-              const rideOptions = getRideOptionsForDay(dayPlan)
               const itemsWithIndex = (dayPlan.items || []).map((item, idx) => ({ ...item, _idx: idx }))
               const timeSlots = getTimeSlots(dayPlan.dayType)
               const dismissed = dayPlan.dismissedSuggestions || []
@@ -1621,141 +1751,6 @@ function App() {
                 </article>
 
                 <div className="day-timeline-card card">
-                  {addEventOpen && (
-                    <div className="event-builder-panel">
-                      <div className="event-builder-header">
-                        <span>Add event</span>
-                        <button type="button" className="event-builder-close" onClick={() => { setAddEventOpen(false); setEventSearch('') }}>×</button>
-                      </div>
-                      <div className="day-meta-row">
-                        <label className="field-compact">
-                          Event type
-                          <select
-                            value={draft.type}
-                            onChange={(event) =>
-                              setDraftDayItems(current => ({
-                                ...current,
-                                [date]: resetDraftForType(current[date], event.target.value)
-                              }))
-                            }
-                          >
-                            {EVENT_TYPES.map((eventType) => (
-                              <option key={eventType.value} value={eventType.value}>
-                                {eventType.value}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
-
-                        {selectedEventType.requiresRestaurant ? (
-                          <label className="field-compact">
-                            Restaurant
-                            <select
-                              value={draft.restaurant}
-                              onChange={(event) =>
-                                setDraftDayItems((current) => ({
-                                  ...current,
-                                  [date]: {
-                                    ...draft,
-                                    restaurant: event.target.value,
-                                    customRestaurant:
-                                      event.target.value === '__custom__'
-                                        ? current[date]?.customRestaurant || ''
-                                        : ''
-                                  }
-                                }))
-                              }
-                            >
-                              <option value="">Choose restaurant</option>
-                              {Object.entries(RESTAURANT_GROUPS).map(([group, restaurants]) => (
-                                <optgroup key={group} label={group}>
-                                  {restaurants.map((restaurant) => (
-                                    <option key={restaurant} value={restaurant}>
-                                      {restaurant}
-                                    </option>
-                                  ))}
-                                </optgroup>
-                              ))}
-                              <option value="__custom__">Other (type manually)</option>
-                            </select>
-                          </label>
-                        ) : draft.type === 'Ride' ? (
-                          <label className="field-compact">
-                            Ride
-                            <select
-                              value={draft.ride}
-                              onChange={(event) =>
-                                setDraftDayItems((current) => ({
-                                  ...current,
-                                  [date]: { ...draft, ride: event.target.value }
-                                }))
-                              }
-                              disabled={!rideOptions.length}
-                            >
-                              <option value="">
-                                {rideOptions.length
-                                  ? 'Choose ride'
-                                  : 'Select park(s) for this day first'}
-                              </option>
-                              {rideOptions.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                  {option.label}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                        ) : (
-                          <label className="field-compact">
-                            Notes
-                            <input
-                              value={draft.note}
-                              onChange={(event) =>
-                                setDraftDayItems((current) => ({
-                                  ...current,
-                                  [date]: { ...draft, note: event.target.value }
-                                }))
-                              }
-                              placeholder="Optional details"
-                            />
-                          </label>
-                        )}
-                      </div>
-                      {selectedEventType.requiresRestaurant && draft.restaurant === '__custom__' && (
-                        <label className="field-compact">
-                          Custom restaurant
-                          <input
-                            value={draft.customRestaurant}
-                            onChange={(event) =>
-                              setDraftDayItems((current) => ({
-                                ...current,
-                                [date]: { ...draft, customRestaurant: event.target.value }
-                              }))
-                            }
-                            placeholder="Type restaurant name"
-                          />
-                        </label>
-                      )}
-                      <div className="event-action-row">
-                        <label className="field-compact field-time">
-                          Time
-                          <input
-                            type="time"
-                            value={draft.time || ''}
-                            onChange={(event) =>
-                              setDraftDayItems((current) => ({
-                                ...current,
-                                [date]: { ...draft, time: event.target.value }
-                              }))
-                            }
-                          />
-                        </label>
-                        <button type="button" className="action action-compact" onClick={() => { addDayItem(date); setAddEventOpen(false); setEventSearch('') }}>
-                          Add event
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
                   <div className="day-timeline">
                     {timeSlots.flatMap(slot => {
                       const slotItems = itemsWithIndex.filter(item => getItemSlot(item) === slot.slot)
@@ -1905,13 +1900,6 @@ function App() {
                       <p className="timeline-empty">Search above to add your first event</p>
                     )}
                   </div>
-                </div>
-                <div className="timeline-manual-add">
-                  {addEventOpen ? (
-                    <button type="button" className="chip" onClick={() => setAddEventOpen(false)}>✕ Close</button>
-                  ) : (
-                    <button type="button" className="chip" onClick={() => setAddEventOpen(true)}>+ Add manually</button>
-                  )}
                 </div>
                 </>
               )

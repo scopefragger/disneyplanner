@@ -259,3 +259,16 @@ Each entry is appended after every prompt.
 **Why:** Previously you could only find shows for the active day's park — if the day had no park set, or you were looking for a show at a different park, nothing appeared. Now the search works across all WDW shows at all times.
 
 ---
+
+## 2026-03-07T14:00:00Z — Move manual add into search bar as Advanced add
+
+**What:**
+- Removed "Add manually" button from bottom of timeline and event builder panel from inside `day-timeline-card`
+- Added "+ Add" pill toggle button inside the search bar input row; clicking it opens the full event builder form below the search results within the search bar card
+- Hoisted `activeDraft` and `activeSelectedEventType` before the return so the form can operate from search bar context
+- Removed now-stale `draft`, `selectedEventType`, and `rideOptions` declarations from the day IIFE
+- Removed `.timeline-manual-add` CSS; added `.searchbar-advanced-btn` pill style; moved `.event-builder-panel` margin from bottom to top
+
+**Why:** Consolidates all event-adding entry points into the search bar — one place for both quick-search adding and the full advanced form. Typing in the search bar collapses the advanced form and vice versa, keeping the UI uncluttered.
+
+---
