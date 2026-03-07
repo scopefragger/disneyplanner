@@ -509,6 +509,10 @@ function DayPlanSection({ plan, tripDates, activeDay, setActiveDay, liveShowData
         </div>
       </div>
 
+      {!tripDates.length && (
+        <p className="section-hint">Set your start and end date to unlock daily planning cards.</p>
+      )}
+
       <div className="date-plan-grid">
         <div className="day-nav-strip">
           {tripDates.map((d, i) => {
@@ -528,6 +532,7 @@ function DayPlanSection({ plan, tripDates, activeDay, setActiveDay, liveShowData
           })}
         </div>
 
+        {tripDates.length > 0 && <>
         <article key={date} className="date-card" style={getDayCardStyle(dayPlan)}>
           <div className="card-badges">
             {dayPlan.dayType && (
@@ -853,6 +858,7 @@ function DayPlanSection({ plan, tripDates, activeDay, setActiveDay, liveShowData
             )}
           </div>
         </div>
+        </>}
       </div>
     </section>
   )
