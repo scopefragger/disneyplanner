@@ -1982,4 +1982,4 @@ function App() {
 }
 
 export default App
-export { createEventItem, createBlankDayPlan, parseRideSelection, patchDayPlan, DEFAULT_DRAFT, resetDraftForType, normalizeEventItem, formatTime, buildEventLabel, detectTheme, getDayTypeChipColor, DAY_CHIP_COLORS, SHOW_TYPE_MAP, getDateRange, formatPrettyDate, formatShortDate, getItemSlot, getEventTypeConfig, getSecondParkOptions, hashtagLabel, getDayTypeIcon, normalizePlan, getRideOptionsForDay, getTimeSlots, getLocationDisplay, RIDES_BY_PARK, RIDE_IMAGES, generateId, getRestaurantResources }
+export { createEventItem, createBlankDayPlan, parseRideSelection, patchDayPlan, DEFAULT_DRAFT, resetDraftForType, normalizeEventItem, formatTime, buildEventLabel, detectTheme, getDayTypeChipColor, DAY_CHIP_COLORS, SHOW_TYPE_MAP, getDateRange, formatPrettyDate, formatShortDate, getItemSlot, getEventTypeConfig, getSecondParkOptions, hashtagLabel, getDayTypeIcon, normalizePlan, getRideOptionsForDay, getTimeSlots, getLocationDisplay, RIDES_BY_PARK, RIDE_IMAGES, generateId, getRestaurantResources, getDayCardStyle }

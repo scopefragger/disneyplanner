@@ -27,6 +27,7 @@ import {
   RIDE_IMAGES,
   generateId,
   getRestaurantResources,
+  getDayCardStyle,
 } from '../App.jsx'
 import { RIDE_URLS, RIDE_TAGS } from '../data/rideData.js'
 
@@ -677,5 +678,125 @@ describe('generateId', () => {
   it('generates unique IDs on successive calls', () => {
     const ids = new Set(Array.from({ length: 20 }, () => generateId()))
     expect(ids.size).toBe(20)
+  })
+})
+
+// ── getDayCardStyle (TD-026) ──────────────────────────────────────────────────
+
+describe('getDayCardStyle', () => {
+  it('returns an object with all required CSS custom properties', () => {
+    const style = getDayCardStyle({ dayType: 'Park', park: 'Magic Kingdom', parkHop: false, secondPark: '' })
+    expect(style).toHaveProperty('--day-bg-image')
+    expect(style).toHaveProperty('--day-tint')
+    expect(style).toHaveProperty('--day-tint-overlay')
+    expect(style).toHaveProperty('--park-logo-image')
+    expect(style).toHaveProperty('--park-logo-image-2')
+  })
+
+  it('sets a park photo background for a known park', () => {
+    const style = getDayCardStyle({ dayType: 'Park', park: 'EPCOT', parkHop: false, secondPark: '' })
+    expect(style['--day-bg-image']).toContain('epcot')
+  })
+
+  it('uses the park-hop gradient overlay when parkHop is set', () => {
+    const style = getDayCardStyle({ dayType: 'Park', park: 'Magic Kingdom', parkHop: true, secondPark: 'EPCOT' })
+    expect(style['--day-tint-overlay']).toContain('linear-gradient')
+    expect(style['--park-logo-image-2']).not.toBe('none')
+  })
+
+  it('uses swim logo for Swimming days', () => {
+    const style = getDayCardStyle({ dayType: 'Swimming', swimSpot: "Disney's Typhoon Lagoon Water Park" })
+    expect(style['--park-logo-image']).toContain('typhoon-lagoon')
+  })
+
+  it('falls back to a default background for Travel days', () => {
+    const style = getDayCardStyle({ dayType: 'Travel' })
+    expect(style['--day-bg-image']).toContain('day-travel')
+  })
+})
+
+// ── normalizePlan edge cases (TD-027) ─────────────────────────────────────────
+
+describe('normalizePlan edge cases', () => {
+  it('initialises favoriteTags to empty array when missing', () => {
+    const result = normalizePlan({})
+    expect(result.favoriteTags).toEqual([])
+  })
+
+  it('preserves provided favoriteTags', () => {
+    const result = normalizePlan({ favoriteTags: ['#frozen', '#starwars'] })
+    expect(result.favoriteTags).toEqual(['#frozen', '#starwars'])
+  })
+
+  it('uses default checklist when rawPlan.checklist is empty', () => {
+    const result = normalizePlan({ checklist: [] })
+    expect(result.checklist.length).toBeGreaterThan(0)
+  })
+
+  it('preserves non-empty checklist from rawPlan', () => {
+    const custom = ['Book flights', 'Pack bags']
+    const result = normalizePlan({ checklist: custom })
+    expect(result.checklist).toEqual(custom)
+  })
+
+  it('handles a dayPlan entry with null items gracefully', () => {
+    const raw = { dayPlans: { '2026-03-10': { dayType: 'Park', park: 'EPCOT', items: null } } }
+    const result = normalizePlan(raw)
+    expect(Array.isArray(result.dayPlans['2026-03-10'].items)).toBe(true)
+  })
+
+  it('handles a dayPlan with parkHop truthy value', () => {
+    const raw = { dayPlans: { '2026-03-10': { dayType: 'Park', park: 'Magic Kingdom', parkHop: 1 } } }
+    const result = normalizePlan(raw)
+    expect(result.dayPlans['2026-03-10'].parkHop).toBe(true)
+  })
+})
+
+// ── buildEventLabel additional branches (TD-028) ──────────────────────────────
+
+describe('buildEventLabel additional branches', () => {
+  it('returns type alone when ride is set but type is not Ride', () => {
+    const label = buildEventLabel({ type: 'Fireworks', restaurant: '', ride: 'Space Mountain', note: '' })
+    expect(label).toBe('Fireworks')
+  })
+
+  it('returns "Event" fallback when type, ride, restaurant, note, and text are all empty', () => {
+    expect(buildEventLabel({ type: '', restaurant: '', ride: '', note: '', text: '' })).toBe('Event')
+  })
+})
+
+// ── detectTheme additional branches (TD-028) ──────────────────────────────────
+
+describe('detectTheme additional branches', () => {
+  it('detects dining theme from "dining"', () => {
+    expect(detectTheme('Character Dining Experience')).toBe('dining')
+  })
+
+  it('detects dining theme from "restaurant"', () => {
+    expect(detectTheme('Restaurant visit')).toBe('dining')
+  })
+
+  it('detects dining theme from "breakfast"', () => {
+    expect(detectTheme('Character Breakfast')).toBe('dining')
+  })
+
+  it('detects ride theme from "ride"', () => {
+    expect(detectTheme('Best Ride ever')).toBe('ride')
+  })
+
+  it('detects ride theme from "coaster"', () => {
+    expect(detectTheme('Roller Coaster fun')).toBe('ride')
+  })
+
+  it('detects character theme from "princess"', () => {
+    expect(detectTheme('Princess Meet')).toBe('character')
+  })
+
+  it('detects nature theme from "trail"', () => {
+    expect(detectTheme('Nature Trail Walk')).toBe('nature')
+  })
+
+  it('detects nature theme from "safari"', () => {
+    expect(detectTheme('Kilimanjaro Safari')).toBe('nature')
   })
 })

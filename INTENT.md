@@ -236,3 +236,14 @@ Each entry is appended after every prompt.
 **Why:** Data integrity tests make it impossible to add a ride to the selector without also providing its URL, image, and tags. generateId uniqueness prevents duplicate project IDs corrupting the project list.
 
 ---
+
+## 2026-03-07T14:10:00Z — Tech debt batch 6 (TD-026, TD-027, TD-028)
+
+**What:**
+- TD-026: Exported `getDayCardStyle`; added 5 tests covering Park (solid), Swimming (gradient), Hotel/Shopping, Travel, and default case
+- TD-027: Added 6 normalizePlan edge-case tests — favoriteTags preservation, checklist item normalisation, null/missing items, parkHop truthy coercion
+- TD-028: Added 2 buildEventLabel branch tests (restaurant note fallback, ride+note combo) and 8 detectTheme branch tests (dining, ride, character, nature keywords)
+
+**Why:** getDayCardStyle drives the visual identity of every day card — regression there would silently break all card backgrounds. Edge-case normalizePlan tests guard the localStorage recovery path against corrupted or partially-migrated data.
+
+---
