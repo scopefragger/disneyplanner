@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { RESTAURANT_METADATA } from './data/restaurantMetadata'
+import { RESTAURANT_METADATA, RESTAURANT_TAGS } from './data/restaurantMetadata'
 import { getParkSuggestions, fetchLiveParkShows } from './data/parkSuggestions.js'
+import { RIDE_TAGS, getRideUrl } from './data/rideData.js'
 import { fuzzyMatch } from './utils.js'
 
 const IMG_BASE = `${import.meta.env.BASE_URL}images/`
@@ -139,42 +140,6 @@ const RIDES_BY_PARK = {
   'Disney Springs': ['Aerophile - The World Leader in Balloon Flight']
 }
 
-const DW_ATTRACTIONS = 'https://disneyworld.disney.go.com/attractions'
-const RIDE_URLS = {
-  // Magic Kingdom
-  'TRON Lightcycle / Run':              `${DW_ATTRACTIONS}/magic-kingdom/tron-lightcycle-run/`,
-  'Seven Dwarfs Mine Train':            `${DW_ATTRACTIONS}/magic-kingdom/seven-dwarfs-mine-train/`,
-  'Space Mountain':                     `${DW_ATTRACTIONS}/magic-kingdom/space-mountain/`,
-  'Big Thunder Mountain Railroad':      `${DW_ATTRACTIONS}/magic-kingdom/big-thunder-mountain-railroad/`,
-  'Pirates of the Caribbean':           `${DW_ATTRACTIONS}/magic-kingdom/pirates-of-the-caribbean/`,
-  'Haunted Mansion':                    `${DW_ATTRACTIONS}/magic-kingdom/haunted-mansion/`,
-  "Peter Pan\u2019s Flight":            `${DW_ATTRACTIONS}/magic-kingdom/peter-pans-flight/`,
-  "Tiana's Bayou Adventure":            `${DW_ATTRACTIONS}/magic-kingdom/tianas-bayou-adventure/`,
-  'Jungle Cruise':                      `${DW_ATTRACTIONS}/magic-kingdom/jungle-cruise/`,
-  // EPCOT
-  'Guardians of the Galaxy: Cosmic Rewind': `${DW_ATTRACTIONS}/epcot/guardians-of-the-galaxy-cosmic-rewind/`,
-  'Test Track':                         `${DW_ATTRACTIONS}/epcot/test-track/`,
-  'Frozen Ever After':                  `${DW_ATTRACTIONS}/epcot/frozen-ever-after/`,
-  'Remys Ratatouille Adventure':        `${DW_ATTRACTIONS}/epcot/remys-ratatouille-adventure/`,
-  'Soarin Around the World':            `${DW_ATTRACTIONS}/epcot/soarin/`,
-  'Mission: SPACE':                     `${DW_ATTRACTIONS}/epcot/mission-space/`,
-  'Spaceship Earth':                    `${DW_ATTRACTIONS}/epcot/spaceship-earth/`,
-  // Hollywood Studios
-  'Star Wars: Rise of the Resistance':  `${DW_ATTRACTIONS}/hollywood-studios/star-wars-rise-of-the-resistance/`,
-  'Millennium Falcon: Smugglers Run':   `${DW_ATTRACTIONS}/hollywood-studios/millennium-falcon-smugglers-run/`,
-  'Slinky Dog Dash':                    `${DW_ATTRACTIONS}/hollywood-studios/slinky-dog-dash/`,
-  'Tower of Terror':                    `${DW_ATTRACTIONS}/hollywood-studios/the-twilight-zone-tower-of-terror/`,
-  'Rock n Roller Coaster':              `${DW_ATTRACTIONS}/hollywood-studios/rock-n-roller-coaster-starring-aerosmith/`,
-  'Mickey and Minnies Runaway Railway': `${DW_ATTRACTIONS}/hollywood-studios/mickey-minnies-runaway-railway/`,
-  'Toy Story Mania':                    `${DW_ATTRACTIONS}/hollywood-studios/toy-story-mania/`,
-  // Animal Kingdom
-  'Avatar Flight of Passage':           `${DW_ATTRACTIONS}/animal-kingdom/avatar-flight-of-passage/`,
-  'Na vi River Journey':                `${DW_ATTRACTIONS}/animal-kingdom/navi-river-journey/`,
-  'Expedition Everest':                 `${DW_ATTRACTIONS}/animal-kingdom/expedition-everest-legend-of-the-forbidden-mountain/`,
-  'Kilimanjaro Safaris':                `${DW_ATTRACTIONS}/animal-kingdom/kilimanjaro-safaris/`,
-  'Kali River Rapids':                  `${DW_ATTRACTIONS}/animal-kingdom/kali-river-rapids/`,
-  'DINOSAUR':                           `${DW_ATTRACTIONS}/animal-kingdom/dinosaur/`,
-}
 
 const RIDES_IMG = `${IMG_BASE}rides/`
 const RIDE_IMAGES = {
@@ -213,41 +178,6 @@ const RIDE_IMAGES = {
   'DINOSAUR':                           `${RIDES_IMG}dinosaur.jpg`,
 }
 
-const RIDE_TAGS = {
-  // Magic Kingdom
-  'TRON Lightcycle / Run':              ['thrill', 'roller coaster', 'indoor', 'fast', 'launch coaster', 'sci-fi', 'dark', 'tron', 'must do', 'intense', 'family', 'moderate thrill', 'high speed'],
-  'Seven Dwarfs Mine Train':            ['family', 'roller coaster', 'mild thrill', 'snow white', 'dwarfs', 'children', 'family coaster', 'moderate thrill', 'outdoor', 'indoor', 'must do', 'queue'],
-  'Space Mountain':                     ['thrill', 'roller coaster', 'indoor', 'dark', 'classic', 'space', 'must do', 'indoor coaster', 'dark ride', 'moderate thrill', 'futuristic', 'iconic'],
-  'Big Thunder Mountain Railroad':      ['family', 'roller coaster', 'outdoor', 'mild thrill', 'wild west', 'mine train', 'children', 'classic', 'moderate thrill', 'fast', 'bumpy', 'iconic'],
-  'Pirates of the Caribbean':           ['family', 'boat ride', 'dark ride', 'classic', 'pirates', 'adventure', 'indoor', 'calm', 'all ages', 'slow ride', 'iconic', 'water', 'must do'],
-  'Haunted Mansion':                    ['family', 'dark ride', 'classic', 'ghosts', 'spooky', 'indoor', 'all ages', 'doom buggy', 'hitchhiking ghosts', 'must do', 'iconic', 'halloween'],
-  "Peter Pan\u2019s Flight":            ['family', 'dark ride', 'classic', 'flying', 'children', 'peter pan', 'indoor', 'calm', 'all ages', 'slow ride', 'neverland', 'suspension'],
-  "Tiana's Bayou Adventure":            ['family', 'log flume', 'water ride', 'bayou', 'tiana', 'princess', 'outdoor', 'mild thrill', 'moderate thrill', 'splash', 'wet', 'new'],
-  'Jungle Cruise':                      ['family', 'boat ride', 'classic', 'animals', 'humour', 'outdoor', 'calm', 'all ages', 'safari', 'slow ride', 'puns', 'iconic'],
-  // EPCOT
-  'Guardians of the Galaxy: Cosmic Rewind': ['thrill', 'roller coaster', 'indoor', 'reverse launch', 'fast', 'must do', 'guardians', 'marvel', 'dark', 'immersive', 'intense', 'high thrill'],
-  'Test Track':                         ['family', 'mild thrill', 'cars', 'design', 'futuristic', 'indoor', 'speed', 'chevrolet', 'moderate thrill', 'interactive', 'simulator', 'fast'],
-  'Frozen Ever After':                  ['family', 'boat ride', 'frozen', 'anna', 'elsa', 'indoor', 'calm', 'children', 'all ages', 'dark ride', 'slow ride', 'princess'],
-  'Remys Ratatouille Adventure':        ['family', 'dark ride', 'remy', 'ratatouille', 'pixar', 'indoor', 'calm', 'children', 'all ages', 'trackless', 'slow ride', 'interactive'],
-  'Soarin Around the World':            ['family', 'simulation', 'flying', 'scenic', 'indoor', 'mild thrill', 'all ages', 'must do', 'hang gliding', 'iconic', 'omnimax', 'wind'],
-  'Mission: SPACE':                     ['thrill', 'simulation', 'astronaut', 'space', 'indoor', 'intense', 'centrifuge', 'moderate thrill', 'spin', 'family version', 'motion sickness', 'NASA'],
-  'Spaceship Earth':                    ['family', 'slow ride', 'dark ride', 'epcot', 'classic', 'educational', 'calm', 'all ages', 'time travel', 'indoor', 'iconic', 'golf ball'],
-  // Hollywood Studios
-  'Star Wars: Rise of the Resistance':  ['thrill', 'dark ride', 'star wars', 'immersive', 'indoor', 'must do', 'trackless', 'intense', 'epic', 'action', 'stunning', 'high thrill'],
-  'Millennium Falcon: Smugglers Run':   ['family', 'interactive', 'star wars', 'pilot', 'mild thrill', 'indoor', 'immersive', 'moderate thrill', 'action', 'cooperative', 'simulator'],
-  'Slinky Dog Dash':                    ['family', 'roller coaster', 'toy story', 'outdoor', 'mild thrill', 'children', 'fun', 'family coaster', 'moderate thrill', 'pixar', 'spring'],
-  'Tower of Terror':                    ['thrill', 'drop tower', 'scary', 'twilight zone', 'indoor', 'intense', 'must do', 'vertical drop', 'horror', 'high thrill', 'falling', 'haunted'],
-  'Rock n Roller Coaster':              ['thrill', 'roller coaster', 'indoor', 'fast', 'launch coaster', 'aerosmith', 'intense', 'dark', 'must do', 'inversions', 'high thrill', 'loops'],
-  'Mickey and Minnies Runaway Railway': ['family', 'dark ride', 'mickey', 'minnie', 'trackless', 'indoor', 'children', 'all ages', 'fun', 'slapstick', 'wacky', 'new'],
-  'Toy Story Mania':                    ['family', 'interactive', 'shooting gallery', 'toy story', 'indoor', 'competitive', 'all ages', 'mild thrill', 'arcade', 'pixar', '4D', 'fun'],
-  // Animal Kingdom
-  'Avatar Flight of Passage':           ['thrill', 'simulation', 'avatar', 'pandora', 'intense', 'indoor', 'must do', '3D', 'flying', 'immersive', 'high thrill', 'breathtaking'],
-  'Na vi River Journey':                ['family', 'boat ride', 'avatar', 'pandora', 'calm', 'indoor', 'all ages', 'nature', 'bioluminescent', 'dark ride', 'slow ride', 'beautiful'],
-  'Expedition Everest':                 ['thrill', 'roller coaster', 'outdoor', 'backward', 'yeti', 'moderate thrill', 'must do', 'fast', 'asia', 'mountain', 'reverse', 'iconic'],
-  'Kilimanjaro Safaris':                ['family', 'safari', 'animals', 'outdoor', 'real animals', 'nature', 'wildlife', 'must do', 'slow ride', 'jeep', 'africa', 'educational'],
-  'Kali River Rapids':                  ['family', 'water ride', 'outdoor', 'wet', 'moderate thrill', 'rafting', 'nature', 'asia', 'raft', 'splash', 'soaked', 'white water'],
-  'DINOSAUR':                           ['thrill', 'dark ride', 'dinosaur', 'time travel', 'intense', 'indoor', 'bumpy', 'scary', 'moderate thrill', 'loud', 'action', 'jurassic'],
-}
 
 const EVENT_TYPES = [
   { value: 'Breakfast', theme: 'dining', requiresRestaurant: true },
@@ -368,102 +298,6 @@ const RESTAURANT_GROUPS = {
 
 const ALL_RESTAURANTS = Object.values(RESTAURANT_GROUPS).flat()
 
-// Dining style tags for search (e.g. "buffet", "character", "steakhouse")
-const RESTAURANT_TAGS = {
-  // Magic Kingdom
-  "Cinderella's Royal Table":                       ['character', 'princess', 'fine dining', 'table service', 'themed', 'signature', 'prix fixe', 'romantic', 'upscale', 'indoor', 'breakfast', 'lunch', 'dinner', 'character dining'],
-  'Be Our Guest Restaurant':                         ['table service', 'character', 'french', 'beauty and the beast', 'fine dining', 'themed', 'signature', 'indoor', 'romantic', 'prix fixe', 'breakfast', 'lunch', 'dinner', 'character dining'],
-  'The Crystal Palace':                              ['buffet', 'character', 'family style', 'winnie the pooh', 'all you can eat', 'breakfast', 'lunch', 'dinner', 'kids', 'themed', 'indoor', 'character dining', 'american'],
-  'Liberty Tree Tavern':                             ['family style', 'american', 'table service', 'thanksgiving', 'comfort food', 'indoor', 'themed', 'lunch', 'dinner', 'kids menu', 'colonial', 'turkey', 'moderate'],
-  'The Diamond Horseshoe':                           ['quick service', 'american', 'western', 'casual', 'indoor', 'lunch', 'dinner', 'budget', 'kids menu', 'sandwiches', 'cowboy'],
-  'Jungle Navigation Co. LTD Skipper Canteen':       ['table service', 'american', 'jungle cruise', 'themed', 'lunch', 'dinner', 'indoor', 'quirky', 'adventure', 'moderate', 'humorous'],
-  "Tony's Town Square Restaurant":                   ['table service', 'italian', 'pasta', 'lady and the tramp', 'themed', 'breakfast', 'lunch', 'dinner', 'indoor', 'moderate', 'kids menu', 'character'],
-  'The Plaza Restaurant':                            ['table service', 'american', 'lunch', 'dinner', 'indoor', 'ice cream', 'dessert', 'casual', 'moderate', 'milkshakes', 'classic'],
-  "Casey's Corner":                                  ['quick service', 'hot dogs', 'baseball', 'american', 'outdoor', 'budget', 'casual', 'snack', 'lunch', 'fast food', 'kids'],
-  'Columbia Harbour House':                          ['quick service', 'seafood', 'american', 'lunch', 'dinner', 'indoor', 'counter service', 'budget', 'fish', 'new england', 'colonial'],
-  "Cosmic Ray's Starlight Cafe":                     ['quick service', 'american', 'burgers', 'chicken', 'indoor', 'budget', 'casual', 'counter service', 'kids menu', 'fast food', 'lunch', 'dinner'],
-  'Pecos Bill Tall Tale Inn and Cafe':               ['quick service', 'american', 'mexican', 'burgers', 'wraps', 'indoor', 'budget', 'counter service', 'casual', 'fast food', 'lunch', 'dinner'],
-  // EPCOT
-  'Space 220 Restaurant':                            ['table service', 'american', 'fine dining', 'space', 'themed', 'immersive', 'signature', 'dinner', 'lunch', 'prix fixe', 'futuristic', 'sci-fi', 'special occasion', 'indoor', 'unique'],
-  'Le Cellier Steakhouse':                           ['table service', 'steakhouse', 'fine dining', 'canadian', 'beef', 'wine', 'indoor', 'signature', 'dinner', 'lunch', 'romantic', 'upscale', 'a la carte', 'pretzel bread'],
-  'Chefs de France':                                 ['table service', 'french', 'brasserie', 'indoor', 'european', 'dinner', 'lunch', 'wine', 'moderate', 'a la carte', 'classic', 'paris', 'casual'],
-  'Monsieur Paul':                                   ['table service', 'french', 'fine dining', 'signature', 'dinner', 'wine', 'romantic', 'upscale', 'indoor', 'prix fixe', 'elegant', 'special occasion', 'a la carte'],
-  'Rose and Crown Dining Room':                      ['table service', 'british', 'pub', 'fish and chips', 'outdoor', 'waterfront', 'beer', 'indoor', 'lunch', 'dinner', 'casual', 'informal', 'fireworks viewing'],
-  'Spice Road Table':                                ['table service', 'mediterranean', 'outdoor', 'waterfront', 'tapas', 'small plates', 'lunch', 'dinner', 'casual', 'drinks', 'fireworks viewing', 'appetizers'],
-  'Via Napoli Ristorante e Pizzeria':                ['table service', 'italian', 'pizza', 'family style', 'indoor', 'wood-fired', 'lunch', 'dinner', 'casual', 'kids menu', 'moderate', 'pasta', 'sharing'],
-  'Tutto Italia Ristorante':                         ['table service', 'italian', 'indoor', 'lunch', 'dinner', 'pasta', 'wine', 'elegant', 'moderate', 'a la carte', 'classic', 'european'],
-  'Biergarten Restaurant':                           ['buffet', 'german', 'family style', 'entertainment', 'live music', 'indoor', 'lunch', 'dinner', 'beer', 'all you can eat', 'festive', 'communal', 'oktoberfest'],
-  'Teppan Edo':                                      ['table service', 'japanese', 'hibachi', 'teppanyaki', 'communal dining', 'interactive', 'indoor', 'dinner', 'lunch', 'entertaining', 'fun', 'shared tables', 'show cooking'],
-  'Shiki-Sai: Sushi Izakaya':                        ['table service', 'japanese', 'sushi', 'izakaya', 'sake', 'indoor', 'dinner', 'lunch', 'asian', 'modern', 'a la carte', 'sake', 'noodles'],
-  'Coral Reef Restaurant':                           ['table service', 'seafood', 'aquarium', 'underwater', 'indoor', 'dinner', 'lunch', 'themed', 'moderate', 'unique', 'family friendly', 'american', 'fish'],
-  'Garden Grill Restaurant':                         ['character', 'family style', 'table service', 'american', 'rotating', 'indoor', 'breakfast', 'lunch', 'dinner', 'chip and dale', 'character dining', 'all you can eat', 'unique'],
-  'Akershus Royal Banquet Hall':                     ['character', 'buffet', 'norwegian', 'princess', 'family style', 'breakfast', 'lunch', 'dinner', 'character dining', 'themed', 'kids', 'fairy tale', 'all you can eat'],
-  'San Angel Inn Restaurante':                       ['table service', 'mexican', 'indoor', 'romantic', 'atmospheric', 'dinner', 'lunch', 'dim lighting', 'waterfront', 'margaritas', 'tequila', 'moderate'],
-  'La Hacienda de San Angel':                        ['table service', 'mexican', 'waterfront', 'outdoor', 'dinner', 'margaritas', 'drinks', 'casual', 'festive', 'tequila', 'fireworks viewing', 'lake view'],
-  'Regal Eagle Smokehouse':                          ['quick service', 'bbq', 'american', 'outdoor', 'casual', 'counter service', 'lunch', 'dinner', 'ribs', 'pulled pork', 'budget', 'smokehouse'],
-  'Connections Eatery':                              ['quick service', 'american', 'indoor', 'casual', 'budget', 'counter service', 'breakfast', 'lunch', 'dinner', 'fast food', 'modern', 'options'],
-  // Hollywood Studios
-  'The Hollywood Brown Derby':                       ['table service', 'american', 'fine dining', 'hollywood', 'golden age', 'signature', 'dinner', 'lunch', 'indoor', 'elegant', 'romantic', 'upscale', 'classic', '1930s'],
-  'Roundup Rodeo BBQ':                               ['table service', 'bbq', 'family style', 'american', 'toy story', 'themed', 'indoor', 'dinner', 'lunch', 'all you can eat', 'cowboy', 'festive', 'character', 'fun'],
-  "50's Prime Time Cafe":                            ['table service', 'american', 'comfort food', 'retro', '50s', 'themed', 'dinner', 'lunch', 'indoor', 'nostalgic', 'fun', 'kitsch', 'meatloaf', 'milkshakes'],
-  'Sci-Fi Dine-In Theater Restaurant':               ['table service', 'american', 'retro', 'drive-in', 'themed', 'indoor', 'dinner', 'lunch', 'fun', 'unique', 'nostalgic', 'milkshakes', 'burgers', '50s'],
-  "Oga's Cantina at the Walt Disney World Resort":   ['bar', 'star wars', 'cocktails', 'drinks', 'themed', 'immersive', 'indoor', 'galaxy\'s edge', 'adults', 'atmosphere', 'reservations', 'quick service'],
-  'Docking Bay 7 Food and Cargo':                    ['quick service', 'star wars', 'counter service', 'themed', 'lunch', 'dinner', 'casual', 'outdoor', 'budget', 'galactic', 'sci-fi', 'fun'],
-  'Ronto Roasters':                                  ['quick service', 'star wars', 'wraps', 'counter service', 'outdoor', 'snack', 'themed', 'budget', 'galactic', 'fast', 'lunch', 'dinner'],
-  "Woody's Lunch Box":                               ['quick service', 'toy story', 'counter service', 'outdoor', 'breakfast', 'lunch', 'snack', 'budget', 'kids', 'milkshakes', 'fun', 'themed'],
-  'Hollywood and Vine':                              ['buffet', 'character', 'family style', 'american', 'breakfast', 'lunch', 'dinner', 'character dining', 'all you can eat', 'indoor', 'kids', 'festive'],
-  'ABC Commissary':                                  ['quick service', 'american', 'counter service', 'indoor', 'casual', 'budget', 'lunch', 'dinner', 'fast food', 'burgers', 'sandwiches'],
-  'Backlot Express':                                 ['quick service', 'american', 'counter service', 'outdoor', 'casual', 'budget', 'lunch', 'dinner', 'burgers', 'themed', 'fast food'],
-  // Animal Kingdom
-  'Tiffins Restaurant':                              ['table service', 'fine dining', 'african', 'asian', 'indian', 'signature', 'dinner', 'lunch', 'artwork', 'indoor', 'special occasion', 'upscale', 'wine', 'elegant', 'eclectic'],
-  'Yak and Yeti Restaurant':                         ['table service', 'asian', 'pan-asian', 'indoor', 'casual', 'moderate', 'dinner', 'lunch', 'himalayan', 'themed', 'kids menu', 'shared', 'noodles'],
-  'Tusker House Restaurant':                         ['buffet', 'character', 'family style', 'african', 'breakfast', 'lunch', 'dinner', 'character dining', 'all you can eat', 'donald duck', 'themed', 'kids', 'festive'],
-  "Satu'li Canteen":                                 ['quick service', 'avatar', 'american', 'counter service', 'indoor', 'casual', 'budget', 'lunch', 'dinner', 'pandora', 'healthy', 'customisable', 'fresh'],
-  'Flame Tree Barbecue':                             ['quick service', 'bbq', 'american', 'outdoor', 'counter service', 'budget', 'lunch', 'dinner', 'waterfront', 'casual', 'ribs', 'pulled pork'],
-  'Restaurantosaurus':                               ['quick service', 'american', 'counter service', 'indoor', 'casual', 'budget', 'lunch', 'dinner', 'dinosaur', 'themed', 'burgers', 'kids'],
-  'Nomad Lounge':                                    ['bar', 'lounge', 'cocktails', 'drinks', 'african', 'small plates', 'appetizers', 'indoor', 'casual', 'adults', 'relaxed', 'atmosphere', 'sharing'],
-  // Disney Springs
-  'The BOATHOUSE':                                   ['table service', 'seafood', 'american', 'waterfront', 'outdoor', 'casual', 'dinner', 'lunch', 'nautical', 'moderate', 'bar', 'fresh fish', 'steaks'],
-  'Wine Bar George':                                 ['bar', 'wine', 'tapas', 'small plates', 'indoor', 'adults', 'casual', 'drinks', 'cheese', 'charcuterie', 'sophisticated', 'date night', 'sharing'],
-  'Morimoto Asia':                                   ['table service', 'asian', 'japanese', 'pan-asian', 'fine dining', 'dinner', 'lunch', 'indoor', 'elegant', 'sushi', 'dim sum', 'upscale', 'sake', 'special occasion'],
-  "Chef Art Smith's Homecomin'":                     ['table service', 'american', 'southern', 'comfort food', 'dinner', 'lunch', 'casual', 'indoor', 'fried chicken', 'brunch', 'moderate', 'soulful', 'classic'],
-  'Raglan Road Irish Pub and Restaurant':             ['table service', 'irish', 'pub', 'beer', 'entertainment', 'live music', 'indoor', 'dinner', 'lunch', 'casual', 'festive', 'dancing', 'lively'],
-  'Paddlefish':                                      ['table service', 'seafood', 'waterfront', 'outdoor', 'dinner', 'lunch', 'casual', 'moderate', 'boat', 'fish', 'shrimp', 'lobster', 'american'],
-  'Frontera Cocina':                                 ['table service', 'mexican', 'margaritas', 'tequila', 'dinner', 'lunch', 'indoor', 'moderate', 'casual', 'guacamole', 'tacos', 'festive'],
-  'Jaleo by Jose Andres':                            ['table service', 'spanish', 'tapas', 'small plates', 'fine dining', 'dinner', 'lunch', 'indoor', 'upscale', 'wine', 'sophisticated', 'sharing', 'date night'],
-  'STK Orlando':                                     ['table service', 'steakhouse', 'fine dining', 'dinner', 'indoor', 'upscale', 'romantic', 'signature', 'special occasion', 'wine', 'cocktails', 'trendy', 'date night'],
-  'City Works Eatery and Pour House':                ['bar', 'american', 'sports bar', 'beer', 'casual', 'indoor', 'lunch', 'dinner', 'wings', 'lively', 'tv', 'entertainment', 'pub'],
-  'Planet Hollywood':                                ['table service', 'american', 'hollywood', 'celebrity', 'themed', 'indoor', 'dinner', 'lunch', 'casual', 'moderate', 'burgers', 'fun'],
-  'Wolfgang Puck Bar and Grill':                     ['table service', 'american', 'fine dining', 'dinner', 'lunch', 'indoor', 'upscale', 'modern', 'wine', 'special occasion', 'bar', 'signature', 'californian'],
-  // Resort Dining
-  "Chef Mickey's":                                   ['character', 'buffet', 'family style', 'breakfast', 'dinner', 'character dining', 'mickey mouse', 'all you can eat', 'kids', 'fun', 'festive', 'indoor', 'american'],
-  "Topolino's Terrace - Flavors of the Riviera":     ['character', 'french', 'italian', 'fine dining', 'table service', 'breakfast', 'dinner', 'rooftop', 'indoor', 'elegant', 'character dining', 'special occasion', 'romantic', 'riviera'],
-  'California Grill':                                ['table service', 'fine dining', 'american', 'sushi', 'rooftop', 'fireworks', 'dinner', 'indoor', 'romantic', 'signature', 'special occasion', 'wine', 'upscale', 'views'],
-  'Steakhouse 71':                                   ['table service', 'steakhouse', 'american', 'breakfast', 'lunch', 'dinner', 'indoor', 'casual', 'moderate', 'retro', 'classic', 'burgers', 'comfort food'],
-  'Boma - Flavors of Africa':                        ['buffet', 'african', 'family style', 'breakfast', 'dinner', 'all you can eat', 'indoor', 'moderate', 'exotic', 'adventurous', 'flavourful', 'safari'],
-  'Jiko - The Cooking Place':                        ['table service', 'fine dining', 'african', 'dinner', 'indoor', 'romantic', 'upscale', 'wine', 'special occasion', 'signature', 'exotic', 'elegant'],
-  'Sanaa':                                           ['table service', 'indian', 'african', 'breakfast', 'lunch', 'dinner', 'indoor', 'moderate', 'savanna view', 'naan', 'exotic', 'family', 'sharing'],
-  'Ohana':                                           ['family style', 'character', 'hawaiian', 'breakfast', 'dinner', 'indoor', 'all you can eat', 'character dining', 'polynesian', 'fun', 'festive', 'skewers', 'sharing'],
-  'Kona Cafe':                                       ['table service', 'asian', 'pacific rim', 'breakfast', 'lunch', 'dinner', 'indoor', 'casual', 'moderate', 'relaxed', 'coffee', 'tropical', 'fusion'],
-  "Capt. Cook's":                                    ['quick service', 'american', 'counter service', 'budget', 'breakfast', 'lunch', 'dinner', 'casual', 'fast', 'island themed', 'kids', 'polynesian'],
-  'Grand Floridian Cafe':                            ['table service', 'american', 'breakfast', 'lunch', 'dinner', 'indoor', 'casual', 'elegant', 'moderate', 'classic', 'refined', 'relaxed'],
-  "Narcoossee's":                                    ['table service', 'seafood', 'fine dining', 'waterfront', 'dinner', 'indoor', 'romantic', 'signature', 'upscale', 'special occasion', 'wine', 'views', 'fireworks'],
-  'Citricos':                                        ['table service', 'fine dining', 'american', 'dinner', 'indoor', 'elegant', 'romantic', 'signature', 'wine', 'special occasion', 'upscale', 'refined', 'mediterranean'],
-  'Victoria and Alberts':                            ['table service', 'fine dining', 'upscale', 'dinner', 'prix fixe', 'signature', 'romantic', 'special occasion', 'adults', 'elegant', 'opulent', 'multi-course', 'tasting menu'],
-  '1900 Park Fare':                                  ['buffet', 'character', 'family style', 'breakfast', 'dinner', 'all you can eat', 'character dining', 'cinderella', 'winnie the pooh', 'kids', 'festive', 'themed', 'princess'],
-  'Whispering Canyon Cafe':                          ['table service', 'american', 'bbq', 'family style', 'breakfast', 'lunch', 'dinner', 'indoor', 'casual', 'fun', 'quirky', 'interactive', 'all you can eat', 'western'],
-  'Story Book Dining at Artist Point':               ['character', 'table service', 'american', 'dinner', 'indoor', 'character dining', 'snow white', 'evil queen', 'themed', 'fairy tale', 'princess', 'moderate', 'prix fixe'],
-  'Geyser Point Bar and Grill':                      ['bar', 'american', 'outdoor', 'waterfront', 'drinks', 'casual', 'lunch', 'dinner', 'snacks', 'relaxed', 'scenic', 'lake view', 'quick bites'],
-  'Cape May Cafe':                                   ['buffet', 'seafood', 'character', 'breakfast', 'dinner', 'all you can eat', 'clambake', 'casual', 'indoor', 'family', 'kids', 'american', 'character dining'],
-  'Ale and Compass Restaurant':                      ['table service', 'american', 'seafood', 'breakfast', 'lunch', 'dinner', 'indoor', 'moderate', 'casual', 'nautical', 'elegant', 'relaxed'],
-  'Beaches and Cream Soda Shop':                     ['table service', 'american', 'dessert', 'ice cream', 'milkshakes', 'casual', 'fun', 'indoor', 'snacks', 'nostalgic', 'kids', 'sweet', 'sodas'],
-  'Yachtsman Steakhouse':                            ['table service', 'steakhouse', 'fine dining', 'dinner', 'indoor', 'romantic', 'upscale', 'signature', 'special occasion', 'wine', 'aged beef', 'elegant'],
-  'Flying Fish':                                     ['table service', 'seafood', 'fine dining', 'dinner', 'indoor', 'romantic', 'upscale', 'signature', 'boardwalk', 'special occasion', 'wine', 'elegant'],
-  "Sebastian's Bistro":                              ['table service', 'caribbean', 'latin', 'dinner', 'indoor', 'moderate', 'casual', 'rum', 'cocktails', 'festive', 'tropical', 'fusion'],
-  'Toledo - Tapas, Steak and Seafood':               ['table service', 'tapas', 'steakhouse', 'seafood', 'spanish', 'dinner', 'indoor', 'cocktails', 'rooftop', 'views', 'sharing', 'date night', 'moderate'],
-  'Three Bridges Bar and Grill':                     ['bar', 'american', 'outdoor', 'waterfront', 'casual', 'drinks', 'snacks', 'dinner', 'lake view', 'relaxed', 'scenic', 'casual dining', 'quick bites'],
-  'Trattoria al Forno':                              ['table service', 'italian', 'character', 'breakfast', 'dinner', 'indoor', 'moderate', 'character dining', 'rapunzel', 'pasta', 'pizza', 'kids', 'themed'],
-}
 
 const DISNEY_WORLD_BASE_URL = 'https://www.disneyworld.co.uk'
 
@@ -1186,24 +1020,28 @@ function App() {
   const activeDayPlan = plan.dayPlans?.[activeDate] || {}
   const activeRideOptions = getRideOptionsForDay(activeDayPlan)
   const topSearchQ = eventSearch.trim()
-  const topSearchResults = setupDone && topSearchQ ? {
-    shows: getParkSuggestions(activeDayPlan.park, activeDayPlan.secondPark)
-      .map(s => {
-        const cleanTags = (s.tags || []).map(t => t.replace(/^#/, ''))
-        const matchingTags = cleanTags.filter(t => fuzzyMatch(topSearchQ, t))
-        return (fuzzyMatch(topSearchQ, s.label) || matchingTags.length) ? { ...s, matchingTags } : null
-      }).filter(Boolean).slice(0, 4),
-    restaurants: ALL_RESTAURANTS.map(r => {
-      const tags = RESTAURANT_TAGS[r] || []
-      const matchingTags = tags.filter(t => fuzzyMatch(topSearchQ, t))
-      return (fuzzyMatch(topSearchQ, r) || matchingTags.length) ? { name: r, matchingTags } : null
-    }).filter(Boolean).slice(0, 6),
-    rides: activeRideOptions.map(r => {
-      const tags = RIDE_TAGS[r.label] || []
-      const matchingTags = tags.filter(t => fuzzyMatch(topSearchQ, t))
-      return (fuzzyMatch(topSearchQ, r.label) || matchingTags.length) ? { ...r, matchingTags } : null
-    }).filter(Boolean).slice(0, 5),
-  } : null
+  // TD-016: wrap in useMemo — only recalculates when query, park, or ride options change
+  const topSearchResults = useMemo(() => {
+    if (!setupDone || !topSearchQ) return null
+    return {
+      shows: getParkSuggestions(activeDayPlan.park, activeDayPlan.secondPark)
+        .map(s => {
+          const cleanTags = (s.tags || []).map(t => t.replace(/^#/, ''))
+          const matchingTags = cleanTags.filter(t => fuzzyMatch(topSearchQ, t))
+          return (fuzzyMatch(topSearchQ, s.label) || matchingTags.length) ? { ...s, matchingTags } : null
+        }).filter(Boolean).slice(0, 4),
+      restaurants: ALL_RESTAURANTS.map(r => {
+        const tags = RESTAURANT_TAGS[r] || []
+        const matchingTags = tags.filter(t => fuzzyMatch(topSearchQ, t))
+        return (fuzzyMatch(topSearchQ, r) || matchingTags.length) ? { name: r, matchingTags } : null
+      }).filter(Boolean).slice(0, 6),
+      rides: activeRideOptions.map(r => {
+        const tags = RIDE_TAGS[r.label] || []
+        const matchingTags = tags.filter(t => fuzzyMatch(topSearchQ, t))
+        return (fuzzyMatch(topSearchQ, r.label) || matchingTags.length) ? { ...r, matchingTags } : null
+      }).filter(Boolean).slice(0, 5),
+    }
+  }, [setupDone, topSearchQ, activeDayPlan.park, activeDayPlan.secondPark, activeRideOptions])
   const hasTopSearchResults = topSearchResults &&
     (topSearchResults.shows.length || topSearchResults.restaurants.length || topSearchResults.rides.length)
 
@@ -1935,7 +1773,7 @@ function App() {
                               const bookingUrl = normalizedItem.bookingUrl
                               const hasRestaurantLinks = Boolean(normalizedItem.type !== 'Ride' && normalizedItem.restaurant && (menuUrl || bookingUrl))
                               const rideName = normalizedItem.ride ? normalizedItem.ride.split('::').pop() : ''
-                              const rideUrl = RIDE_URLS[rideName] || ''
+                              const rideUrl = getRideUrl(rideName) || ''
                               const rideImage = RIDE_IMAGES[rideName] || ''
                               const mapSearchTerm = rideName || normalizedItem.restaurant || normalizedItem.note || dayPlan.park || 'Walt Disney World'
                               const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapSearchTerm + ' Walt Disney World')}`

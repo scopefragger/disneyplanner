@@ -5,20 +5,6 @@ It is removed from this file once fixed and verified by a passing build + test r
 
 ---
 
-## TD-014 — `RESTAURANT_TAGS` is stranded in App.jsx
-`RESTAURANT_TAGS` (lines 372–465) belongs with the other restaurant data in
-`src/data/restaurantMetadata.js`. Add a `tags` array field to each entry in that file and remove
-the standalone constant from App.jsx.
-
-## TD-015 — `RIDE_TAGS` and `RIDE_URLS` are parallel flat lookups in App.jsx
-Both constants use the same ride-name keys and belong together. Extract both to
-`src/data/rideData.js`, exporting `getRideTags(ride)` and `getRideUrl(ride)` helpers. Keep
-`RIDES_BY_PARK` and `RIDE_IMAGES` (which depends on `IMG_BASE`) in App.jsx.
-
-## TD-016 — `topSearchResults` is an inline computation in the render body
-`topSearchResults` (lines 1196–1213) is a pure transform of `eventSearch + plan` state computed
-directly in the render body. Wrap in `useMemo` so it only recalculates when its inputs change.
-
 ## TD-017 — Blank day plan object constructed in three places
 The blank day plan shape `{ dayType:'', park:'', secondPark:'', parkHop:false, swimSpot:'',
 staySpot:'', items:[], dismissedSuggestions:[] }` appears in `normalizePlan`, in the tripDates

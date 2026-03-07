@@ -192,3 +192,14 @@ Each entry is appended after every prompt.
 **Why:** Remove render-time waste, eliminate duplicated spread logic, and apply the declarative keyword-table pattern consistently (matching TD-005 approach from prior session).
 
 ---
+
+## 2026-03-07T10:05:00Z — Tech debt batch 2 (TD-014, TD-015, TD-016)
+
+**What:**
+- TD-014: Moved `RESTAURANT_TAGS` from App.jsx to `src/data/restaurantMetadata.js` as a named export — all restaurant data now co-located
+- TD-015: Extracted `RIDE_TAGS` and `RIDE_URLS` to `src/data/rideData.js`; added `getRideTags()` and `getRideUrl()` helpers; App.jsx now imports from data layer
+- TD-016: Wrapped `topSearchResults` computation in `useMemo` — recalculates only when query, park, or ride options change
+
+**Why:** Co-locate data with its logical home (same file = one place to update). `useMemo` eliminates search recalculation on unrelated re-renders.
+
+---
