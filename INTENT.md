@@ -294,3 +294,14 @@ Each entry is appended after every prompt.
 - App.jsx now at ~1 461 lines (down from 1 973 before Batch 1)
 
 **Why:** Second batch of the readability refactor. Pure logic functions with zero React dependencies now live in dedicated modules. `storage.js` imports `normalizePlan` from `planHelpers.js` (not vice versa) to avoid circular dependencies.
+
+## 2026-03-07T14:32:00Z — Batch 3 refactor: display helpers + park-hop handler (TD-035, TD-037)
+
+**What:**
+- TD-035: Created `src/data/displayHelpers.js` — `DAY_CHIP_COLORS`, `getDayTypeChipColor`, `hashtagLabel`, `getDayCardStyle`, `getDayTypeIcon`, `getSecondParkOptions`, `getRideOptionsForDay`, `DEFAULT_SLOT`, `getItemSlot`, `getTimeSlots`, `getLocationDisplay` plus all private image/tint/logo constant maps
+- TD-037: Extracted 10-line inline park-hop `onClick` lambda into named `toggleParkHop(date)` handler beside `resetDay` and `setDayType`
+- Removed `IMG_BASE` from App.jsx (now unused after display helpers moved)
+- App.jsx now at ~1 250 lines (down from 1 973 at start of refactor)
+- TD-036 (JSX render function extraction) deferred to a follow-up
+
+**Why:** All pure display/style constants and helpers now live in a dedicated module. toggleParkHop completes the named-handler pattern for day-level mutations.
