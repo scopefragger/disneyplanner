@@ -120,7 +120,7 @@ Apply these patterns where they naturally reduce complexity. Do not force a patt
 ---
 
 ## Architecture Rules
-- **Single file per concern** — all app logic in `App.jsx`, all styles in `App.css`. Do not create new component files unless asked.
+- **File structure** — app logic/state/handlers in `App.jsx`; styles in `App.css`; React components in `src/components/`. Each component file is self-contained with its own data imports.
 - **No TypeScript** — plain JSX only.
 - **localStorage only** — no external persistence, no API calls that mutate state.
 - **Park name keys must exactly match** across all files:

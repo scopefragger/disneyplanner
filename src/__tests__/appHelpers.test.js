@@ -7,26 +7,25 @@ import {
   DEFAULT_DRAFT,
   resetDraftForType,
   normalizeEventItem,
-  formatTime,
   buildEventLabel,
   detectTheme,
-  getDateRange,
-  formatPrettyDate,
-  formatShortDate,
-  getItemSlot,
   getEventTypeConfig,
-  getSecondParkOptions,
-  hashtagLabel,
+  normalizePlan,
+} from '../data/planHelpers.js'
+import { formatTime, getDateRange, formatPrettyDate, formatShortDate } from '../utils.js'
+import {
   getDayTypeChipColor,
   getDayTypeIcon,
-  normalizePlan,
+  getItemSlot,
+  getSecondParkOptions,
+  hashtagLabel,
   getRideOptionsForDay,
   getTimeSlots,
   getLocationDisplay,
-  generateId,
-  getRestaurantResources,
   getDayCardStyle,
-} from '../App.jsx'
+} from '../data/displayHelpers.js'
+import { generateId } from '../data/storage.js'
+import { getRestaurantResources } from '../data/restaurantMetadata.js'
 import { RIDE_URLS, RIDE_TAGS, RIDES_BY_PARK, RIDE_IMAGES, getRideUrl, getRideTags } from '../data/rideData.js'
 
 // ── createEventItem ──────────────────────────────────────────────────────────

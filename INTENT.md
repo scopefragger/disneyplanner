@@ -5,6 +5,20 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-08T11:49:00Z — Extract render functions into src/components/
+
+**What:**
+- Created `src/components/` with 7 self-contained component files: `HomeScreen.jsx`, `SetupWizard.jsx`, `SetupSummary.jsx`, `SearchBar.jsx`, `DayPlanSection.jsx`, `WhatsNext.jsx`, `SettingsPanel.jsx`
+- Each component file carries its own data imports (no longer relies on App.jsx's import scope)
+- `App.jsx` reduced from 1,348 → 265 lines; now contains only state, handlers, derived values, and component composition
+- Removed the re-export barrel from `App.jsx`; updated `appHelpers.test.js` to import from actual source files (`../data/planHelpers.js`, `../utils.js`, `../data/displayHelpers.js`, `../data/storage.js`, `../data/restaurantMetadata.js`)
+- Added `src/components/**` to coverage exclude list in `vite.config.js` (JSX render output is not unit-tested per project rules)
+- Updated `CLAUDE.md` to replace the "no new component files" rule with the new `src/components/` convention
+
+**Why:** App.jsx at 1,348 lines was hard to navigate. Extracting the 7 render functions to named component files makes each piece independently readable and editable without scrolling through an entire monolith.
+
+---
+
 ## 2026-03-07T20:27:00Z — TD-039/040/041: Add tests for storage.js, rideData.js, displayHelpers.js
 
 **What:**

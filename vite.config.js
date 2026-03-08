@@ -13,7 +13,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{js,jsx}'],
-      exclude: ['src/__tests__/**', 'src/main.jsx', 'src/App.jsx', 'src/data/restaurantMetadata.js'],
+      exclude: ['src/__tests__/**', 'src/main.jsx', 'src/App.jsx', 'src/components/**', 'src/data/restaurantMetadata.js'],
       thresholds: {
         statements: 60,
         branches: 60,
