@@ -154,11 +154,14 @@ function App() {
   }
 
   const updateDayItem = (date, itemIndex, updates) => {
-    setPlan(current => patchDayPlan(current, date, {
-      items: current.dayPlans[date].items.map((item, idx) =>
-        idx === itemIndex ? { ...item, ...updates } : item
-      )
-    }))
+    setPlan(current => {
+      if (!current.dayPlans?.[date]) return current
+      return patchDayPlan(current, date, {
+        items: current.dayPlans[date].items.map((item, idx) =>
+          idx === itemIndex ? { ...item, ...updates } : item
+        )
+      })
+    })
   }
 
   const removeDayItem = (date, itemIndex) => {
@@ -308,7 +311,7 @@ function App() {
 
   const activeDate = tripDates[activeDay]
   const activeDayPlan = plan.dayPlans?.[activeDate] || {}
-  const activeRideOptions = getRideOptionsForDay(activeDayPlan)
+  const activeRideOptions = useMemo(() => getRideOptionsForDay(activeDayPlan), [activeDayPlan])
   const activeDraft = draftDayItems[activeDate] || DEFAULT_DRAFT
   const activeSelectedEventType = getEventTypeConfig(activeDraft.type)
   const topSearchQ = eventSearch.trim()

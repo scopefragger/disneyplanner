@@ -1,3 +1,5 @@
+import { inferTheme } from './planHelpers.js'
+
 const DW = 'https://disneyworld.disney.go.com'
 const MAPS = 'https://www.google.com/maps?q='
 
@@ -92,20 +94,7 @@ const PARK_MAP_URLS = {
   "Disney's Animal Kingdom":    `${MAPS}Animal+Kingdom+Walt+Disney+World+Orlando`,
 }
 
-// Infer theme from show name
-export function inferTheme(name) {
-  const n = name.toLowerCase()
-  if (n.includes('firework') || n.includes('illuminate') || n.includes('luminous') ||
-      n.includes('fantasmic') || n.includes('galactic') || n.includes('harmonious') ||
-      n.includes('happily ever') || n.includes('star wars')) return 'fireworks'
-  if (n.includes('parade') || n.includes('festival of fantasy') || n.includes('cavalcade') ||
-      n.includes('harambe')) return 'default'
-  if (n.includes('character') || n.includes('mickey') || n.includes('friendship faire') ||
-      n.includes('meet')) return 'character'
-  if (n.includes('nature') || n.includes('animal') || n.includes('tree of life') ||
-      n.includes('rivers of light')) return 'nature'
-  return 'default'
-}
+// inferTheme is imported from planHelpers.js — see that file for the full implementation
 
 // ── Declarative keyword tables for inferTags (TD-005) ───────────────────────
 const FRANCHISE_KEYWORDS = {

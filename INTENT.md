@@ -3,6 +3,24 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-08T21:45:00Z — Pay down tech debt: TD-042–047, TD-124, TD-148, TD-150–153
+
+**What:**
+- TD-042: Break DayPlanSection prop destructuring across multiple lines
+- TD-043: Break SearchBar prop destructuring across multiple lines
+- TD-044: Break SetupSummary prop destructuring across multiple lines
+- TD-045: Break SetupWizard prop destructuring across multiple lines
+- TD-046: Expand DEFAULT_DRAFT object literal to one field per line
+- TD-047: Expand SHOW_TYPE_MAP to one entry per line with explanatory comment
+- TD-124: Fix `window.open(url, '_blank', 'noreferrer')` → `'noopener'` in WhatsNext
+- TD-148: Memoize `activeRideOptions` with `useMemo` so `topSearchResults` memo isn't defeated every render
+- TD-150: Add `window.confirm` guard before `deleteProject` in HomeScreen
+- TD-151: Uninstall `@testing-library/react` (unused devDependency)
+- TD-152 (new): Add null guard to `updateDayItem` — was crashing if `date` not in `dayPlans`
+- TD-153 (new): Move `inferTheme` from `parkSuggestions.js` into `planHelpers.js`; update `detectTheme` to delegate show-name detection to it (gains Fantasmic, Harmonious, Luminous etc. fireworks keywords); `parkSuggestions.js` now imports from `planHelpers.js`; test import updated accordingly
+
+**Why:** Systematic readability audit (TD-042–047 formatting), correctness fixes (TD-124, TD-148, TD-152), user-safety (TD-150), dependency hygiene (TD-151), and DRY consolidation of the two diverging theme-inference functions (TD-153). All 480 tests pass; coverage 88%/86%/90%.
+
 ---
 
 ## 2026-03-08T16:30:00Z — Full readability audit: 110 tech debt items registered

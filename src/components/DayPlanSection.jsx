@@ -5,7 +5,14 @@ import { getRideUrl, RIDE_IMAGES } from '../data/rideData.js'
 import { normalizeEventItem, buildEventLabel } from '../data/planHelpers.js'
 import { getDayTypeChipColor, hashtagLabel, getDayCardStyle, getDayTypeIcon, getSecondParkOptions, getItemSlot, getTimeSlots, getLocationDisplay } from '../data/displayHelpers.js'
 
-export default function DayPlanSection({ plan, tripDates, activeDay, setActiveDay, liveShowData, editingDayItem, setEditingDayItem, updateDayPlan, updateDayItem, removeDayItem, acceptSuggestion, dismissSuggestion, clearDayType, clearPark, clearSwimSpot, clearStaySpot, resetDay, toggleParkHop, setDayType, setPark }) {
+export default function DayPlanSection({
+  plan, tripDates, activeDay, setActiveDay,
+  liveShowData, editingDayItem, setEditingDayItem,
+  updateDayPlan, updateDayItem, removeDayItem,
+  acceptSuggestion, dismissSuggestion,
+  clearDayType, clearPark, clearSwimSpot, clearStaySpot,
+  resetDay, toggleParkHop, setDayType, setPark
+}) {
   const date = tripDates[activeDay]
   const index = activeDay
   const dayPlan = plan.dayPlans?.[date] || {

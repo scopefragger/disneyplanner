@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/opt/homebrew/bin/node -e \":*)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(/opt/homebrew/bin/npm uninstall @testing-library/react)",
+      "Read(//opt/homebrew/opt/**)"
+    ]
+  }
+}

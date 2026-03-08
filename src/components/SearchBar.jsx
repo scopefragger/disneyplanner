@@ -2,7 +2,14 @@ import { EVENT_TYPES } from '../data/tripOptions.js'
 import { RESTAURANT_GROUPS } from '../data/restaurantMetadata.js'
 import { resetDraftForType } from '../data/planHelpers.js'
 
-export default function SearchBar({ activeDay, activeDate, activeDayPlan, eventSearch, setEventSearch, addEventOpen, setAddEventOpen, hasTopSearchResults, topSearchResults, activeDraft, activeSelectedEventType, activeRideOptions, setDraftDayItems, quickAddToDay, addDayItem }) {
+export default function SearchBar({
+  activeDay, activeDate, activeDayPlan,
+  eventSearch, setEventSearch,
+  addEventOpen, setAddEventOpen,
+  hasTopSearchResults, topSearchResults,
+  activeDraft, activeSelectedEventType, activeRideOptions,
+  setDraftDayItems, quickAddToDay, addDayItem
+}) {
   return (
     <div className="top-searchbar-card card card-wide">
       <div className="top-searchbar-wrap">

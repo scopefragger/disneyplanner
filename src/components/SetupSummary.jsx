@@ -1,6 +1,10 @@
 import { formatPrettyDate } from '../utils.js'
 
-export default function SetupSummary({ plan, tripLength, setSetupDone, setCurrentStep, setPrefSearch, setSettingsOpen, setResetConfirm }) {
+export default function SetupSummary({
+  plan, tripLength,
+  setSetupDone, setCurrentStep, setPrefSearch,
+  setSettingsOpen, setResetConfirm
+}) {
   return (
     <div className="setup-summary card card-wide">
       <div className="setup-summary-inner">

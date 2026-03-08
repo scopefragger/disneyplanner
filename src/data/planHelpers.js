@@ -17,10 +17,23 @@ export const DEFAULT_PLAN = {
 }
 
 // ── Default blank draft item — single source of truth (TD-003) ──────────────
-export const DEFAULT_DRAFT = { type: 'Fireworks', restaurant: '', customRestaurant: '', ride: '', note: '', time: '' }
+export const DEFAULT_DRAFT = {
+  type: 'Fireworks',
+  restaurant: '',
+  customRestaurant: '',
+  ride: '',
+  note: '',
+  time: '',
+}
 
 // ── Show-type normaliser for quickAdd (TD-011) ────────────────────────────────
-export const SHOW_TYPE_MAP = { Fireworks: 'Fireworks', Parade: 'Parade', Show: 'Fireworks', 'Character Meet': 'Character Meet' }
+// API 'Show' type maps to our 'Fireworks' category (closest match for nighttime spectaculars)
+export const SHOW_TYPE_MAP = {
+  Fireworks: 'Fireworks',
+  Parade: 'Parade',
+  Show: 'Fireworks',
+  'Character Meet': 'Character Meet',
+}
 
 // ── Factory: blank day plan shape — single source of truth (TD-017) ─────────
 export function createBlankDayPlan(overrides) {
@@ -58,30 +71,42 @@ export function patchDayPlan(current, date, patch) {
   }
 }
 
+// Infer a display theme from a show/event name (used by parkSuggestions and detectTheme)
+export function inferTheme(name) {
+  const n = name.toLowerCase()
+  if (n.includes('firework') || n.includes('illuminate') || n.includes('luminous') ||
+      n.includes('fantasmic') || n.includes('galactic') || n.includes('harmonious') ||
+      n.includes('happily ever') || n.includes('star wars')) return 'fireworks'
+  if (n.includes('parade') || n.includes('festival of fantasy') || n.includes('cavalcade') ||
+      n.includes('harambe')) return 'default'
+  if (n.includes('character') || n.includes('mickey') || n.includes('friendship faire') ||
+      n.includes('meet')) return 'character'
+  if (n.includes('nature') || n.includes('animal') || n.includes('tree of life') ||
+      n.includes('rivers of light')) return 'nature'
+  return 'default'
+}
+
 export function detectTheme(text) {
   const value = text.toLowerCase()
 
-  if (
-    value.includes('firework') ||
-    value.includes('night show') ||
-    value.includes('parade')
-  ) {
-    return 'fireworks'
-  }
+  // Event-type keywords take priority — these aren't show-name patterns
   if (value.includes('dining') || value.includes('restaurant') || value.includes('breakfast')) {
     return 'dining'
   }
   if (value.includes('ride') || value.includes('coaster') || value.includes('genie+')) {
     return 'ride'
   }
-  if (value.includes('character') || value.includes('princess') || value.includes('meet')) {
-    return 'character'
+  // Parades get fireworks-style display even though inferTheme maps them to 'default'
+  if (value.includes('parade') || value.includes('night show')) {
+    return 'fireworks'
   }
-  if (value.includes('trail') || value.includes('safari') || value.includes('animal')) {
+  // Activity-based nature keywords not covered by inferTheme
+  if (value.includes('trail') || value.includes('safari')) {
     return 'nature'
   }
 
-  return 'default'
+  // Delegate show-name detection to inferTheme (richer Disney-specific keywords)
+  return inferTheme(text)
 }
 
 export function getEventTypeConfig(type) {

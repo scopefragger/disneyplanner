@@ -32,7 +32,10 @@ export default function HomeScreen({ projects, openProject, deleteProject, creat
                       </div>
                       <button
                         className="chip"
-                        onClick={(e) => { e.stopPropagation(); deleteProject(project.id) }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (window.confirm('Delete this holiday?')) deleteProject(project.id)
+                        }}
                       >
                         Delete
                       </button>

@@ -1,7 +1,12 @@
 import { fuzzyMatch } from '../utils.js'
 import { DISNEY_HOTELS, DINING_OPTIONS, ENTERTAINMENT_TYPES, FRANCHISE_OPTIONS } from '../data/tripOptions.js'
 
-export default function SetupWizard({ plan, currentStep, tripLength, prefSearch, setPrefSearch, updateField, nextStep, prevStep, setSetupDone, toggleFavoriteTag }) {
+export default function SetupWizard({
+  plan, currentStep, tripLength,
+  prefSearch, setPrefSearch,
+  updateField, nextStep, prevStep,
+  setSetupDone, toggleFavoriteTag
+}) {
   return (
     <section key={currentStep} className="card card-wide setup-step">
       <p className="step-label">Step {currentStep} of 5</p>

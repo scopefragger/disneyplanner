@@ -21,7 +21,7 @@ export default function WhatsNext({ activeDay, activeDate, plan }) {
             const url = stops.length
               ? `https://www.google.com/maps/dir/${stops.join('/')}`
               : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((dayPlan?.park || 'Walt Disney World') + ' Walt Disney World')}`
-            window.open(url, '_blank', 'noreferrer')
+            window.open(url, '_blank', 'noopener')
           }}
         >
           <span className="whats-next-btn-icon">🗺</span>

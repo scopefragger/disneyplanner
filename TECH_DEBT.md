@@ -9,6 +9,11 @@ It is removed from this file once fixed and verified by a passing build + test r
 all static data, utilities, plan helpers, display helpers and persistence logic extracted
 to named modules; JSX extracted to named render functions; overall test coverage 80% → 88%.*
 
+*TD-042–047, TD-124, TD-148, TD-150–153 completed 2026-03-08. Prop destructurings formatted,
+object literals expanded, window.open corrected, activeRideOptions memoized, delete confirmation
+added, @testing-library/react removed, updateDayItem null guard added, inferTheme moved to
+planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.*
+
 ---
 
 # Readability Audit — TD-042 through TD-151
@@ -19,100 +24,6 @@ to named modules; JSX extracted to named render functions; overall test coverage
 ---
 
 ## Category A — Break Long Lines & Format for Scanning
-
----
-
-## TD-042 · Break DayPlanSection prop destructuring across multiple lines
-
-**Severity:** Medium
-**File:** src/components/DayPlanSection.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 8 is ~350 characters — a single-line destructuring of 18 props. Impossible to scan visually.
-
-**Fix:** Break into one prop per line:
-```js
-export default function DayPlanSection({
-  plan, tripDates, activeDay, setActiveDay,
-  liveShowData, editingDayItem, setEditingDayItem,
-  updateDayPlan, updateDayItem, removeDayItem,
-  acceptSuggestion, dismissSuggestion,
-  clearDayType, clearPark, clearSwimSpot, clearStaySpot,
-  resetDay, toggleParkHop, setDayType, setPark
-}) {
-```
-
-**Effort:** Trivial
-
----
-
-## TD-043 · Break SearchBar prop destructuring across multiple lines
-
-**Severity:** Medium
-**File:** src/components/SearchBar.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 5 is ~400 characters — 15 props on a single line.
-
-**Fix:** Same multi-line pattern as TD-042.
-
-**Effort:** Trivial
-
----
-
-## TD-044 · Break SetupSummary prop destructuring across multiple lines
-
-**Severity:** Low
-**File:** src/components/SetupSummary.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 3 is a 7-prop destructuring on one line — hard to scan.
-
-**Fix:** Break into 2–3 lines grouped by purpose (data vs setters).
-
-**Effort:** Trivial
-
----
-
-## TD-045 · Break SetupWizard prop destructuring across multiple lines
-
-**Severity:** Low
-**File:** src/components/SetupWizard.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 4 has 10 props on a single line.
-
-**Fix:** Break into 2–3 lines grouped by purpose.
-
-**Effort:** Trivial
-
----
-
-## TD-046 · Break DEFAULT_DRAFT onto multiple lines
-
-**Severity:** Low
-**File:** src/data/planHelpers.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 20 is a single-line object with 6 fields — harder to spot each field at a glance.
-
-**Fix:** One field per line, matching the pattern used by `DEFAULT_PLAN`.
-
-**Effort:** Trivial
-
----
-
-## TD-047 · Break SHOW_TYPE_MAP onto multiple lines
-
-**Severity:** Low
-**File:** src/data/planHelpers.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 23 is a single-line object with 4 key-value pairs.
-
-**Fix:** One entry per line with a comment explaining the `Show → Fireworks` mapping.
-
-**Effort:** Trivial
 
 ---
 
@@ -1225,19 +1136,6 @@ export default function DayPlanSection({
 
 ---
 
-## TD-124 · Fix window.open noreferrer usage in WhatsNext
-
-**Severity:** Trivial
-**File:** src/components/WhatsNext.jsx
-**Violation:** Correctness
-
-**Problem:** Line 24: `window.open(url, '_blank', 'noreferrer')` — the third argument to `window.open` is a window features string, not a rel attribute. `'noreferrer'` does nothing here.
-
-**Fix:** Use `window.open(url, '_blank', 'noopener')` or construct an `<a>` element with `rel="noreferrer noopener"`.
-
-**Effort:** Trivial
-
----
 
 ## TD-125 · Standardize object key quoting in displayHelpers maps
 
@@ -1585,19 +1483,6 @@ export default function DayPlanSection({
 
 ---
 
-## TD-148 · Simplify activeRideOptions useMemo dependency issue
-
-**Severity:** Medium
-**File:** src/App.jsx
-**Violation:** Code Quality — correctness
-
-**Problem:** Line 336 lists `activeRideOptions` in the `useMemo` dependency array for `topSearchResults`, but `getRideOptionsForDay` returns a new array every render. This defeats memoization — the memo recalculates every render when a park is selected.
-
-**Fix:** Either memoize `activeRideOptions` separately with `useMemo`, or compute it inside the existing `topSearchResults` memo.
-
-**Effort:** Low
-
----
 
 ## TD-149 · Convert flatMap return pattern from [(...)] to direct return
 
@@ -1613,32 +1498,4 @@ export default function DayPlanSection({
 
 ---
 
-## TD-150 · Add project deletion confirmation to HomeScreen
-
-**Severity:** Low
-**File:** src/components/HomeScreen.jsx
-**Violation:** Code Quality — user safety
-
-**Problem:** Line 35: clicking "Delete" on a project immediately deletes it. No confirmation, no undo.
-
-**Fix:** Add a `window.confirm('Delete this holiday?')` guard before calling `deleteProject`.
-
-**Effort:** Trivial
-
----
-
-## TD-151 · Remove @testing-library/react from devDependencies
-
-**Severity:** Trivial
-**File:** package.json
-**Violation:** npm Best Practices — minimal dependencies
-
-**Problem:** `@testing-library/react` is installed as a devDependency but is never imported in any test file. All tests are pure-logic unit tests.
-
-**Fix:** `npm uninstall @testing-library/react`.
-
-**Effort:** Trivial
-
----
-
-*110 items registered (TD-042 through TD-151). Each is a self-contained change of 10-30 lines.*
+*100 items remaining (TD-048 through TD-149, excluding completed items).*

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
+import { inferTheme } from '../data/planHelpers.js'
 import {
-  inferTheme,
   inferTags,
   parseShowTime,
   getParkSuggestions,
