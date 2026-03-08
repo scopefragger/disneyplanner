@@ -5,6 +5,18 @@ Each entry is appended after every prompt.
 
 ---
 
+## 2026-03-08T16:30:00Z — Full readability audit: 110 tech debt items registered
+
+**What:**
+- Read every source file in the project (15 JS/JSX files, 1 CSS, config files)
+- Identified 110 small, self-contained readability improvements (TD-042 through TD-151)
+- Organised into 12 categories: long lines, function extraction, named constants, DRY violations, naming clarity, dead code, validation, consistency, code expansion, comments, structure, misc
+- Each item is scoped to a 10-30 line change
+
+**Why:** Systematic audit to make the codebase as human-readable as possible. Every line should be scannable in one pass. The 110 items cover formatting, naming, dead code, DRY violations, missing guards, consistency bugs, and structural improvements.
+
+---
+
 ## 2026-03-08T11:49:00Z — Extract render functions into src/components/
 
 **What:**
