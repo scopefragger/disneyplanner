@@ -9,7 +9,7 @@ export default function SetupWizard({
 }) {
   return (
     <section key={currentStep} className="card card-wide setup-step">
-      <p className="step-label">Step {currentStep} of 5</p>
+      <p className="step-label">Step {currentStep} of 6</p>
 
       {currentStep === 1 && <>
         <h2 className="step-question">Name your holiday</h2>

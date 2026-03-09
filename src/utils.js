@@ -17,11 +17,10 @@ export function getDateRange(startDate, endDate) {
 }
 
 export function formatPrettyDate(dateString) {
-  return new Date(`${dateString}T00:00:00`).toLocaleDateString('en-GB', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short'
-  })
+  if (!dateString) return ''
+  const d = new Date(`${dateString}T00:00:00`)
+  if (Number.isNaN(d.getTime())) return ''
+  return d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
 }
 
 export function formatShortDate(dateStr) {
@@ -32,10 +31,11 @@ export function formatShortDate(dateStr) {
 
 export function formatTime(time) {
   if (!time) return ''
-  const [h, m] = time.split(':').map(Number)
-  const period = h >= 12 ? 'pm' : 'am'
-  const hour = h % 12 || 12
-  return `${hour}:${m.toString().padStart(2, '0')}${period}`
+  const [hours, minutes] = time.split(':').map(Number)
+  if (isNaN(hours) || isNaN(minutes)) return time
+  const period = hours >= 12 ? 'pm' : 'am'
+  const hour = hours % 12 || 12
+  return `${hour}:${minutes.toString().padStart(2, '0')}${period}`
 }
 
 /**
@@ -44,12 +44,12 @@ export function formatTime(time) {
  */
 export function fuzzyMatch(query, text) {
   if (!query) return true
-  const q = query.toLowerCase()
-  const t = text.toLowerCase()
-  if (t.includes(q)) return true
+  const queryLower = query.toLowerCase()
+  const textLower = text.toLowerCase()
+  if (textLower.includes(queryLower)) return true
   let qi = 0
-  for (let i = 0; i < t.length && qi < q.length; i++) {
-    if (t[i] === q[qi]) qi++
+  for (let i = 0; i < textLower.length && qi < queryLower.length; i++) {
+    if (textLower[i] === queryLower[qi]) qi++
   }
-  return qi === q.length
+  return qi === queryLower.length
 }

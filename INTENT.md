@@ -3,6 +3,24 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-09T08:02:00Z — Pay down 30 tech debt items (batches 1–10)
+
+**What:**
+- TD-116: Fixed "Step X of 5" → "Step X of 6" bug in SetupWizard
+- TD-113: Added NaN guard to formatTime; TD-114: added invalid date guard to formatPrettyDate
+- TD-089/090: Renamed `s`→`show`, `r`→`restaurant`/`ride` in topSearchResults; TD-096: `t`→`existingTag` in toggleFavoriteTag
+- TD-097/098/099: Renamed `prev`→`currentProjects`, `next`→`remainingProjects`, `res`→`resources` in App.jsx handlers
+- TD-085/091/092: Renamed `n`→`nameLower` in inferTheme/inferTags; `e`→`showEntity` in adaptLiveShow; `kws`→`keywords` in matchKeywords
+- TD-093/094: Renamed `q`→`queryLower`, `t`→`textLower` in fuzzyMatch; `h`→`hours`, `m`→`minutes` in formatTime
+- TD-115: Added shape validation to loadAllProjects in storage.js
+- TD-086/087/081: Renamed `dp`→`navDayPlan`, `d`→`dateStr` in DayPlanSection; cached `plan.myHotel.trim()` once
+- TD-050/095/132: Extracted `handleSearchChange` and `toggleAdvancedSearch` in SearchBar; renamed `et`→`eventType`
+- TD-100–106: Removed dead CSS classes (event-list, event-empty, event-tile, event-content, summary-row, chip-row, checklist and all sub-rules)
+- TD-067: Deduplicated `new Date().toISOString()` into single `now` constant in createProject
+- TD-138/139: Added section separator comments and grouped state declarations by category in App.jsx
+
+**Why:** Systematic readability audit — 30 items across naming clarity, guard clauses, dead code removal, and structural organisation.
+
 ## 2026-03-08T21:45:00Z — Pay down tech debt: TD-042–047, TD-124, TD-148, TD-150–153
 
 **What:**

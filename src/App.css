@@ -394,24 +394,8 @@ textarea:focus {
   gap: 0.6rem;
 }
 
-.summary-row {
-  margin-top: 0.85rem;
-  border-radius: 10px;
-  background: linear-gradient(120deg, rgba(143, 216, 194, 0.25), rgba(142, 216, 248, 0.26));
-  display: flex;
-  justify-content: space-between;
-  padding: 0.65rem 0.75rem;
-}
-
-.chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
 .chip,
 .action,
-.checklist button,
 .danger {
   border: none;
   border-radius: 999px;
@@ -434,30 +418,6 @@ textarea:focus {
   background: var(--dw-sun);
   color: #3e2c00;
   font-weight: 700;
-}
-
-.checklist {
-  list-style: none;
-  padding: 0;
-  margin: 0.75rem 0 0;
-}
-
-.checklist li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.8rem;
-  border-top: 1px dashed rgba(0, 59, 120, 0.2);
-  padding: 0.65rem 0;
-}
-
-.checklist li:first-child {
-  border-top: none;
-}
-
-.checklist button {
-  background: rgba(248, 102, 100, 0.2);
-  color: #752726;
 }
 
 .card-title-row {
@@ -926,54 +886,6 @@ textarea:focus {
   white-space: nowrap;
 }
 
-.event-list {
-  display: grid;
-  gap: 0.5rem;
-  margin-top: 0.7rem;
-}
-
-.event-empty {
-  margin: 0;
-  color: rgba(29, 42, 68, 0.62);
-  font-size: 0.88rem;
-}
-
-.event-tile {
-  position: relative;
-  overflow: hidden;
-  border-radius: 11px;
-  border: 1px solid rgba(0, 87, 184, 0.25);
-  min-height: 84px;
-  background: rgba(255, 255, 255, 0.65);
-}
-
-.event-tile::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(227, 242, 255, 0.7)),
-    var(--event-image);
-  background-size: cover;
-  background-position: center;
-  opacity: 0.82;
-}
-
-.event-content {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem;
-  padding: 0.65rem 0.7rem;
-}
-
-.event-content p {
-  margin: 0;
-  font-weight: 700;
-  line-height: 1.35;
-}
 
 .event-text {
   display: grid;
@@ -996,14 +908,6 @@ textarea:focus {
   font-weight: 700;
   color: #0f3e7a;
   background: rgba(255, 255, 255, 0.85);
-}
-
-.event-content button {
-  border: none;
-  background: rgba(255, 255, 255, 0.82);
-  border-radius: 999px;
-  padding: 0.35rem 0.65rem;
-  cursor: pointer;
 }
 
 .park-hop-dock {
@@ -1559,7 +1463,6 @@ textarea:focus {
 
 .chip:hover,
 .action:hover,
-.checklist button:hover,
 .danger:hover {
   transform: translateY(-1px);
 }

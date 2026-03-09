@@ -73,16 +73,16 @@ export function patchDayPlan(current, date, patch) {
 
 // Infer a display theme from a show/event name (used by parkSuggestions and detectTheme)
 export function inferTheme(name) {
-  const n = name.toLowerCase()
-  if (n.includes('firework') || n.includes('illuminate') || n.includes('luminous') ||
-      n.includes('fantasmic') || n.includes('galactic') || n.includes('harmonious') ||
-      n.includes('happily ever') || n.includes('star wars')) return 'fireworks'
-  if (n.includes('parade') || n.includes('festival of fantasy') || n.includes('cavalcade') ||
-      n.includes('harambe')) return 'default'
-  if (n.includes('character') || n.includes('mickey') || n.includes('friendship faire') ||
-      n.includes('meet')) return 'character'
-  if (n.includes('nature') || n.includes('animal') || n.includes('tree of life') ||
-      n.includes('rivers of light')) return 'nature'
+  const nameLower = name.toLowerCase()
+  if (nameLower.includes('firework') || nameLower.includes('illuminate') || nameLower.includes('luminous') ||
+      nameLower.includes('fantasmic') || nameLower.includes('galactic') || nameLower.includes('harmonious') ||
+      nameLower.includes('happily ever') || nameLower.includes('star wars')) return 'fireworks'
+  if (nameLower.includes('parade') || nameLower.includes('festival of fantasy') || nameLower.includes('cavalcade') ||
+      nameLower.includes('harambe')) return 'default'
+  if (nameLower.includes('character') || nameLower.includes('mickey') || nameLower.includes('friendship faire') ||
+      nameLower.includes('meet')) return 'character'
+  if (nameLower.includes('nature') || nameLower.includes('animal') || nameLower.includes('tree of life') ||
+      nameLower.includes('rivers of light')) return 'nature'
   return 'default'
 }
 

@@ -14,6 +14,12 @@ object literals expanded, window.open corrected, activeRideOptions memoized, del
 added, @testing-library/react removed, updateDayItem null guard added, inferTheme moved to
 planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.*
 
+*TD-048 (inlne style), TD-050/095/132 (SearchBar handlers+naming), TD-067 (timestamp), TD-081/086/087 (DayPlanSection naming+myHotel),
+TD-085/091/092 (parkSuggestions naming), TD-089/090/096/097/098/099 (App.jsx naming),
+TD-093/094 (utils naming), TD-100–106 (dead CSS: event-list/empty/tile/content + summary-row/chip-row/checklist),
+TD-113/114/115 (guards), TD-116 (step count bug), TD-138/139 (App.jsx section comments + state grouping)
+completed 2026-03-08.*
+
 ---
 
 # Readability Audit — TD-042 through TD-151
@@ -24,20 +30,6 @@ planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.
 ---
 
 ## Category A — Break Long Lines & Format for Scanning
-
----
-
-## TD-048 · Break inline ride-image style object onto multiple lines
-
-**Severity:** Medium
-**File:** src/components/DayPlanSection.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 329 is a 190+ character inline style object with `backgroundImage`, `backgroundSize`, `backgroundPosition`.
-
-**Fix:** Extract to a `const rideImageStyle = { ... }` above the JSX return, or to a small helper.
-
-**Effort:** Trivial
 
 ---
 
@@ -52,20 +44,6 @@ planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.
 **Fix:** Break into separate `<span>` elements or extract plural helper.
 
 **Effort:** Low
-
----
-
-## TD-050 · Break SearchBar onChange handler (line 17) onto multiple lines
-
-**Severity:** Low
-**File:** src/components/SearchBar.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** The search input onChange (line 17) does two things on one line: `setEventSearch(e.target.value); if (addEventOpen) setAddEventOpen(false)`.
-
-**Fix:** Extract to a named `handleSearchChange` function above the return.
-
-**Effort:** Trivial
 
 ---
 
@@ -302,26 +280,6 @@ planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.
 
 ---
 
-## TD-067 · Extract createProject timestamp to a single call
-
-**Severity:** Trivial
-**File:** src/App.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 275 calls `new Date().toISOString()` twice — `createdAt` and `updatedAt` could differ by milliseconds.
-
-**Fix:** `const now = new Date().toISOString()` then use `now` for both.
-
-**Effort:** Trivial
-
----
-
----
-
-## Category C — Named Constants for Magic Numbers / Strings
-
----
-
 ## TD-068 · Name cache duration constant in fetchLiveParkShows
 
 **Severity:** Low
@@ -510,20 +468,6 @@ planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.
 
 ---
 
-## TD-081 · Cache plan.myHotel.trim() in DayPlanSection
-
-**Severity:** Trivial
-**File:** src/components/DayPlanSection.jsx
-**Violation:** DRY — extract logic used more than twice
-
-**Problem:** `plan.myHotel.trim()` is called 4 times (lines 15, 16, 20, 23).
-
-**Fix:** `const myHotel = plan.myHotel.trim()` at the top of the component.
-
-**Effort:** Trivial
-
----
-
 ## TD-082 · Deduplicate patchDayPlan + items spread pattern
 
 **Severity:** Low
@@ -572,48 +516,6 @@ planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.
 
 ---
 
-## TD-085 · Rename `n` to `nameLower` in inferTheme and inferTags
-
-**Severity:** Low
-**File:** src/data/parkSuggestions.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** `const n = name.toLowerCase()` — single-letter variable `n` makes the code harder to scan. Used in both `inferTheme` (line 97) and `inferTags` (line 202).
-
-**Fix:** Rename to `nameLower` or `lowerName` in both functions.
-
-**Effort:** Trivial
-
----
-
-## TD-086 · Rename `dp` to `dayPlan` in DayPlanSection day nav
-
-**Severity:** Trivial
-**File:** src/components/DayPlanSection.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 61: `const dp = plan.dayPlans?.[d]` — `dp` is an abbreviation when the full word is more readable.
-
-**Fix:** `const navDayPlan = plan.dayPlans?.[d]`.
-
-**Effort:** Trivial
-
----
-
-## TD-087 · Rename `d` loop variable to `dateStr` in DayPlanSection
-
-**Severity:** Trivial
-**File:** src/components/DayPlanSection.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 60: `tripDates.map((d, i) => ...)` — `d` is ambiguous.
-
-**Fix:** Rename to `dateStr` or `tripDate`.
-
-**Effort:** Trivial
-
----
-
 ## TD-088 · Rename `p` to `projectPlan` in HomeScreen
 
 **Severity:** Trivial
@@ -623,264 +525,6 @@ planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.
 **Problem:** Line 20: `const p = project.plan` — single-letter alias is less clear than a descriptive name.
 
 **Fix:** `const projectPlan = project.plan`.
-
-**Effort:** Trivial
-
----
-
-## TD-089 · Rename `s` to `show` in topSearchResults mapping
-
-**Severity:** Trivial
-**File:** src/App.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 320: `.map(s => ...)` — `s` doesn't clearly communicate it's a show.
-
-**Fix:** Rename to `show`.
-
-**Effort:** Trivial
-
----
-
-## TD-090 · Rename `r` to descriptive names in topSearchResults
-
-**Severity:** Trivial
-**File:** src/App.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Lines 325 and 330 both use `r` as a map variable — once for a restaurant, once for a ride.
-
-**Fix:** Rename to `restaurant` and `ride` respectively.
-
-**Effort:** Trivial
-
----
-
-## TD-091 · Rename `e` to `showEntity` in adaptLiveShow
-
-**Severity:** Trivial
-**File:** src/data/parkSuggestions.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 241: `function adaptLiveShow(e, parkName)` — `e` is conventionally used for events, not entities.
-
-**Fix:** Rename to `showEntity` or `liveShowEntity`.
-
-**Effort:** Trivial
-
----
-
-## TD-092 · Rename `kws` to `keywords` in matchKeywords
-
-**Severity:** Trivial
-**File:** src/data/parkSuggestions.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 195: `.filter(([, kws]) => ...)` — abbreviation reduces readability.
-
-**Fix:** Rename to `keywords`.
-
-**Effort:** Trivial
-
----
-
-## TD-093 · Rename `q` and `t` in fuzzyMatch
-
-**Severity:** Trivial
-**File:** src/utils.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Lines 47-48: `const q = query.toLowerCase()` and `const t = text.toLowerCase()` — single-letter variables.
-
-**Fix:** Rename to `queryLower` and `textLower`.
-
-**Effort:** Trivial
-
----
-
-## TD-094 · Rename `h` and `m` in formatTime
-
-**Severity:** Trivial
-**File:** src/utils.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 35: `const [h, m] = time.split(':').map(Number)` — `h` and `m` are less clear than spelled-out names.
-
-**Fix:** Rename to `hours` and `minutes`.
-
-**Effort:** Trivial
-
----
-
-## TD-095 · Rename `et` to `eventType` in SearchBar map
-
-**Severity:** Trivial
-**File:** src/components/SearchBar.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 80: `EVENT_TYPES.map((et) => ...)` — `et` is an abbreviation.
-
-**Fix:** Rename to `eventType`.
-
-**Effort:** Trivial
-
----
-
-## TD-096 · Rename `t` in toggleFavoriteTag filter
-
-**Severity:** Trivial
-**File:** src/App.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 41: `.filter(t => t !== tag)` — `t` is ambiguous when `tag` is also in scope.
-
-**Fix:** Rename to `existingTag`.
-
-**Effort:** Trivial
-
----
-
-## TD-097 · Rename `prev` to `currentProjects` in setProjects callbacks
-
-**Severity:** Trivial
-**File:** src/App.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Lines 48, 276, 297 use `prev` as the state updater parameter — generic name doesn't indicate it's a projects object.
-
-**Fix:** Rename to `currentProjects`.
-
-**Effort:** Trivial
-
----
-
-## TD-098 · Rename `next` to `remainingProjects` in deleteProject
-
-**Severity:** Trivial
-**File:** src/App.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 298: `const next = { ...prev }` — `next` is too generic for what it represents.
-
-**Fix:** `const remainingProjects = { ...currentProjects }`.
-
-**Effort:** Trivial
-
----
-
-## TD-099 · Rename `res` to `resources` in quickAddToDay
-
-**Severity:** Trivial
-**File:** src/App.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 195: `const res = getRestaurantResources(item)` — `res` could mean response, result, or resources.
-
-**Fix:** Rename to `resources`.
-
-**Effort:** Trivial
-
----
-
----
-
-## Category F — Dead Code Removal
-
----
-
-## TD-100 · Remove unused .event-list CSS class
-
-**Severity:** Low
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.event-list` (line ~929) is defined in CSS but not referenced in any JSX file.
-
-**Fix:** Delete the rule block.
-
-**Effort:** Trivial
-
----
-
-## TD-101 · Remove unused .event-empty CSS class
-
-**Severity:** Low
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.event-empty` (line ~935) is defined in CSS but not referenced in any JSX file.
-
-**Fix:** Delete the rule block.
-
-**Effort:** Trivial
-
----
-
-## TD-102 · Remove unused .event-tile and .event-tile::before CSS
-
-**Severity:** Low
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.event-tile` and `.event-tile::before` (lines ~941-961) are defined but not used anywhere.
-
-**Fix:** Delete both rule blocks.
-
-**Effort:** Trivial
-
----
-
-## TD-103 · Remove unused .event-content CSS class
-
-**Severity:** Low
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.event-content` (line ~962) is defined but not referenced in any JSX file.
-
-**Fix:** Delete the rule block.
-
-**Effort:** Trivial
-
----
-
-## TD-104 · Remove unused .summary-row CSS class
-
-**Severity:** Low
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.summary-row` is defined but not referenced in any JSX file.
-
-**Fix:** Delete the rule block.
-
-**Effort:** Trivial
-
----
-
-## TD-105 · Remove unused .chip-row CSS class
-
-**Severity:** Low
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.chip-row` is defined but not referenced in any JSX file.
-
-**Fix:** Delete the rule block.
-
-**Effort:** Trivial
-
----
-
-## TD-106 · Remove unused .checklist CSS class
-
-**Severity:** Low
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.checklist` and `.checklist li` are defined but not referenced in any JSX file.
-
-**Fix:** Delete the rule blocks.
 
 **Effort:** Trivial
 
@@ -973,68 +617,6 @@ planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.
 ---
 
 ## Category G — Input Validation & Guard Clauses
-
----
-
-## TD-113 · Add NaN guard to formatTime
-
-**Severity:** Low
-**File:** src/utils.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** If `time` is `'abc'`, `split(':').map(Number)` produces `[NaN, NaN]` and returns `'NaN:NaN undefined'`.
-
-**Fix:** Add an early return: `if (isNaN(h) || isNaN(m)) return time` to pass through malformed input.
-
-**Effort:** Trivial
-
----
-
-## TD-114 · Add invalid date guard to formatPrettyDate
-
-**Severity:** Low
-**File:** src/utils.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** If `dateString` is invalid, `new Date()` returns "Invalid Date" and `toLocaleDateString` produces garbage.
-
-**Fix:** Add `if (!dateString) return ''` and validate the constructed Date.
-
-**Effort:** Trivial
-
----
-
-## TD-115 · Add shape validation to loadAllProjects
-
-**Severity:** Low
-**File:** src/data/storage.js
-**Violation:** Code Quality — Readable
-
-**Problem:** `JSON.parse(saved)` on line 13 returns whatever was stored without validating it's an object with expected shape.
-
-**Fix:** Add `if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return {}`.
-
-**Effort:** Trivial
-
----
-
----
-
-## Category H — Consistency & Correctness
-
----
-
-## TD-116 · Fix "Step X of 5" → "Step X of 6" in SetupWizard
-
-**Severity:** High
-**File:** src/components/SetupWizard.jsx
-**Violation:** Bug — incorrect step count
-
-**Problem:** Line 7: `Step {currentStep} of 5` but there are 6 steps. Shows "Step 6 of 5" on the preferences step.
-
-**Fix:** Change to `Step {currentStep} of 6`, or better: use a named constant.
-
-**Effort:** Trivial
 
 ---
 
@@ -1241,26 +823,6 @@ planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.
 
 ---
 
-## TD-132 · Expand SearchBar advanced-btn onClick
-
-**Severity:** Trivial
-**File:** src/components/SearchBar.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 25: `onClick={() => { setAddEventOpen(o => !o); setEventSearch('') }}` — two state updates in one inline handler.
-
-**Fix:** Extract to `const toggleAdvancedSearch = () => { ... }`.
-
-**Effort:** Trivial
-
----
-
----
-
-## Category J — Comment Improvements
-
----
-
 ## TD-133 · Add JSDoc to getLocationDisplay
 
 **Severity:** Trivial
@@ -1326,40 +888,6 @@ planHelpers.js and detectTheme expanded with Disney-specific fireworks keywords.
 **Problem:** `DEFAULT_SLOT` maps event types to time slots but has no comment explaining it's the fallback when an item has no explicit time.
 
 **Fix:** Add a one-line comment: `// Fallback slot assignment when an event has no explicit time`.
-
-**Effort:** Trivial
-
----
-
-## TD-138 · Add section separator comments in App.jsx
-
-**Severity:** Low
-**File:** src/App.jsx
-**Violation:** Code Quality — Readable
-
-**Problem:** App.jsx has 30+ functions with no visual grouping. Handlers for day management, project management, and navigation are interleaved.
-
-**Fix:** Add section comments: `// ── Day plan handlers ──`, `// ── Project handlers ──`, `// ── Navigation ──`.
-
-**Effort:** Trivial
-
----
-
----
-
-## Category K — Structural / Organization
-
----
-
-## TD-139 · Group related state declarations with blank lines
-
-**Severity:** Trivial
-**File:** src/App.jsx
-**Violation:** Code Quality — Readable
-
-**Problem:** Lines 19-32 declare 14 state variables in a solid block with no grouping. Core plan state, UI state, and search state are mixed together.
-
-**Fix:** Add blank lines between groups: plan state, wizard state, day editing state, search/UI state.
 
 **Effort:** Trivial
 

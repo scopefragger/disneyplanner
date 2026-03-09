@@ -10,6 +10,15 @@ export default function SearchBar({
   activeDraft, activeSelectedEventType, activeRideOptions,
   setDraftDayItems, quickAddToDay, addDayItem
 }) {
+  const handleSearchChange = e => {
+    setEventSearch(e.target.value)
+    if (addEventOpen) setAddEventOpen(false)
+  }
+  const toggleAdvancedSearch = () => {
+    setAddEventOpen(open => !open)
+    setEventSearch('')
+  }
+
   return (
     <div className="top-searchbar-card card card-wide">
       <div className="top-searchbar-wrap">
@@ -21,7 +30,7 @@ export default function SearchBar({
             ? `Search rides, shows & restaurants for Day ${activeDay + 1}…`
             : `Search restaurants & shows for Day ${activeDay + 1}…`}
           value={eventSearch}
-          onChange={e => { setEventSearch(e.target.value); if (addEventOpen) setAddEventOpen(false) }}
+          onChange={handleSearchChange}
         />
         {eventSearch && (
           <button type="button" className="top-searchbar-clear" onClick={() => setEventSearch('')}>×</button>
@@ -29,7 +38,7 @@ export default function SearchBar({
         <button
           type="button"
           className={`searchbar-advanced-btn${addEventOpen ? ' active' : ''}`}
-          onClick={() => { setAddEventOpen(o => !o); setEventSearch('') }}
+          onClick={toggleAdvancedSearch}
         >
           {addEventOpen ? '✕' : 'Advanced search'}
         </button>
@@ -84,8 +93,8 @@ export default function SearchBar({
                   }))
                 }
               >
-                {EVENT_TYPES.map((et) => (
-                  <option key={et.value} value={et.value}>{et.value}</option>
+                {EVENT_TYPES.map((eventType) => (
+                  <option key={eventType.value} value={eventType.value}>{eventType.value}</option>
                 ))}
               </select>
             </label>

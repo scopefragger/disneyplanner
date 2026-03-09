@@ -11,7 +11,11 @@ export function generateId() {
 export function loadAllProjects() {
   const saved = localStorage.getItem(PROJECTS_KEY)
   if (saved) {
-    try { return JSON.parse(saved) } catch { return {} }
+    try {
+      const parsed = JSON.parse(saved)
+      if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return {}
+      return parsed
+    } catch { return {} }
   }
   // Migrate old single-plan format
   const old = localStorage.getItem(STORAGE_KEY)

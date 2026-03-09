@@ -188,23 +188,23 @@ function matchKeywords(n, table) {
 // Infer hashtags from show name and theme.
 // Template: collect franchise → character → activity, assemble max 3.
 export function inferTags(name, theme) {
-  const n = name.toLowerCase()
+  const nameLower = name.toLowerCase()
 
-  const franchise  = matchKeywords(n, FRANCHISE_KEYWORDS)
+  const franchise  = matchKeywords(nameLower, FRANCHISE_KEYWORDS)
   const characters = Object.entries(CHARACTER_KEYWORDS)
-    .filter(([tag, kws]) => {
+    .filter(([tag, keywords]) => {
       // '#anna' needs negative check to avoid false matches
-      if (tag === '#anna') return n.includes('anna') && !n.includes('savanna') && !n.includes('banana')
-      return kws.some(kw => n.includes(kw))
+      if (tag === '#anna') return nameLower.includes('anna') && !nameLower.includes('savanna') && !nameLower.includes('banana')
+      return keywords.some(kw => nameLower.includes(kw))
     })
     .map(([tag]) => tag)
 
-  const activity = matchKeywords(n, ACTIVITY_KEYWORDS)
+  const activity = matchKeywords(nameLower, ACTIVITY_KEYWORDS)
   if (theme === 'nature')    activity.push('#nature')
   if (theme === 'fireworks') activity.push('#nighttime')
-  if (PRINCESS_NAMES.some(p => n.includes(p))) activity.push('#princess')
-  if (PIXAR_IPS.some(ip => n.includes(ip)) || n.includes('pixar')) activity.push('#pixar')
-  if (MARVEL_HEROES.some(h => n.includes(h)) || n.includes('marvel')) activity.push('#marvel')
+  if (PRINCESS_NAMES.some(p => nameLower.includes(p))) activity.push('#princess')
+  if (PIXAR_IPS.some(ip => nameLower.includes(ip)) || nameLower.includes('pixar')) activity.push('#pixar')
+  if (MARVEL_HEROES.some(h => nameLower.includes(h)) || nameLower.includes('marvel')) activity.push('#marvel')
 
   // ── Assemble: franchise → character → activity (max 3, deduplicated) ───
   const result = []
@@ -227,19 +227,19 @@ export function parseShowTime(isoString) {
 }
 
 // Adapter: converts a single themeparks.wiki live-show entity to our internal shape (TD-008)
-function adaptLiveShow(e, parkName) {
-  const firstTime = parseShowTime(e.showtimes[0]?.startTime)
+function adaptLiveShow(showEntity, parkName) {
+  const firstTime = parseShowTime(showEntity.showtimes[0]?.startTime)
   if (!firstTime) return null
-  const theme = inferTheme(e.name)
-  const encodedName = encodeURIComponent(e.name + ' Walt Disney World')
+  const theme = inferTheme(showEntity.name)
+  const encodedName = encodeURIComponent(showEntity.name + ' Walt Disney World')
   return {
-    id: `live-${e.id}`,
-    label: e.name,
+    id: `live-${showEntity.id}`,
+    label: showEntity.name,
     time: firstTime,
     type: 'Show',
     theme,
-    tags: inferTags(e.name, theme),
-    showtimes: e.showtimes.map(s => parseShowTime(s.startTime)).filter(Boolean),
+    tags: inferTags(showEntity.name, theme),
+    showtimes: showEntity.showtimes.map(s => parseShowTime(s.startTime)).filter(Boolean),
     infoUrl: `https://www.google.com/search?q=${encodedName}`,
     mapUrl: PARK_MAP_URLS[parkName] ?? `${MAPS}${encodedName}`,
   }

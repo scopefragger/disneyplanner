@@ -18,16 +18,15 @@ export default function DayPlanSection({
   const dayPlan = plan.dayPlans?.[date] || {
     dayType: '', park: '', secondPark: '', parkHop: false, swimSpot: '', staySpot: '', items: []
   }
+  const myHotel = plan.myHotel.trim()
   const hotelShoppingOptions = [
-    ...(plan.myHotel.trim()
-      ? [{ value: plan.myHotel.trim(), label: `My hotel: ${plan.myHotel.trim()}` }]
-      : []),
+    ...(myHotel ? [{ value: myHotel, label: `My hotel: ${myHotel}` }] : []),
     { value: 'Disney Springs', label: 'Disney Springs' },
     ...DISNEY_HOTELS
-      .filter((hotel) => hotel !== plan.myHotel.trim())
+      .filter((hotel) => hotel !== myHotel)
       .map((hotel) => ({ value: hotel, label: hotel }))
   ]
-  const locationDisplay = getLocationDisplay(dayPlan, plan.myHotel.trim())
+  const locationDisplay = getLocationDisplay(dayPlan, myHotel)
   const dayTypeChipColor = getDayTypeChipColor(dayPlan.dayType)
   const secondParkOptions = getSecondParkOptions(dayPlan.park)
   const itemsWithIndex = (dayPlan.items || []).map((item, idx) => ({ ...item, _idx: idx }))
@@ -64,18 +63,18 @@ export default function DayPlanSection({
 
       <div className="date-plan-grid">
         <div className="day-nav-strip">
-          {tripDates.map((d, i) => {
-            const dp = plan.dayPlans?.[d]
-            const isPlanned = !!(dp?.dayType || dp?.items?.length)
+          {tripDates.map((dateStr, i) => {
+            const navDayPlan = plan.dayPlans?.[dateStr]
+            const isPlanned = !!(navDayPlan?.dayType || navDayPlan?.items?.length)
             return (
               <button
-                key={d}
+                key={dateStr}
                 type="button"
                 className={['day-nav-btn', i === activeDay ? 'active' : '', isPlanned ? 'has-plan' : ''].filter(Boolean).join(' ')}
                 onClick={() => setActiveDay(i)}
               >
                 <span className="day-nav-num">{i + 1}</span>
-                <span className="day-nav-date">{formatShortDate(d)}</span>
+                <span className="day-nav-date">{formatShortDate(dateStr)}</span>
               </button>
             )
           })}

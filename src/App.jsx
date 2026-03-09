@@ -16,21 +16,29 @@ import SettingsPanel from './components/SettingsPanel.jsx'
 
 // ── App ───────────────────────────────────────────────────────────────────────
 function App() {
+  // ── Project state ──
   const [projects, setProjects] = useState(() => loadAllProjects())
   const [activeProjectId, setActiveProjectId] = useState(null)
   const [plan, setPlan] = useState(DEFAULT_PLAN)
   const [draftDayItems, setDraftDayItems] = useState({})
+
+  // ── Setup wizard state ──
   const [setupDone, setSetupDone] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
+  const [prefSearch, setPrefSearch] = useState('')
+
+  // ── Day editing state ──
   const [activeDay, setActiveDay] = useState(0)
   const [editingDayItem, setEditingDayItem] = useState(null) // { date, index, draft }
+  const [liveShowData, setLiveShowData] = useState({}) // keyed by park name
+
+  // ── Search / UI state ──
   const [addEventOpen, setAddEventOpen] = useState(false)
   const [eventSearch, setEventSearch] = useState('')
-  const [liveShowData, setLiveShowData] = useState({}) // keyed by park name
-  const [prefSearch, setPrefSearch] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [resetConfirm, setResetConfirm] = useState(false)
 
+  // ── Navigation ──
   const nextStep = () => setCurrentStep(s => Math.min(s + 1, 6))
   const prevStep = () => setCurrentStep(s => Math.max(s - 1, 1))
 
@@ -38,17 +46,17 @@ function App() {
     setPlan(p => ({
       ...p,
       favoriteTags: p.favoriteTags?.includes(tag)
-        ? p.favoriteTags.filter(t => t !== tag)
+        ? p.favoriteTags.filter(existingTag => existingTag !== tag)
         : [...(p.favoriteTags || []), tag]
     }))
   }
 
   useEffect(() => {
     if (!activeProjectId) return
-    setProjects(prev => {
+    setProjects(currentProjects => {
       const updated = {
-        ...prev,
-        [activeProjectId]: { ...prev[activeProjectId], updatedAt: new Date().toISOString(), plan }
+        ...currentProjects,
+        [activeProjectId]: { ...currentProjects[activeProjectId], updatedAt: new Date().toISOString(), plan }
       }
       localStorage.setItem(PROJECTS_KEY, JSON.stringify(updated))
       return updated
@@ -108,10 +116,12 @@ function App() {
     })
   }, [plan.dayPlans]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Setup handlers ──
   const updateField = (field, value) => {
     setPlan((current) => ({ ...current, [field]: value }))
   }
 
+  // ── Day plan handlers ──
   const updateDayPlan = (date, key, value) => {
     setPlan((current) => {
       if (!current.dayPlans?.[date]) return current
@@ -195,10 +205,10 @@ function App() {
         note: item.label, time: item.time, theme: item.theme
       })
     } else if (kind === 'restaurant') {
-      const res = getRestaurantResources(item)
+      const resources = getRestaurantResources(item)
       newItem = createEventItem({
         type: 'Dinner', restaurant: item,
-        menuUrl: res?.menuUrl || '', bookingUrl: res?.bookingUrl || '', heroImage: res?.heroImage || '',
+        menuUrl: resources?.menuUrl || '', bookingUrl: resources?.bookingUrl || '', heroImage: resources?.heroImage || '',
         theme: getEventTypeConfig('Dinner').theme
       })
     } else if (kind === 'ride') {
@@ -273,11 +283,13 @@ function App() {
     setDraftDayItems({})
   }
 
+  // ── Project handlers ──
   const createProject = () => {
     const id = generateId()
-    const newProject = { id, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), plan: DEFAULT_PLAN }
-    setProjects(prev => {
-      const updated = { ...prev, [id]: newProject }
+    const now = new Date().toISOString()
+    const newProject = { id, createdAt: now, updatedAt: now, plan: DEFAULT_PLAN }
+    setProjects(currentProjects => {
+      const updated = { ...currentProjects, [id]: newProject }
       localStorage.setItem(PROJECTS_KEY, JSON.stringify(updated))
       return updated
     })
@@ -297,11 +309,11 @@ function App() {
   }
 
   const deleteProject = (id) => {
-    setProjects(prev => {
-      const next = { ...prev }
-      delete next[id]
-      localStorage.setItem(PROJECTS_KEY, JSON.stringify(next))
-      return next
+    setProjects(currentProjects => {
+      const remainingProjects = { ...currentProjects }
+      delete remainingProjects[id]
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify(remainingProjects))
+      return remainingProjects
     })
   }
 
@@ -320,20 +332,20 @@ function App() {
     if (!setupDone || !topSearchQ) return null
     return {
       shows: ALL_SHOWS
-        .map(s => {
-          const cleanTags = (s.tags || []).map(t => t.replace(/^#/, ''))
-          const matchingTags = cleanTags.filter(t => fuzzyMatch(topSearchQ, t))
-          return (fuzzyMatch(topSearchQ, s.label) || matchingTags.length) ? { ...s, matchingTags } : null
+        .map(show => {
+          const cleanTags = (show.tags || []).map(tag => tag.replace(/^#/, ''))
+          const matchingTags = cleanTags.filter(tag => fuzzyMatch(topSearchQ, tag))
+          return (fuzzyMatch(topSearchQ, show.label) || matchingTags.length) ? { ...show, matchingTags } : null
         }).filter(Boolean).slice(0, 6),
-      restaurants: ALL_RESTAURANTS.map(r => {
-        const tags = RESTAURANT_TAGS[r] || []
-        const matchingTags = tags.filter(t => fuzzyMatch(topSearchQ, t))
-        return (fuzzyMatch(topSearchQ, r) || matchingTags.length) ? { name: r, matchingTags } : null
+      restaurants: ALL_RESTAURANTS.map(restaurant => {
+        const tags = RESTAURANT_TAGS[restaurant] || []
+        const matchingTags = tags.filter(tag => fuzzyMatch(topSearchQ, tag))
+        return (fuzzyMatch(topSearchQ, restaurant) || matchingTags.length) ? { name: restaurant, matchingTags } : null
       }).filter(Boolean).slice(0, 6),
-      rides: activeRideOptions.map(r => {
-        const tags = RIDE_TAGS[r.label] || []
-        const matchingTags = tags.filter(t => fuzzyMatch(topSearchQ, t))
-        return (fuzzyMatch(topSearchQ, r.label) || matchingTags.length) ? { ...r, matchingTags } : null
+      rides: activeRideOptions.map(ride => {
+        const tags = RIDE_TAGS[ride.label] || []
+        const matchingTags = tags.filter(tag => fuzzyMatch(topSearchQ, tag))
+        return (fuzzyMatch(topSearchQ, ride.label) || matchingTags.length) ? { ...ride, matchingTags } : null
       }).filter(Boolean).slice(0, 5),
     }
   }, [setupDone, topSearchQ, activeRideOptions])
