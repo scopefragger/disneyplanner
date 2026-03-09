@@ -280,20 +280,6 @@ completed 2026-03-08.*
 
 ---
 
-## TD-068 · Name cache duration constant in fetchLiveParkShows
-
-**Severity:** Low
-**File:** src/data/parkSuggestions.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 270 uses `30 * 60 * 1000` — a magic number for the 30-minute cache TTL.
-
-**Fix:** `const CACHE_TTL_MS = 30 * 60 * 1000` at the top of the file.
-
-**Effort:** Trivial
-
----
-
 ## TD-069 · Name time slot boundaries in getItemSlot
 
 **Severity:** Low
@@ -308,48 +294,6 @@ completed 2026-03-08.*
 
 ---
 
-## TD-070 · Name max tag count in inferTags
-
-**Severity:** Trivial
-**File:** src/data/parkSuggestions.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Lines 225-227 use bare `3` for the maximum tag count.
-
-**Fix:** `const MAX_TAGS = 3` at the top of the section.
-
-**Effort:** Trivial
-
----
-
-## TD-071 · Name max search result limits in topSearchResults
-
-**Severity:** Low
-**File:** src/App.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Lines 324, 329, 334 use `.slice(0, 6)`, `.slice(0, 6)`, `.slice(0, 5)` — unnamed limits.
-
-**Fix:** `const MAX_SHOW_RESULTS = 6`, `MAX_RESTAURANT_RESULTS = 6`, `MAX_RIDE_RESULTS = 5`.
-
-**Effort:** Trivial
-
----
-
-## TD-072 · Name fallback tint color in displayHelpers
-
-**Severity:** Trivial
-**File:** src/data/displayHelpers.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** `'rgba(0, 87, 184, 0.14)'` appears 3 times (lines 98, 107, and getDayCardStyle body) as a default tint.
-
-**Fix:** `const DEFAULT_TINT = 'rgba(0, 87, 184, 0.14)'`.
-
-**Effort:** Trivial
-
----
-
 ## TD-073 · Name Walt Disney World suffix string
 
 **Severity:** Low
@@ -361,68 +305,6 @@ completed 2026-03-08.*
 **Fix:** `const WDW_SUFFIX = ' Walt Disney World'` in a shared location.
 
 **Effort:** Trivial
-
----
-
-## TD-074 · Name wizard step count
-
-**Severity:** Trivial
-**File:** src/App.jsx, src/components/SetupWizard.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** The number `6` appears in `Math.min(s + 1, 6)`, `currentStep < 6`, and `currentStep === 6` without a named constant.
-
-**Fix:** `const WIZARD_STEPS = 6` in planHelpers or a shared constants file.
-
-**Effort:** Trivial
-
----
-
-## TD-075 · Name the latenight slot return value
-
-**Severity:** Trivial
-**File:** src/data/displayHelpers.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** `getItemSlot` returns the string `'latenight'` as a bare string for times before 9am.
-
-**Fix:** Use the `SLOT_BOUNDARIES` constant from TD-069 for consistency, or at minimum add a comment explaining the before-9am slot.
-
-**Effort:** Trivial
-
----
-
-## TD-076 · Name Google Maps base URL constant
-
-**Severity:** Low
-**File:** src/data/parkSuggestions.js, src/components/DayPlanSection.jsx, WhatsNext.jsx
-**Violation:** DRY — same URL pattern repeated
-
-**Problem:** `https://www.google.com/maps/search/?api=1&query=` and `https://www.google.com/maps?q=` appear in multiple files.
-
-**Fix:** Export a `GOOGLE_MAPS_SEARCH_URL` constant from a shared location.
-
-**Effort:** Trivial
-
----
-
-## TD-077 · Name Google search base URL constant
-
-**Severity:** Trivial
-**File:** src/components/DayPlanSection.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** `https://www.google.com/search?q=` appears as a bare URL on line 278.
-
-**Fix:** `const GOOGLE_SEARCH_URL = 'https://www.google.com/search?q='`.
-
-**Effort:** Trivial
-
----
-
----
-
-## Category D — DRY Violations
 
 ---
 
@@ -516,110 +398,6 @@ completed 2026-03-08.*
 
 ---
 
-## TD-088 · Rename `p` to `projectPlan` in HomeScreen
-
-**Severity:** Trivial
-**File:** src/components/HomeScreen.jsx
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Line 20: `const p = project.plan` — single-letter alias is less clear than a descriptive name.
-
-**Fix:** `const projectPlan = project.plan`.
-
-**Effort:** Trivial
-
----
-
-## TD-107 · Remove unused .setup-actions CSS class
-
-**Severity:** Low
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.setup-actions` is defined but not referenced in any JSX file.
-
-**Fix:** Delete the rule block.
-
-**Effort:** Trivial
-
----
-
-## TD-108 · Remove unused .inline-fields.four-col CSS class
-
-**Severity:** Low
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.inline-fields.four-col` is defined but not referenced.
-
-**Fix:** Delete the rule block.
-
-**Effort:** Trivial
-
----
-
-## TD-109 · Remove stale "Floating action buttons" CSS comment
-
-**Severity:** Trivial
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** A comment `/* -- Floating action buttons -- */` remains from removed FAB code (per INTENT.md).
-
-**Fix:** Delete the orphaned comment.
-
-**Effort:** Trivial
-
----
-
-## TD-110 · Remove dead #anna branch in inferTags
-
-**Severity:** Low
-**File:** src/data/parkSuggestions.js
-**Violation:** Dead code
-
-**Problem:** Lines 206-208 handle `tag === '#anna'` with a false-positive guard — but `#anna` does not exist in `CHARACTER_KEYWORDS`. The branch never executes.
-
-**Fix:** Either remove the dead branch, or add `'#anna': ['anna']` to `CHARACTER_KEYWORDS` if the intent is to match Anna from Frozen.
-
-**Effort:** Trivial
-
----
-
-## TD-111 · Remove unused .day-nav-pill mobile CSS
-
-**Severity:** Trivial
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.day-nav-pill` is defined in a mobile media query but not used in any JSX file.
-
-**Fix:** Delete the rule block.
-
-**Effort:** Trivial
-
----
-
-## TD-112 · Remove unused .event-input-row CSS
-
-**Severity:** Trivial
-**File:** src/App.css
-**Violation:** Dead code
-
-**Problem:** `.event-input-row` only appears in media queries but is never used in JSX.
-
-**Fix:** Delete the rule blocks from all media queries.
-
-**Effort:** Trivial
-
----
-
----
-
-## Category G — Input Validation & Guard Clauses
-
----
-
 ## TD-117 · Add missing .close-panel-btn CSS class
 
 **Severity:** Medium
@@ -631,76 +409,6 @@ completed 2026-03-08.*
 **Fix:** Add the CSS rule with appropriate close-button styling.
 
 **Effort:** Low
-
----
-
-## TD-118 · Standardize apostrophe in "Peter Pan's Flight"
-
-**Severity:** Low
-**File:** src/data/rideData.js
-**Violation:** Architecture Rules — consistency
-
-**Problem:** Uses Unicode right single quotation mark (U+2019) `'` while other rides use ASCII apostrophe `'`. String comparisons with user-typed text will fail.
-
-**Fix:** Use ASCII apostrophe `'` consistently, or document the Unicode usage.
-
-**Effort:** Trivial
-
----
-
-## TD-119 · Fix "Na vi" to "Na'vi" in rideData
-
-**Severity:** Trivial
-**File:** src/data/rideData.js
-**Violation:** Architecture Rules — consistency
-
-**Problem:** "Na vi River Journey" is missing the apostrophe — actual ride name is "Na'vi River Journey".
-
-**Fix:** Rename to `"Na'vi River Journey"` across all 3 maps (RIDE_URLS, RIDE_TAGS, RIDES_BY_PARK, RIDE_IMAGES).
-
-**Effort:** Trivial
-
----
-
-## TD-120 · Add missing apostrophe to "Remys Ratatouille Adventure"
-
-**Severity:** Trivial
-**File:** src/data/rideData.js
-**Violation:** Architecture Rules — consistency
-
-**Problem:** Missing apostrophe — should be "Remy's Ratatouille Adventure".
-
-**Fix:** Rename across all maps.
-
-**Effort:** Trivial
-
----
-
-## TD-121 · Add missing apostrophes to "Rock n Roller Coaster"
-
-**Severity:** Trivial
-**File:** src/data/rideData.js
-**Violation:** Architecture Rules — consistency
-
-**Problem:** Missing apostrophes — should be "Rock 'n' Roller Coaster".
-
-**Fix:** Rename across all maps.
-
-**Effort:** Trivial
-
----
-
-## TD-122 · Add missing apostrophes to "Mickey and Minnies Runaway Railway"
-
-**Severity:** Trivial
-**File:** src/data/rideData.js
-**Violation:** Architecture Rules — consistency
-
-**Problem:** Missing possessive apostrophe — should be "Mickey & Minnie's Runaway Railway".
-
-**Fix:** Rename across all maps.
-
-**Effort:** Trivial
 
 ---
 
@@ -719,26 +427,6 @@ completed 2026-03-08.*
 ---
 
 
-## TD-125 · Standardize object key quoting in displayHelpers maps
-
-**Severity:** Trivial
-**File:** src/data/displayHelpers.js
-**Violation:** Code Quality — consistency
-
-**Problem:** `PARK_TINTS` uses unquoted `EPCOT` but quoted `'Magic Kingdom'`. While valid JS, inconsistent quoting reduces scannability.
-
-**Fix:** Quote all keys consistently: `'EPCOT': ...`.
-
-**Effort:** Trivial
-
----
-
----
-
-## Category I — Expand Dense Code for Readability
-
----
-
 ## TD-126 · Expand compressed tag assembly loops in inferTags
 
 **Severity:** Medium
@@ -750,34 +438,6 @@ completed 2026-03-08.*
 **Fix:** Expand each loop to a standard multi-line `for...of` block with clear break conditions.
 
 **Effort:** Low
-
----
-
-## TD-127 · Expand ternary chain in buildEventLabel
-
-**Severity:** Low
-**File:** src/data/planHelpers.js
-**Violation:** Code Quality — prefer 3 readable lines over 1 clever one-liner
-
-**Problem:** Lines 118-128 use 5 early returns with `if` statements. While individually simple, the chain reads as a cascade that would benefit from comments or grouping.
-
-**Fix:** Add brief inline comments explaining each branch: `// Ride with park info`, `// Dining at restaurant`, etc.
-
-**Effort:** Trivial
-
----
-
-## TD-128 · Expand collapsed catch blocks in storage.js
-
-**Severity:** Trivial
-**File:** src/data/storage.js
-**Violation:** Code Quality — Simple, Readable
-
-**Problem:** Lines 14 and 26 use `catch { return {} }` on a single line — easy to miss the error swallowing.
-
-**Fix:** Expand to multi-line `catch { \n  return {} \n}` for visibility.
-
-**Effort:** Trivial
 
 ---
 
@@ -820,76 +480,6 @@ completed 2026-03-08.*
 **Fix:** Extract to named handlers: `handleEditSetup`, `handlePreferences`, `handleSettings`.
 
 **Effort:** Low
-
----
-
-## TD-133 · Add JSDoc to getLocationDisplay
-
-**Severity:** Trivial
-**File:** src/data/displayHelpers.js
-**Violation:** Code Quality — Readable
-
-**Problem:** `getLocationDisplay` has no JSDoc explaining its return shape `{ label, icon }` or `null`.
-
-**Fix:** Add `/** @returns {{ label: string, icon: string } | null} */`.
-
-**Effort:** Trivial
-
----
-
-## TD-134 · Add JSDoc to getDayCardStyle return shape
-
-**Severity:** Low
-**File:** src/data/displayHelpers.js
-**Violation:** Code Quality — Readable
-
-**Problem:** `getDayCardStyle` returns an object with 7 CSS custom properties. The shape is not documented.
-
-**Fix:** Add a JSDoc comment listing the returned CSS custom property names.
-
-**Effort:** Trivial
-
----
-
-## TD-135 · Document SHOW_TYPE_MAP's Show→Fireworks mapping
-
-**Severity:** Trivial
-**File:** src/data/planHelpers.js
-**Violation:** Code Quality — Readable
-
-**Problem:** `Show: 'Fireworks'` in `SHOW_TYPE_MAP` is semantically surprising — a "Show" from the API maps to the "Fireworks" event type. No comment explains why.
-
-**Fix:** Add a comment: `// API 'Show' type maps to our 'Fireworks' category (closest match for nighttime spectaculars)`.
-
-**Effort:** Trivial
-
----
-
-## TD-136 · Document normalizeEventItem legacy text field path
-
-**Severity:** Low
-**File:** src/data/planHelpers.js
-**Violation:** Code Quality — Readable
-
-**Problem:** Lines 107-114 handle legacy items (without `.type`) by reading `.text` and adding it to the result. This legacy path is undocumented.
-
-**Fix:** Add a comment: `// Legacy items (pre-v2) stored free text in .text instead of .type + .note`.
-
-**Effort:** Trivial
-
----
-
-## TD-137 · Add comment to DEFAULT_SLOT explaining slot assignment
-
-**Severity:** Trivial
-**File:** src/data/displayHelpers.js
-**Violation:** Code Quality — Readable
-
-**Problem:** `DEFAULT_SLOT` maps event types to time slots but has no comment explaining it's the fallback when an item has no explicit time.
-
-**Fix:** Add a one-line comment: `// Fallback slot assignment when an event has no explicit time`.
-
-**Effort:** Trivial
 
 ---
 
@@ -952,34 +542,6 @@ completed 2026-03-08.*
 ---
 
 ## Category L — Miscellaneous Readability
-
----
-
-## TD-144 · Add aria-label to icon-only buttons
-
-**Severity:** Low
-**File:** src/components/DayPlanSection.jsx
-**Violation:** Code Quality — accessibility / readability
-
-**Problem:** The edit button (line 353, `✏`) and delete button (line 355, `×`) use emoji/symbols with no accessible label. While `title` is set for the edit button, the delete button has no label.
-
-**Fix:** Add `aria-label="Delete event"` to the delete button and `aria-label="Edit event"` to the edit button.
-
-**Effort:** Trivial
-
----
-
-## TD-145 · Add aria-label to ghost accept/dismiss buttons
-
-**Severity:** Low
-**File:** src/components/DayPlanSection.jsx
-**Violation:** Code Quality — accessibility / readability
-
-**Problem:** Ghost suggestion accept (`✓`, line 387) and dismiss (`✕`, line 389) buttons have `title` but no `aria-label`.
-
-**Fix:** Add `aria-label` attributes matching the titles.
-
-**Effort:** Trivial
 
 ---
 

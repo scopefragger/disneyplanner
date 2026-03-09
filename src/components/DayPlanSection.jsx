@@ -5,6 +5,9 @@ import { getRideUrl, RIDE_IMAGES } from '../data/rideData.js'
 import { normalizeEventItem, buildEventLabel } from '../data/planHelpers.js'
 import { getDayTypeChipColor, hashtagLabel, getDayCardStyle, getDayTypeIcon, getSecondParkOptions, getItemSlot, getTimeSlots, getLocationDisplay } from '../data/displayHelpers.js'
 
+const GOOGLE_MAPS_SEARCH_URL = 'https://www.google.com/maps/search/?api=1&query='
+const GOOGLE_SEARCH_URL = 'https://www.google.com/search?q='
+
 export default function DayPlanSection({
   plan, tripDates, activeDay, setActiveDay,
   liveShowData, editingDayItem, setEditingDayItem,
@@ -279,9 +282,9 @@ export default function DayPlanSection({
                       const rideUrl = getRideUrl(rideName) || ''
                       const rideImage = RIDE_IMAGES[rideName] || ''
                       const mapSearchTerm = rideName || normalizedItem.restaurant || normalizedItem.note || dayPlan.park || 'Walt Disney World'
-                      const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapSearchTerm + ' Walt Disney World')}`
+                      const mapUrl = `${GOOGLE_MAPS_SEARCH_URL}${encodeURIComponent(mapSearchTerm + ' Walt Disney World')}`
                       const viewInfoUrl = !menuUrl
-                        ? (rideUrl || `https://www.google.com/search?q=${encodeURIComponent(mapSearchTerm + ' Walt Disney World')}`)
+                        ? (rideUrl || `${GOOGLE_SEARCH_URL}${encodeURIComponent(mapSearchTerm + ' Walt Disney World')}`)
                         : ''
                       const isEditing = editingDayItem?.date === date && editingDayItem?.index === item._idx
                       return (
@@ -356,9 +359,10 @@ export default function DayPlanSection({
                                 type="button"
                                 className="event-edit-btn"
                                 title="Edit"
+                                aria-label="Edit event"
                                 onClick={() => setEditingDayItem({ date, index: item._idx, draft: { time: normalizedItem.time || '', note: normalizedItem.note || '' } })}
                               >✏</button>
-                              <button type="button" className="event-delete-btn" onClick={() => removeDayItem(date, item._idx)}>×</button>
+                              <button type="button" className="event-delete-btn" aria-label="Delete event" onClick={() => removeDayItem(date, item._idx)}>×</button>
                             </div>
                           )}
                         </div>
@@ -389,9 +393,9 @@ export default function DayPlanSection({
                             </div>
                           </div>
                           <div className="ghost-actions">
-                            <button type="button" className="ghost-accept-btn" title="Add to my plan"
+                            <button type="button" className="ghost-accept-btn" title="Add to my plan" aria-label="Add to my plan"
                               onClick={() => acceptSuggestion(date, suggestion)}>✓</button>
-                            <button type="button" className="ghost-dismiss-btn" title="Not for me"
+                            <button type="button" className="ghost-dismiss-btn" title="Not for me" aria-label="Not for me"
                               onClick={() => dismissSuggestion(date, suggestion.id)}>✕</button>
                           </div>
                         </div>

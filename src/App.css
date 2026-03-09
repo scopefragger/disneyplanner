@@ -277,16 +277,6 @@ body {
   transform: scale(1.04);
 }
 
-.inline-fields.four-col {
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-
-.setup-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1.25rem;
-}
 
 .setup-continue-btn {
   background: linear-gradient(120deg, var(--dw-royal-blue), var(--dw-castle-blue));
@@ -661,14 +651,7 @@ textarea:focus {
   margin-top: 0.1rem;
 }
 
-.event-input-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.6rem;
-  margin-top: 0.65rem;
-}
 
-/* ── Floating action buttons ── */
 /* ── Top search bar ── */
 .top-searchbar-card {
   padding: 0.75rem 1rem;
@@ -1478,8 +1461,7 @@ textarea:focus {
   }
 
   .inline-fields,
-  .day-meta-row,
-  .event-input-row {
+  .day-meta-row {
     grid-template-columns: 1fr;
     display: grid;
   }
@@ -1582,12 +1564,6 @@ textarea:focus {
   .setup-summary-actions .chip {
     font-size: 0.78rem;
     padding: 0.35rem 0.65rem;
-  }
-
-  /* Day nav pills: compact */
-  .day-nav-pill {
-    min-width: 2.75rem;
-    padding: 0.3rem 0.4rem;
   }
 
   .day-nav-date {

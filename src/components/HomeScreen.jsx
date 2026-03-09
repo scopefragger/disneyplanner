@@ -17,17 +17,17 @@ export default function HomeScreen({ projects, openProject, deleteProject, creat
               {Object.values(projects)
                 .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
                 .map(project => {
-                  const p = project.plan
-                  const len = getDateRange(p.startDate, p.endDate).length
+                  const projectPlan = project.plan
+                  const len = getDateRange(projectPlan.startDate, projectPlan.endDate).length
                   return (
                     <div key={project.id} className="project-row" onClick={() => openProject(project.id)}>
                       <div className="project-row-info">
-                        <strong>{p.tripName || 'Untitled Holiday'}</strong>
+                        <strong>{projectPlan.tripName || 'Untitled Holiday'}</strong>
                         <span>
-                          {p.startDate
-                            ? `${formatPrettyDate(p.startDate)} – ${formatPrettyDate(p.endDate)} · ${len} day${len !== 1 ? 's' : ''}`
+                          {projectPlan.startDate
+                            ? `${formatPrettyDate(projectPlan.startDate)} – ${formatPrettyDate(projectPlan.endDate)} · ${len} day${len !== 1 ? 's' : ''}`
                             : 'Dates not set'}
-                          {p.myHotel ? ` · ${p.myHotel}` : ''}
+                          {projectPlan.myHotel ? ` · ${projectPlan.myHotel}` : ''}
                         </span>
                       </div>
                       <button

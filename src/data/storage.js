@@ -15,7 +15,9 @@ export function loadAllProjects() {
       const parsed = JSON.parse(saved)
       if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return {}
       return parsed
-    } catch { return {} }
+    } catch {
+      return {}
+    }
   }
   // Migrate old single-plan format
   const old = localStorage.getItem(STORAGE_KEY)
@@ -27,7 +29,9 @@ export function loadAllProjects() {
       localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects))
       localStorage.removeItem(STORAGE_KEY)
       return projects
-    } catch { return {} }
+    } catch {
+      return {}
+    }
   }
   return {}
 }

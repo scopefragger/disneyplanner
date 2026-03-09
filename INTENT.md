@@ -3,6 +3,32 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-09T08:18:00Z — Pay down second batch of 30 tech debt items
+
+**What:**
+- TD-088: Renamed `p` → `projectPlan` in HomeScreen
+- TD-107/108: Removed dead `.setup-actions` and `.inline-fields.four-col` CSS
+- TD-109: Removed stale "Floating action buttons" CSS comment
+- TD-110: Removed dead `#anna` branch in inferTags (unreachable)
+- TD-111/112: Removed dead `.day-nav-pill` and `.event-input-row` CSS
+- TD-068: Named cache TTL `CACHE_TTL_MS` in fetchLiveParkShows
+- TD-070: Named max tag count `MAX_TAGS = 3` in inferTags
+- TD-071: Named search result limits (`MAX_SHOW_RESULTS`, `MAX_RESTAURANT_RESULTS`, `MAX_RIDE_RESULTS`)
+- TD-072: Named default tint `DEFAULT_TINT` in displayHelpers
+- TD-074: Extracted `WIZARD_STEPS = 6` to planHelpers; used in App.jsx and SetupWizard.jsx
+- TD-075: Added comment explaining `latenight` slot in getItemSlot
+- TD-076/077: Named `GOOGLE_MAPS_SEARCH_URL` and `GOOGLE_SEARCH_URL` in DayPlanSection
+- TD-125: Quoted all object keys consistently in displayHelpers maps
+- TD-127: Added branch comments to buildEventLabel
+- TD-128: Expanded single-line catch blocks in storage.js to multi-line
+- TD-118–122: Corrected ride name punctuation (Peter Pan's, Na'vi, Remy's, Rock 'n', Mickey & Minnie's)
+- TD-133/134: Added JSDoc to getLocationDisplay and getDayCardStyle
+- TD-136: Commented legacy text field path in normalizeEventItem
+- TD-137: Commented DEFAULT_SLOT fallback assignment
+- TD-144/145: Added aria-label to edit/delete buttons and ghost accept/dismiss buttons
+
+**Why:** Systematic readability audit — dead code, magic value naming, ride name accuracy, JSDoc, accessibility.
+
 ## 2026-03-09T08:02:00Z — Pay down 30 tech debt items (batches 1–10)
 
 **What:**

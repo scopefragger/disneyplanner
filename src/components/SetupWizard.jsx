@@ -1,5 +1,6 @@
 import { fuzzyMatch } from '../utils.js'
 import { DISNEY_HOTELS, DINING_OPTIONS, ENTERTAINMENT_TYPES, FRANCHISE_OPTIONS } from '../data/tripOptions.js'
+import { WIZARD_STEPS } from '../data/planHelpers.js'
 
 export default function SetupWizard({
   plan, currentStep, tripLength,
@@ -9,7 +10,7 @@ export default function SetupWizard({
 }) {
   return (
     <section key={currentStep} className="card card-wide setup-step">
-      <p className="step-label">Step {currentStep} of 6</p>
+      <p className="step-label">Step {currentStep} of {WIZARD_STEPS}</p>
 
       {currentStep === 1 && <>
         <h2 className="step-question">Name your holiday</h2>
@@ -109,7 +110,7 @@ export default function SetupWizard({
         </div>
       </>}
 
-      {currentStep === 6 && <>
+      {currentStep === WIZARD_STEPS && <>
         <h2 className="step-question">What do you love most?</h2>
         <p className="step-sub">We'll use this to surface the shows, parades and meet &amp; greets that matter to you.</p>
 
@@ -158,7 +159,7 @@ export default function SetupWizard({
         {currentStep > 1 && (
           <button className="step-back-btn" onClick={prevStep}>← Back</button>
         )}
-        {currentStep < 6 ? (
+        {currentStep < WIZARD_STEPS ? (
           <button className="setup-continue-btn" onClick={nextStep}>Next →</button>
         ) : (
           <>

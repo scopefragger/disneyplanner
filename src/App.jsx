@@ -3,7 +3,7 @@ import { RESTAURANT_TAGS, ALL_RESTAURANTS, getRestaurantResources } from './data
 import { fetchLiveParkShows, ALL_SHOWS } from './data/parkSuggestions.js'
 import { RIDE_TAGS } from './data/rideData.js'
 import { fuzzyMatch, getDateRange } from './utils.js'
-import { DEFAULT_PLAN, DEFAULT_DRAFT, SHOW_TYPE_MAP, getEventTypeConfig, createBlankDayPlan, createEventItem, parseRideSelection, patchDayPlan } from './data/planHelpers.js'
+import { DEFAULT_PLAN, DEFAULT_DRAFT, SHOW_TYPE_MAP, WIZARD_STEPS, getEventTypeConfig, createBlankDayPlan, createEventItem, parseRideSelection, patchDayPlan } from './data/planHelpers.js'
 import { PROJECTS_KEY, generateId, loadAllProjects } from './data/storage.js'
 import { getRideOptionsForDay } from './data/displayHelpers.js'
 import HomeScreen from './components/HomeScreen.jsx'
@@ -13,6 +13,10 @@ import SearchBar from './components/SearchBar.jsx'
 import DayPlanSection from './components/DayPlanSection.jsx'
 import WhatsNext from './components/WhatsNext.jsx'
 import SettingsPanel from './components/SettingsPanel.jsx'
+
+const MAX_SHOW_RESULTS = 6
+const MAX_RESTAURANT_RESULTS = 6
+const MAX_RIDE_RESULTS = 5
 
 // ── App ───────────────────────────────────────────────────────────────────────
 function App() {
@@ -39,7 +43,7 @@ function App() {
   const [resetConfirm, setResetConfirm] = useState(false)
 
   // ── Navigation ──
-  const nextStep = () => setCurrentStep(s => Math.min(s + 1, 6))
+  const nextStep = () => setCurrentStep(s => Math.min(s + 1, WIZARD_STEPS))
   const prevStep = () => setCurrentStep(s => Math.max(s - 1, 1))
 
   const toggleFavoriteTag = tag => {
@@ -336,17 +340,17 @@ function App() {
           const cleanTags = (show.tags || []).map(tag => tag.replace(/^#/, ''))
           const matchingTags = cleanTags.filter(tag => fuzzyMatch(topSearchQ, tag))
           return (fuzzyMatch(topSearchQ, show.label) || matchingTags.length) ? { ...show, matchingTags } : null
-        }).filter(Boolean).slice(0, 6),
+        }).filter(Boolean).slice(0, MAX_SHOW_RESULTS),
       restaurants: ALL_RESTAURANTS.map(restaurant => {
         const tags = RESTAURANT_TAGS[restaurant] || []
         const matchingTags = tags.filter(tag => fuzzyMatch(topSearchQ, tag))
         return (fuzzyMatch(topSearchQ, restaurant) || matchingTags.length) ? { name: restaurant, matchingTags } : null
-      }).filter(Boolean).slice(0, 6),
+      }).filter(Boolean).slice(0, MAX_RESTAURANT_RESULTS),
       rides: activeRideOptions.map(ride => {
         const tags = RIDE_TAGS[ride.label] || []
         const matchingTags = tags.filter(tag => fuzzyMatch(topSearchQ, tag))
         return (fuzzyMatch(topSearchQ, ride.label) || matchingTags.length) ? { ...ride, matchingTags } : null
-      }).filter(Boolean).slice(0, 5),
+      }).filter(Boolean).slice(0, MAX_RIDE_RESULTS),
     }
   }, [setupDone, topSearchQ, activeRideOptions])
   const hasTopSearchResults = topSearchResults &&

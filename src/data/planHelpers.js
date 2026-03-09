@@ -16,6 +16,8 @@ export const DEFAULT_PLAN = {
   checklist: ['Park tickets', 'Resort booking', 'Genie+ plan']
 }
 
+export const WIZARD_STEPS = 6
+
 // ── Default blank draft item — single source of truth (TD-003) ──────────────
 export const DEFAULT_DRAFT = {
   type: 'Fireworks',
@@ -130,6 +132,7 @@ export function normalizeEventItem(item) {
     })
   }
 
+  // Legacy items (pre-v2) stored free text in .text instead of .type + .note
   const text = item?.text || ''
   return createEventItem({
     note: text,
@@ -140,16 +143,21 @@ export function normalizeEventItem(item) {
 }
 
 export function buildEventLabel(item) {
+  // Ride with optional park qualifier
   if (item.type === 'Ride' && item.ride) {
     return `Ride: ${item.ride}${item.ridePark ? ` (${item.ridePark})` : ''}`
   }
+  // Dining at a named restaurant
   if (item.type && item.restaurant) {
     return `${item.type} at ${item.restaurant}`
   }
+  // Typed event with a free-text note
   if (item.type && item.note) {
     return `${item.type}: ${item.note}`
   }
+  // Type only — no extra detail
   if (item.type) return item.type
+  // Legacy free-text item (pre-v2)
   return item.text || 'Event'
 }
 

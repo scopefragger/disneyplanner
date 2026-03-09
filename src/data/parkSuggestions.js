@@ -96,6 +96,8 @@ const PARK_MAP_URLS = {
 
 // inferTheme is imported from planHelpers.js — see that file for the full implementation
 
+const CACHE_TTL_MS = 30 * 60 * 1000 // 30 minutes
+
 // ── Declarative keyword tables for inferTags (TD-005) ───────────────────────
 const FRANCHISE_KEYWORDS = {
   '#starwars':            ['star wars', 'galactic', 'jedi', 'stormtrooper'],
@@ -185,6 +187,8 @@ function matchKeywords(n, table) {
     .map(([tag]) => tag)
 }
 
+const MAX_TAGS = 3
+
 // Infer hashtags from show name and theme.
 // Template: collect franchise → character → activity, assemble max 3.
 export function inferTags(name, theme) {
@@ -192,11 +196,7 @@ export function inferTags(name, theme) {
 
   const franchise  = matchKeywords(nameLower, FRANCHISE_KEYWORDS)
   const characters = Object.entries(CHARACTER_KEYWORDS)
-    .filter(([tag, keywords]) => {
-      // '#anna' needs negative check to avoid false matches
-      if (tag === '#anna') return nameLower.includes('anna') && !nameLower.includes('savanna') && !nameLower.includes('banana')
-      return keywords.some(kw => nameLower.includes(kw))
-    })
+    .filter(([, keywords]) => keywords.some(kw => nameLower.includes(kw)))
     .map(([tag]) => tag)
 
   const activity = matchKeywords(nameLower, ACTIVITY_KEYWORDS)
@@ -206,14 +206,14 @@ export function inferTags(name, theme) {
   if (PIXAR_IPS.some(ip => nameLower.includes(ip)) || nameLower.includes('pixar')) activity.push('#pixar')
   if (MARVEL_HEROES.some(h => nameLower.includes(h)) || nameLower.includes('marvel')) activity.push('#marvel')
 
-  // ── Assemble: franchise → character → activity (max 3, deduplicated) ───
+  // ── Assemble: franchise → character → activity (max MAX_TAGS, deduplicated) ───
   const result = []
   const push = tag => { if (tag && !result.includes(tag)) result.push(tag) }
   push(franchise[0])
   push(characters[0])
-  for (const a of activity) { if (result.length >= 3) break; push(a) }
-  if (result.length < 3) { for (const c of characters.slice(1)) { if (result.length >= 3) break; push(c) } }
-  if (result.length < 3) { for (const f of franchise.slice(1)) { if (result.length >= 3) break; push(f) } }
+  for (const a of activity) { if (result.length >= MAX_TAGS) break; push(a) }
+  if (result.length < MAX_TAGS) { for (const c of characters.slice(1)) { if (result.length >= MAX_TAGS) break; push(c) } }
+  if (result.length < MAX_TAGS) { for (const f of franchise.slice(1)) { if (result.length >= MAX_TAGS) break; push(f) } }
   if (result.length === 0) result.push('#liveshow')
   return result
 }
@@ -256,7 +256,7 @@ export async function fetchLiveParkShows(parkName) {
   const cached = sessionStorage.getItem(cacheKey)
   if (cached) {
     const { data, ts } = JSON.parse(cached)
-    if (Date.now() - ts < 30 * 60 * 1000) return data
+    if (Date.now() - ts < CACHE_TTL_MS) return data
   }
 
   try {

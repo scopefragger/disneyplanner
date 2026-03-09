@@ -12,36 +12,36 @@ const DAY_TYPE_BACKGROUNDS = {
 }
 
 const PARK_TINTS = {
-  'Magic Kingdom': 'rgba(103, 133, 246, 0.24)',
-  EPCOT: 'rgba(0, 154, 199, 0.2)',
+  'Magic Kingdom':              'rgba(103, 133, 246, 0.24)',
+  'EPCOT':                      'rgba(0, 154, 199, 0.2)',
   "Disney's Hollywood Studios": 'rgba(250, 127, 111, 0.22)',
-  "Disney's Animal Kingdom": 'rgba(78, 167, 119, 0.22)',
-  'Disney Springs': 'rgba(167, 118, 208, 0.2)'
+  "Disney's Animal Kingdom":    'rgba(78, 167, 119, 0.22)',
+  'Disney Springs':             'rgba(167, 118, 208, 0.2)'
 }
 
 const PARKS_IMG = `${IMG_BASE}parks/`
 const PARK_IMAGES = {
   'Magic Kingdom':              `${PARKS_IMG}magic-kingdom.jpg`,
-  EPCOT:                        `${PARKS_IMG}epcot.jpg`,
+  'EPCOT':                      `${PARKS_IMG}epcot.jpg`,
   "Disney's Hollywood Studios": `${PARKS_IMG}hollywood-studios.jpg`,
   "Disney's Animal Kingdom":    `${PARKS_IMG}animal-kingdom.jpg`,
   'Disney Springs':             `${PARKS_IMG}disney-springs.jpg`,
 }
 
 const PARK_LOGO_BACKGROUNDS = {
-  'Magic Kingdom': `${IMG_BASE}park-logos/magic-kingdom.svg`,
-  EPCOT: `${IMG_BASE}park-logos/epcot.svg`,
+  'Magic Kingdom':              `${IMG_BASE}park-logos/magic-kingdom.svg`,
+  'EPCOT':                      `${IMG_BASE}park-logos/epcot.svg`,
   "Disney's Hollywood Studios": `${IMG_BASE}park-logos/hollywood-studios.svg`,
-  "Disney's Animal Kingdom": `${IMG_BASE}park-logos/animal-kingdom.svg`,
-  'Disney Springs': `${IMG_BASE}park-logos/disney-springs.svg`
+  "Disney's Animal Kingdom":    `${IMG_BASE}park-logos/animal-kingdom.svg`,
+  'Disney Springs':             `${IMG_BASE}park-logos/disney-springs.svg`
 }
 
 const PARK_BADGE_ICONS = {
-  'Magic Kingdom': `${IMG_BASE}park-icons/magic-kingdom.svg`,
-  EPCOT: `${IMG_BASE}park-icons/epcot.svg`,
+  'Magic Kingdom':              `${IMG_BASE}park-icons/magic-kingdom.svg`,
+  'EPCOT':                      `${IMG_BASE}park-icons/epcot.svg`,
   "Disney's Hollywood Studios": `${IMG_BASE}park-icons/hollywood-studios.svg`,
-  "Disney's Animal Kingdom": `${IMG_BASE}park-icons/animal-kingdom.svg`,
-  'Disney Springs': `${IMG_BASE}park-icons/disney-springs.svg`
+  "Disney's Animal Kingdom":    `${IMG_BASE}park-icons/animal-kingdom.svg`,
+  'Disney Springs':             `${IMG_BASE}park-icons/disney-springs.svg`
 }
 
 const SWIM_TINTS = {
@@ -56,7 +56,9 @@ const SWIM_LOGO_BACKGROUNDS = {
 
 const HOTEL_ICON = `${IMG_BASE}day-type-icons/hotel-shopping.svg`
 const HOTEL_TINT = 'rgba(144, 109, 201, 0.2)'
+const DEFAULT_TINT = 'rgba(0, 87, 184, 0.14)'
 
+/** @returns {{ label: string, icon: string } | null} */
 export function getLocationDisplay(dayPlan, myHotel) {
   if (dayPlan.dayType === 'Park' && dayPlan.park) {
     const parkLabel =
@@ -95,16 +97,22 @@ export const DAY_CHIP_COLORS = {
 }
 
 export function getDayTypeChipColor(dayType) {
-  return DAY_CHIP_COLORS[dayType] ?? 'rgba(0, 87, 184, 0.14)'
+  return DAY_CHIP_COLORS[dayType] ?? DEFAULT_TINT
 }
 
 export function hashtagLabel(value) {
   return value ? `#${value.replace(/\s+/g, '')}` : '#Choose'
 }
 
+/**
+ * Returns CSS custom properties for a day card's background, tint, and park logos.
+ * @returns {{ '--day-bg-image': string, '--day-bg-image-2': string, '--day-park-blend': string,
+ *             '--day-tint': string, '--day-tint-overlay': string,
+ *             '--park-logo-image': string, '--park-logo-image-2': string }}
+ */
 export function getDayCardStyle(dayPlan) {
   const dayTypeImage = DAY_TYPE_BACKGROUNDS[dayPlan.dayType] || DAY_TYPE_BACKGROUNDS.Park
-  let tint = 'rgba(0, 87, 184, 0.14)'
+  let tint = DEFAULT_TINT
   let tintOverlay = `linear-gradient(135deg, ${tint}, ${tint})`
   let logo = ''
   let logo2 = ''
@@ -174,6 +182,7 @@ export function getRideOptionsForDay(dayPlan) {
   )
 }
 
+// Fallback slot assignment when an event has no explicit time
 const DEFAULT_SLOT = {
   Breakfast: 'morning',
   'Travel Transfer': 'morning',
@@ -197,7 +206,7 @@ export function getItemSlot(item) {
     if (h >= 15) return 'afternoon'
     if (h >= 12) return 'midday'
     if (h >= 9)  return 'morning'
-    return 'latenight'
+    return 'latenight' // before 9am — midnight runs, very early departures
   }
   return DEFAULT_SLOT[item.type] || 'midday'
 }
