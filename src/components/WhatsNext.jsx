@@ -1,4 +1,22 @@
 import { normalizeEventItem } from '../data/planHelpers.js'
+import { WDW_SUFFIX } from '../data/constants.js'
+
+function buildMapUrl(plan, activeDate) {
+  const dayPlan = plan.dayPlans?.[activeDate]
+  const items = dayPlan?.items || []
+  const stops = [
+    dayPlan?.park,
+    ...items.map(item => {
+      const n = normalizeEventItem(item)
+      return n.ride ? n.ride.split('::').pop() : (n.restaurant || n.note || null)
+    })
+  ].filter(Boolean).map(s => encodeURIComponent(s + WDW_SUFFIX))
+
+  if (stops.length) {
+    return `https://www.google.com/maps/dir/${stops.join('/')}`
+  }
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((dayPlan?.park || 'Walt Disney World') + WDW_SUFFIX)}`
+}
 
 export default function WhatsNext({ activeDay, activeDate, plan }) {
   return (
@@ -8,21 +26,7 @@ export default function WhatsNext({ activeDay, activeDate, plan }) {
         <button
           type="button"
           className="whats-next-btn"
-          onClick={() => {
-            const dayPlan = plan.dayPlans?.[activeDate]
-            const items = dayPlan?.items || []
-            const stops = [
-              dayPlan?.park,
-              ...items.map(item => {
-                const n = normalizeEventItem(item)
-                return n.ride ? n.ride.split('::').pop() : (n.restaurant || n.note || null)
-              })
-            ].filter(Boolean).map(s => encodeURIComponent(s + ' Walt Disney World'))
-            const url = stops.length
-              ? `https://www.google.com/maps/dir/${stops.join('/')}`
-              : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((dayPlan?.park || 'Walt Disney World') + ' Walt Disney World')}`
-            window.open(url, '_blank', 'noopener')
-          }}
+          onClick={() => window.open(buildMapUrl(plan, activeDate), '_blank', 'noopener')}
         >
           <span className="whats-next-btn-icon">🗺</span>
           <span>View Day {activeDay + 1} on map</span>

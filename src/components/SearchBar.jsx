@@ -19,6 +19,14 @@ export default function SearchBar({
     setEventSearch('')
   }
 
+  // Shared updater for draft fields — avoids repeating the full setState pattern
+  const updateDraft = (field, value) => {
+    setDraftDayItems(current => ({
+      ...current,
+      [activeDate]: { ...activeDraft, [field]: value }
+    }))
+  }
+
   return (
     <div className="top-searchbar-card card card-wide">
       <div className="top-searchbar-wrap">
@@ -133,12 +141,7 @@ export default function SearchBar({
                 Ride
                 <select
                   value={activeDraft.ride}
-                  onChange={(e) =>
-                    setDraftDayItems((current) => ({
-                      ...current,
-                      [activeDate]: { ...activeDraft, ride: e.target.value }
-                    }))
-                  }
+                  onChange={(e) => updateDraft('ride', e.target.value)}
                   disabled={!activeRideOptions.length}
                 >
                   <option value="">
@@ -154,12 +157,7 @@ export default function SearchBar({
                 Notes
                 <input
                   value={activeDraft.note}
-                  onChange={(e) =>
-                    setDraftDayItems((current) => ({
-                      ...current,
-                      [activeDate]: { ...activeDraft, note: e.target.value }
-                    }))
-                  }
+                  onChange={(e) => updateDraft('note', e.target.value)}
                   placeholder="Optional details"
                 />
               </label>
@@ -171,12 +169,7 @@ export default function SearchBar({
               Custom restaurant
               <input
                 value={activeDraft.customRestaurant}
-                onChange={(e) =>
-                  setDraftDayItems((current) => ({
-                    ...current,
-                    [activeDate]: { ...activeDraft, customRestaurant: e.target.value }
-                  }))
-                }
+                onChange={(e) => updateDraft('customRestaurant', e.target.value)}
                 placeholder="Type restaurant name"
               />
             </label>
@@ -188,12 +181,7 @@ export default function SearchBar({
               <input
                 type="time"
                 value={activeDraft.time || ''}
-                onChange={(e) =>
-                  setDraftDayItems((current) => ({
-                    ...current,
-                    [activeDate]: { ...activeDraft, time: e.target.value }
-                  }))
-                }
+                onChange={(e) => updateDraft('time', e.target.value)}
               />
             </label>
             <button type="button" className="action action-compact" onClick={() => { addDayItem(activeDate); setAddEventOpen(false) }}>

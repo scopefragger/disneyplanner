@@ -1,4 +1,4 @@
-import { fuzzyMatch } from '../utils.js'
+import { fuzzyMatch, pluralize } from '../utils.js'
 import { DISNEY_HOTELS, DINING_OPTIONS, ENTERTAINMENT_TYPES, FRANCHISE_OPTIONS } from '../data/tripOptions.js'
 import { WIZARD_STEPS } from '../data/planHelpers.js'
 
@@ -8,6 +8,10 @@ export default function SetupWizard({
   updateField, nextStep, prevStep,
   setSetupDone, toggleFavoriteTag
 }) {
+  const filteredEntertainment = ENTERTAINMENT_TYPES.filter(({ label }) => fuzzyMatch(prefSearch, label))
+  const filteredFranchises    = FRANCHISE_OPTIONS.filter(({ label }) => fuzzyMatch(prefSearch, label))
+  const noResults = !filteredEntertainment.length && !filteredFranchises.length
+
   return (
     <section key={currentStep} className="card card-wide setup-step">
       <p className="step-label">Step {currentStep} of {WIZARD_STEPS}</p>
@@ -45,7 +49,7 @@ export default function SetupWizard({
             />
           </label>
           {tripLength > 0 && (
-            <span className="step-length-pill">{tripLength} day{tripLength !== 1 ? 's' : ''}</span>
+            <span className="step-length-pill">{pluralize(tripLength, 'day', 'days')}</span>
           )}
         </div>
       </>}
@@ -122,37 +126,32 @@ export default function SetupWizard({
           onChange={e => setPrefSearch(e.target.value)}
         />
 
-        {(() => {
-          const filteredEntertainment = ENTERTAINMENT_TYPES.filter(({ label }) => fuzzyMatch(prefSearch, label))
-          const filteredFranchises    = FRANCHISE_OPTIONS.filter(({ label }) => fuzzyMatch(prefSearch, label))
-          const noResults = !filteredEntertainment.length && !filteredFranchises.length
-          return noResults ? (
-            <p className="pref-no-results">No matches for "{prefSearch}"</p>
-          ) : <>
-            {filteredEntertainment.length > 0 && <>
-              <p className="pref-section-label">Entertainment style</p>
-              <div className="pref-chip-grid">
-                {filteredEntertainment.map(({ tag, label }) => (
-                  <button key={tag} type="button"
-                    className={plan.favoriteTags?.includes(tag) ? 'pref-chip selected' : 'pref-chip'}
-                    onClick={() => toggleFavoriteTag(tag)}
-                  >{label}</button>
-                ))}
-              </div>
-            </>}
-            {filteredFranchises.length > 0 && <>
-              <p className="pref-section-label">Favourite worlds &amp; franchises</p>
-              <div className="pref-chip-grid">
-                {filteredFranchises.map(({ tag, label }) => (
-                  <button key={tag} type="button"
-                    className={plan.favoriteTags?.includes(tag) ? 'pref-chip selected' : 'pref-chip'}
-                    onClick={() => toggleFavoriteTag(tag)}
-                  >{label}</button>
-                ))}
-              </div>
-            </>}
-          </>
-        })()}
+        {noResults ? (
+          <p className="pref-no-results">No matches for "{prefSearch}"</p>
+        ) : <>
+          {filteredEntertainment.length > 0 && <>
+            <p className="pref-section-label">Entertainment style</p>
+            <div className="pref-chip-grid">
+              {filteredEntertainment.map(({ tag, label }) => (
+                <button key={tag} type="button"
+                  className={plan.favoriteTags?.includes(tag) ? 'pref-chip selected' : 'pref-chip'}
+                  onClick={() => toggleFavoriteTag(tag)}
+                >{label}</button>
+              ))}
+            </div>
+          </>}
+          {filteredFranchises.length > 0 && <>
+            <p className="pref-section-label">Favourite worlds &amp; franchises</p>
+            <div className="pref-chip-grid">
+              {filteredFranchises.map(({ tag, label }) => (
+                <button key={tag} type="button"
+                  className={plan.favoriteTags?.includes(tag) ? 'pref-chip selected' : 'pref-chip'}
+                  onClick={() => toggleFavoriteTag(tag)}
+                >{label}</button>
+              ))}
+            </div>
+          </>}
+        </>}
       </>}
 
       <div className="step-nav">

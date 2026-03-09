@@ -1,6 +1,5 @@
 // Static UI option arrays — all trip-planning dropdown data lives here (TD-031)
-
-const IMG_BASE = `${import.meta.env.BASE_URL}images/`
+import { IMG_BASE } from './constants.js'
 
 export const PARK_OPTIONS = [
   'Magic Kingdom',

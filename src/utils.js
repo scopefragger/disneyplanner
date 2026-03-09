@@ -38,6 +38,11 @@ export function formatTime(time) {
   return `${hour}:${minutes.toString().padStart(2, '0')}${period}`
 }
 
+/** Returns "N singular" or "N plural" — e.g. pluralize(1, 'day', 'days') → '1 day' */
+export function pluralize(count, singular, plural) {
+  return `${count} ${count !== 1 ? plural : singular}`
+}
+
 /**
  * Fuzzy string matcher — returns true if all characters of query
  * appear in order within text (fast path: substring match first).

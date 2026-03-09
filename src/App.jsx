@@ -1,18 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
-import { RESTAURANT_TAGS, ALL_RESTAURANTS, getRestaurantResources } from './data/restaurantMetadata'
-import { fetchLiveParkShows, ALL_SHOWS } from './data/parkSuggestions.js'
-import { RIDE_TAGS } from './data/rideData.js'
-import { fuzzyMatch, getDateRange } from './utils.js'
-import { DEFAULT_PLAN, DEFAULT_DRAFT, SHOW_TYPE_MAP, WIZARD_STEPS, getEventTypeConfig, createBlankDayPlan, createEventItem, parseRideSelection, patchDayPlan } from './data/planHelpers.js'
-import { PROJECTS_KEY, generateId, loadAllProjects } from './data/storage.js'
 import { getRideOptionsForDay } from './data/displayHelpers.js'
-import HomeScreen from './components/HomeScreen.jsx'
-import SetupWizard from './components/SetupWizard.jsx'
-import SetupSummary from './components/SetupSummary.jsx'
-import SearchBar from './components/SearchBar.jsx'
+import { fetchLiveParkShows, ALL_SHOWS } from './data/parkSuggestions.js'
+import { DEFAULT_PLAN, DEFAULT_DRAFT, SHOW_TYPE_MAP, WIZARD_STEPS, appendDayItem, appendDismissed, createBlankDayPlan, createEventItem, getEventTypeConfig, parseRideSelection, patchDayPlan } from './data/planHelpers.js'
+import { ALL_RESTAURANTS, RESTAURANT_TAGS, getRestaurantResources } from './data/restaurantMetadata'
+import { RIDE_TAGS } from './data/rideData.js'
+import { PROJECTS_KEY, generateId, loadAllProjects } from './data/storage.js'
+import { fuzzyMatch, getDateRange } from './utils.js'
 import DayPlanSection from './components/DayPlanSection.jsx'
-import WhatsNext from './components/WhatsNext.jsx'
+import HomeScreen from './components/HomeScreen.jsx'
+import SearchBar from './components/SearchBar.jsx'
+import SetupSummary from './components/SetupSummary.jsx'
+import SetupWizard from './components/SetupWizard.jsx'
 import SettingsPanel from './components/SettingsPanel.jsx'
+import WhatsNext from './components/WhatsNext.jsx'
 
 const MAX_SHOW_RESULTS = 6
 const MAX_RESTAURANT_RESULTS = 6
@@ -41,31 +41,6 @@ function App() {
   const [eventSearch, setEventSearch] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [resetConfirm, setResetConfirm] = useState(false)
-
-  // ── Navigation ──
-  const nextStep = () => setCurrentStep(s => Math.min(s + 1, WIZARD_STEPS))
-  const prevStep = () => setCurrentStep(s => Math.max(s - 1, 1))
-
-  const toggleFavoriteTag = tag => {
-    setPlan(p => ({
-      ...p,
-      favoriteTags: p.favoriteTags?.includes(tag)
-        ? p.favoriteTags.filter(existingTag => existingTag !== tag)
-        : [...(p.favoriteTags || []), tag]
-    }))
-  }
-
-  useEffect(() => {
-    if (!activeProjectId) return
-    setProjects(currentProjects => {
-      const updated = {
-        ...currentProjects,
-        [activeProjectId]: { ...currentProjects[activeProjectId], updatedAt: new Date().toISOString(), plan }
-      }
-      localStorage.setItem(PROJECTS_KEY, JSON.stringify(updated))
-      return updated
-    })
-  }, [plan, activeProjectId])
 
   const tripDates = useMemo(() => {
     return getDateRange(plan.startDate, plan.endDate)
@@ -104,6 +79,18 @@ function App() {
     })
   }, [tripDates])
 
+  useEffect(() => {
+    if (!activeProjectId) return
+    setProjects(currentProjects => {
+      const updated = {
+        ...currentProjects,
+        [activeProjectId]: { ...currentProjects[activeProjectId], updatedAt: new Date().toISOString(), plan }
+      }
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify(updated))
+      return updated
+    })
+  }, [plan, activeProjectId])
+
   // Fetch live show data for any park that appears in the trip plan
   useEffect(() => {
     const parks = [...new Set(
@@ -120,9 +107,22 @@ function App() {
     })
   }, [plan.dayPlans]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // ── Navigation handlers ──
+  const nextStep = () => setCurrentStep(s => Math.min(s + 1, WIZARD_STEPS))
+  const prevStep = () => setCurrentStep(s => Math.max(s - 1, 1))
+
   // ── Setup handlers ──
   const updateField = (field, value) => {
     setPlan((current) => ({ ...current, [field]: value }))
+  }
+
+  const toggleFavoriteTag = tag => {
+    setPlan(p => ({
+      ...p,
+      favoriteTags: p.favoriteTags?.includes(tag)
+        ? p.favoriteTags.filter(existingTag => existingTag !== tag)
+        : [...(p.favoriteTags || []), tag]
+    }))
   }
 
   // ── Day plan handlers ──
@@ -161,9 +161,7 @@ function App() {
       theme: eventType.theme
     })
 
-    setPlan(current => patchDayPlan(current, date, {
-      items: [...(current.dayPlans[date]?.items || []), newItem]
-    }))
+    setPlan(current => appendDayItem(current, date, newItem))
     setDraftDayItems(current => ({ ...current, [date]: { ...DEFAULT_DRAFT, type: draft.type } }))
   }
 
@@ -189,16 +187,14 @@ function App() {
       type: suggestion.type, note: suggestion.label,
       time: suggestion.time, theme: suggestion.theme
     })
-    setPlan(current => patchDayPlan(current, date, {
-      items: [...(current.dayPlans[date]?.items || []), newItem],
-      dismissedSuggestions: [...(current.dayPlans[date]?.dismissedSuggestions || []), suggestion.id]
-    }))
+    setPlan(current => {
+      const withItem = appendDayItem(current, date, newItem)
+      return appendDismissed(withItem, date, suggestion.id)
+    })
   }
 
   const dismissSuggestion = (date, suggestionId) => {
-    setPlan(current => patchDayPlan(current, date, {
-      dismissedSuggestions: [...(current.dayPlans[date]?.dismissedSuggestions || []), suggestionId]
-    }))
+    setPlan(current => appendDismissed(current, date, suggestionId))
   }
 
   const quickAddToDay = (date, kind, item) => {
@@ -220,9 +216,7 @@ function App() {
       newItem = createEventItem({ type: 'Ride', ride, ridePark, theme: getEventTypeConfig('Ride').theme })
     }
     if (!newItem) return
-    setPlan(current => patchDayPlan(current, date, {
-      items: [...(current.dayPlans[date]?.items || []), newItem]
-    }))
+    setPlan(current => appendDayItem(current, date, newItem))
     setEventSearch('')
   }
 
@@ -325,11 +319,14 @@ function App() {
     setActiveProjectId(null)
   }
 
+  // ── Derived state ──
   const activeDate = tripDates[activeDay]
   const activeDayPlan = plan.dayPlans?.[activeDate] || {}
   const activeRideOptions = useMemo(() => getRideOptionsForDay(activeDayPlan), [activeDayPlan])
   const activeDraft = draftDayItems[activeDate] || DEFAULT_DRAFT
   const activeSelectedEventType = getEventTypeConfig(activeDraft.type)
+
+  // ── Search results (memoised; defined close to SearchBar consumer) ──
   const topSearchQ = eventSearch.trim()
   // TD-016: wrap in useMemo — only recalculates when query, park, or ride options change
   const topSearchResults = useMemo(() => {

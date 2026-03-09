@@ -1,8 +1,7 @@
 // Pure display and style helpers — no React / DOM dependencies (TD-035)
 import { DAY_TYPES, PARK_OPTIONS, SWIM_OPTIONS } from './tripOptions.js'
 import { RIDES_BY_PARK } from './rideData.js'
-
-const IMG_BASE = `${import.meta.env.BASE_URL}images/`
+import { IMG_BASE } from './constants.js'
 
 const DAY_TYPE_BACKGROUNDS = {
   Park: `${IMG_BASE}day-park.svg`,
@@ -198,14 +197,17 @@ const DEFAULT_SLOT = {
   Fireworks: 'night',
 }
 
+// Named boundaries for time-of-day slot assignment (hour thresholds)
+const SLOT_BOUNDARIES = { night: 21, evening: 18, afternoon: 15, midday: 12, morning: 9 }
+
 export function getItemSlot(item) {
   if (item.time) {
     const [h] = item.time.split(':').map(Number)
-    if (h >= 21) return 'night'
-    if (h >= 18) return 'evening'
-    if (h >= 15) return 'afternoon'
-    if (h >= 12) return 'midday'
-    if (h >= 9)  return 'morning'
+    if (h >= SLOT_BOUNDARIES.night)     return 'night'
+    if (h >= SLOT_BOUNDARIES.evening)   return 'evening'
+    if (h >= SLOT_BOUNDARIES.afternoon) return 'afternoon'
+    if (h >= SLOT_BOUNDARIES.midday)    return 'midday'
+    if (h >= SLOT_BOUNDARIES.morning)   return 'morning'
     return 'latenight' // before 9am — midnight runs, very early departures
   }
   return DEFAULT_SLOT[item.type] || 'midday'

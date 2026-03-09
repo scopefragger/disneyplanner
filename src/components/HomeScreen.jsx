@@ -1,4 +1,4 @@
-import { getDateRange, formatPrettyDate } from '../utils.js'
+import { getDateRange, formatPrettyDate, pluralize } from '../utils.js'
 
 export default function HomeScreen({ projects, openProject, deleteProject, createProject }) {
   return (
@@ -19,24 +19,22 @@ export default function HomeScreen({ projects, openProject, deleteProject, creat
                 .map(project => {
                   const projectPlan = project.plan
                   const len = getDateRange(projectPlan.startDate, projectPlan.endDate).length
+                  const handleDelete = (e) => {
+                    e.stopPropagation()
+                    if (window.confirm('Delete this holiday?')) deleteProject(project.id)
+                  }
                   return (
                     <div key={project.id} className="project-row" onClick={() => openProject(project.id)}>
                       <div className="project-row-info">
                         <strong>{projectPlan.tripName || 'Untitled Holiday'}</strong>
                         <span>
                           {projectPlan.startDate
-                            ? `${formatPrettyDate(projectPlan.startDate)} – ${formatPrettyDate(projectPlan.endDate)} · ${len} day${len !== 1 ? 's' : ''}`
+                            ? `${formatPrettyDate(projectPlan.startDate)} – ${formatPrettyDate(projectPlan.endDate)} · ${pluralize(len, 'day', 'days')}`
                             : 'Dates not set'}
                           {projectPlan.myHotel ? ` · ${projectPlan.myHotel}` : ''}
                         </span>
                       </div>
-                      <button
-                        className="chip"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          if (window.confirm('Delete this holiday?')) deleteProject(project.id)
-                        }}
-                      >
+                      <button className="chip" onClick={handleDelete}>
                         Delete
                       </button>
                     </div>

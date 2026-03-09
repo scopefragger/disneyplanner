@@ -82,7 +82,7 @@ export function getRideTags(ride) {
   return RIDE_TAGS[ride] ?? []
 }
 
-const IMG_BASE = `${import.meta.env.BASE_URL}images/`
+import { IMG_BASE } from './constants.js'
 const RIDES_IMG = `${IMG_BASE}rides/`
 
 export const RIDES_BY_PARK = {

@@ -1,4 +1,5 @@
 import { inferTheme } from './planHelpers.js'
+import { WDW_SUFFIX } from './constants.js'
 
 const DW = 'https://disneyworld.disney.go.com'
 const MAPS = 'https://www.google.com/maps?q='
@@ -208,12 +209,30 @@ export function inferTags(name, theme) {
 
   // ── Assemble: franchise → character → activity (max MAX_TAGS, deduplicated) ───
   const result = []
-  const push = tag => { if (tag && !result.includes(tag)) result.push(tag) }
+  const push = tag => {
+    if (tag && !result.includes(tag)) result.push(tag)
+  }
+
   push(franchise[0])
   push(characters[0])
-  for (const a of activity) { if (result.length >= MAX_TAGS) break; push(a) }
-  if (result.length < MAX_TAGS) { for (const c of characters.slice(1)) { if (result.length >= MAX_TAGS) break; push(c) } }
-  if (result.length < MAX_TAGS) { for (const f of franchise.slice(1)) { if (result.length >= MAX_TAGS) break; push(f) } }
+
+  for (const a of activity) {
+    if (result.length >= MAX_TAGS) break
+    push(a)
+  }
+  if (result.length < MAX_TAGS) {
+    for (const c of characters.slice(1)) {
+      if (result.length >= MAX_TAGS) break
+      push(c)
+    }
+  }
+  if (result.length < MAX_TAGS) {
+    for (const f of franchise.slice(1)) {
+      if (result.length >= MAX_TAGS) break
+      push(f)
+    }
+  }
+
   if (result.length === 0) result.push('#liveshow')
   return result
 }
@@ -231,7 +250,7 @@ function adaptLiveShow(showEntity, parkName) {
   const firstTime = parseShowTime(showEntity.showtimes[0]?.startTime)
   if (!firstTime) return null
   const theme = inferTheme(showEntity.name)
-  const encodedName = encodeURIComponent(showEntity.name + ' Walt Disney World')
+  const encodedName = encodeURIComponent(showEntity.name + WDW_SUFFIX)
   return {
     id: `live-${showEntity.id}`,
     label: showEntity.name,

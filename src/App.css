@@ -1019,12 +1019,13 @@ textarea:focus {
   border-left: 3px solid var(--event-theme-color, rgba(0, 87, 184, 0.4));
 }
 
-.timeline-event-content[data-theme="dining"]    { --event-theme-color: #f86664; }
-.timeline-event-content[data-theme="fireworks"] { --event-theme-color: #003b78; }
-.timeline-event-content[data-theme="ride"]      { --event-theme-color: #0057b8; }
-.timeline-event-content[data-theme="character"] { --event-theme-color: #8fd8c2; }
-.timeline-event-content[data-theme="nature"]    { --event-theme-color: #4ea777; }
-.timeline-event-content[data-theme="default"]   { --event-theme-color: #8a93a6; }
+/* Theme color — shared across timeline-event-content, ghost-event-content, timeline-event-edit */
+[data-theme="dining"]    { --event-theme-color: #f86664; }
+[data-theme="fireworks"] { --event-theme-color: #003b78; }
+[data-theme="ride"]      { --event-theme-color: #0057b8; }
+[data-theme="character"] { --event-theme-color: #8fd8c2; }
+[data-theme="nature"]    { --event-theme-color: #4ea777; }
+[data-theme="default"]   { --event-theme-color: #8a93a6; }
 
 .timeline-event-content .event-text {
   flex: 1;
@@ -1083,12 +1084,6 @@ textarea:focus {
   opacity: 0.82;
 }
 
-.ghost-event-content[data-theme="dining"]    { --event-theme-color: #f86664; }
-.ghost-event-content[data-theme="fireworks"] { --event-theme-color: #003b78; }
-.ghost-event-content[data-theme="ride"]      { --event-theme-color: #0057b8; }
-.ghost-event-content[data-theme="character"] { --event-theme-color: #8fd8c2; }
-.ghost-event-content[data-theme="nature"]    { --event-theme-color: #4ea777; }
-.ghost-event-content[data-theme="default"]   { --event-theme-color: #8a93a6; }
 
 .ghost-tags {
   display: flex;
@@ -1188,12 +1183,6 @@ textarea:focus {
   gap: 0.5rem;
 }
 
-.timeline-event-edit[data-theme="dining"]    { --event-theme-color: #f86664; }
-.timeline-event-edit[data-theme="fireworks"] { --event-theme-color: #003b78; }
-.timeline-event-edit[data-theme="ride"]      { --event-theme-color: #0057b8; }
-.timeline-event-edit[data-theme="character"] { --event-theme-color: #8fd8c2; }
-.timeline-event-edit[data-theme="nature"]    { --event-theme-color: #4ea777; }
-.timeline-event-edit[data-theme="default"]   { --event-theme-color: #8a93a6; }
 
 .event-edit-fields {
   display: flex;
@@ -1399,6 +1388,22 @@ textarea:focus {
   margin: 0;
   font-size: 1rem;
   font-weight: 700;
+}
+
+.close-panel-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: rgba(29, 42, 68, 0.55);
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.close-panel-btn:hover {
+  background: rgba(0, 87, 184, 0.08);
+  color: var(--dw-ink);
 }
 
 .settings-note {

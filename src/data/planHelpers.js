@@ -9,6 +9,7 @@ export const DEFAULT_PLAN = {
   adults: 2,
   children: 0,
   budget: 3500,
+  currencySymbol: '£',
   priorities: ['Magic Kingdom'],
   diningStyle: 'No dining plan',
   notes: '',
@@ -38,6 +39,7 @@ export const SHOW_TYPE_MAP = {
 }
 
 // ── Factory: blank day plan shape — single source of truth (TD-017) ─────────
+// Canonical fields: dayType, park, secondPark, parkHop, swimSpot, staySpot, items, dismissedSuggestions
 export function createBlankDayPlan(overrides) {
   return {
     dayType: '', park: '', secondPark: '', parkHop: false,
@@ -51,7 +53,7 @@ export function createEventItem(overrides) {
   return {
     type: '', restaurant: '', customRestaurant: '',
     menuUrl: '', bookingUrl: '', heroImage: '',
-    ride: '', ridePark: '', note: '', time: '', theme: '',
+    ride: '', ridePark: '', note: '', time: '', theme: '', text: '',
     ...overrides
   }
 }
@@ -71,6 +73,20 @@ export function patchDayPlan(current, date, patch) {
       [date]: { ...current.dayPlans[date], ...patch }
     }
   }
+}
+
+// ── Pure state helper: append a new item to a day's items list (TD-082) ─────
+export function appendDayItem(current, date, newItem) {
+  return patchDayPlan(current, date, {
+    items: [...(current.dayPlans[date]?.items || []), newItem]
+  })
+}
+
+// ── Pure state helper: append an id to a day's dismissedSuggestions (TD-084) ─
+export function appendDismissed(current, date, id) {
+  return patchDayPlan(current, date, {
+    dismissedSuggestions: [...(current.dayPlans[date]?.dismissedSuggestions || []), id]
+  })
 }
 
 // Infer a display theme from a show/event name (used by parkSuggestions and detectTheme)

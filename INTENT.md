@@ -3,6 +3,46 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-09T08:40:00Z — Pay down all 38 remaining tech debt items
+
+**What:**
+- TD-073/078: Created `src/data/constants.js` exporting shared `IMG_BASE` and `WDW_SUFFIX`; updated `displayHelpers.js`, `rideData.js`, `tripOptions.js` to import `IMG_BASE`; updated `parkSuggestions.js`, `DayPlanSection.jsx`, `WhatsNext.jsx` to use `WDW_SUFFIX`
+- TD-069: Added `SLOT_BOUNDARIES` named constants to `displayHelpers.js`; used in `getItemSlot`
+- TD-082: Added `appendDayItem(current, date, newItem)` helper to `planHelpers.js`; used in `addDayItem`, `quickAddToDay`, `acceptSuggestion`
+- TD-084: Added `appendDismissed(current, date, id)` helper to `planHelpers.js`; used in `acceptSuggestion`, `dismissSuggestion`
+- TD-083: Added `pluralize(count, singular, plural)` to `utils.js`; used in `HomeScreen`, `SetupSummary`, `SetupWizard`
+- TD-123: Added `currencySymbol: '£'` to `DEFAULT_PLAN`; `SetupSummary` now reads `plan.currencySymbol`
+- TD-146: Added canonical-fields comment to `createBlankDayPlan`
+- TD-147: Added `text: ''` to `createEventItem` template so legacy items use the canonical shape
+- TD-126: Expanded compressed tag assembly loops in `inferTags` to standard multi-line for…of blocks
+- TD-140/141/142: Sorted App.jsx imports alphabetically within groups; grouped handlers by category; moved `topSearchResults` useMemo closer to SearchBar
+- TD-080: Deduplicated 18 CSS data-theme rules into a single `[data-theme="..."]` block
+- TD-117: Added `.close-panel-btn` CSS rule to `App.css`
+- TD-049: Broke SetupSummary budget/adults info into separate `<span>` lines using `pluralize`
+- TD-052: Broke HomeScreen project row info span; uses `pluralize` for day count
+- TD-129: Extracted `handleDelete` handler in HomeScreen
+- TD-131: Extracted `handleEditSetup`, `handlePreferences`, `handleSettings` in SetupSummary
+- TD-055: Extracted SetupWizard step 6 IIFE → pre-computed `filteredEntertainment` / `filteredFranchises` / `noResults`
+- TD-079: Added `updateDraft` helper in SearchBar replacing 4 repeated `setDraftDayItems` patterns
+- TD-053: Extracted `buildMapUrl(plan, activeDate)` in WhatsNext
+- TD-051: Extracted `navBtnClass` computation in DayPlanSection day nav buttons
+- TD-054: Extracted `computeGhostSuggestions` named function replacing IIFE
+- TD-056: Extracted `clearLocation` handler inside `renderDayBadges`
+- TD-057: Extracted `updateEditDraft` helper inside `renderEditForm`
+- TD-058: Extracted `buildItemUrls(normalizedItem, dayPlan)` helper
+- TD-059: Extracted `renderEventLinks(...)` helper function
+- TD-060: Extracted `renderDayBadges(...)` helper function
+- TD-061/130: Extracted `renderDaySummaryPills(...)` with pre-computed `locationText`
+- TD-062: Extracted `renderDayFormSelector(...)` helper function
+- TD-063: Extracted `renderEditForm(...)` helper function
+- TD-064: Extracted `renderTimelineEvent(...)` helper function
+- TD-065: Extracted `renderGhostEvent(...)` helper function
+- TD-066: Extracted `buildHotelShoppingOptions(myHotel)` above component
+- TD-143: Grouped all derived-state computations above return in DayPlanSection
+- TD-149: Changed `timeSlots.flatMap(slot => [...])` to `.map(...).filter(Boolean)` pattern
+
+**Why:** Complete all outstanding readability and DRY tech debt items from the TD-049–TD-149 audit
+
 ## 2026-03-09T08:18:00Z — Pay down second batch of 30 tech debt items
 
 **What:**
