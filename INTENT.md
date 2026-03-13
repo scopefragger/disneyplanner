@@ -3,6 +3,16 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-13T01:00:00Z — Extract TimelineEventCard component
+
+**What:**
+- Created `src/components/TimelineEventCard.jsx` — single component for both confirmed events (`ghost=false`) and ghost suggestions (`ghost=true`). Props: `theme`, `time`, `label`, `backgroundStyle`, `menuUrl`, `bookingUrl`, `viewInfoUrl`, `mapUrl`, `hasRestaurantLinks`, `onEdit`, `onDelete` (real events); `tags`, `infoUrl`, `onAccept`, `onDismiss` (ghost events)
+- Updated `DayPlanSection.jsx`: replaced `renderTimelineEvent` and `renderGhostEvent` with `<TimelineEventCard>` calls; removed `renderEventLinks` (logic now lives inside the new component); removed unused `formatTime` import
+
+**Why:** Both card types shared the same outer shell (time, label, themed wrapper, action buttons) but were defined as separate render functions with duplicated structure. Consolidating into one parameterised component ensures consistent markup and makes future style changes apply to both variants in one place.
+
+---
+
 ## 2026-03-13T00:00:00Z — Add PWA support for Android installation
 
 **What:**

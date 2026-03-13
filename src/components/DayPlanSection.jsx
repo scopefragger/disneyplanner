@@ -1,10 +1,11 @@
-import { formatPrettyDate, formatShortDate, formatTime } from '../utils.js'
+import { formatPrettyDate, formatShortDate } from '../utils.js'
 import { PARK_OPTIONS, DAY_TYPES, SWIM_OPTIONS, DISNEY_HOTELS } from '../data/tripOptions.js'
 import { getParkSuggestions } from '../data/parkSuggestions.js'
 import { getRideUrl, RIDE_IMAGES } from '../data/rideData.js'
 import { normalizeEventItem, buildEventLabel } from '../data/planHelpers.js'
 import { WDW_SUFFIX } from '../data/constants.js'
 import { getDayTypeChipColor, hashtagLabel, getDayCardStyle, getDayTypeIcon, getSecondParkOptions, getItemSlot, getTimeSlots, getLocationDisplay } from '../data/displayHelpers.js'
+import TimelineEventCard from './TimelineEventCard.jsx'
 
 const GOOGLE_MAPS_SEARCH_URL = 'https://www.google.com/maps/search/?api=1&query='
 const GOOGLE_SEARCH_URL = 'https://www.google.com/search?q='
@@ -46,23 +47,6 @@ function buildItemUrls(normalizedItem, dayPlan) {
     ? (rideUrl || `${GOOGLE_SEARCH_URL}${encodeURIComponent(mapSearchTerm + WDW_SUFFIX)}`)
     : ''
   return { rideName, rideUrl, menuUrl, bookingUrl, mapUrl, viewInfoUrl }
-}
-
-function renderEventLinks({ menuUrl, bookingUrl, viewInfoUrl, mapUrl, hasRestaurantLinks }) {
-  return (
-    <div className="event-links">
-      {hasRestaurantLinks && menuUrl && (
-        <a href={menuUrl} target="_blank" rel="noreferrer noopener">View menu</a>
-      )}
-      {hasRestaurantLinks && bookingUrl && (
-        <a href={bookingUrl} target="_blank" rel="noreferrer noopener">Book</a>
-      )}
-      {viewInfoUrl && (
-        <a href={viewInfoUrl} target="_blank" rel="noreferrer noopener">View info</a>
-      )}
-      <a href={mapUrl} target="_blank" rel="noreferrer noopener">View on map</a>
-    </div>
-  )
 }
 
 function renderEditForm({ editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, date, itemIdx, normalizedItem }) {
@@ -121,71 +105,49 @@ function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, up
   const { rideName, menuUrl, bookingUrl, mapUrl, viewInfoUrl } = buildItemUrls(normalizedItem, dayPlan)
   const rideImage = RIDE_IMAGES[rideName] || ''
   const hasRestaurantLinks = Boolean(normalizedItem.type !== 'Ride' && normalizedItem.restaurant && (menuUrl || bookingUrl))
+  const backgroundStyle = rideImage
+    ? { backgroundImage: `linear-gradient(to bottom right, rgba(255,255,255,1) 30%, rgba(255,255,255,0.6) 65%, rgba(255,255,255,0) 100%), url(${rideImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' }
+    : undefined
   const isEditing = editingDayItem?.date === date && editingDayItem?.index === item._idx
+  if (isEditing) {
+    return (
+      <div key={`event-${item._idx}`} className="timeline-event">
+        {renderEditForm({ editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, date, itemIdx: item._idx, normalizedItem })}
+      </div>
+    )
+  }
   return (
-    <div key={`event-${item._idx}`} className="timeline-event">
-      {isEditing ? (
-        renderEditForm({ editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, date, itemIdx: item._idx, normalizedItem })
-      ) : (
-        <div
-          className="timeline-event-content"
-          data-theme={normalizedItem.theme}
-          style={rideImage ? { backgroundImage: `linear-gradient(to bottom right, rgba(255,255,255,1) 30%, rgba(255,255,255,0.6) 65%, rgba(255,255,255,0) 100%), url(${rideImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' } : undefined}
-        >
-          <div className="event-text">
-            {normalizedItem.time && (
-              <span className="event-time">{formatTime(normalizedItem.time)}</span>
-            )}
-            <p>{label}</p>
-            {renderEventLinks({ menuUrl, bookingUrl, viewInfoUrl, mapUrl, hasRestaurantLinks })}
-          </div>
-          <button
-            type="button"
-            className="event-edit-btn"
-            title="Edit"
-            aria-label="Edit event"
-            onClick={() => setEditingDayItem({ date, index: item._idx, draft: { time: normalizedItem.time || '', note: normalizedItem.note || '' } })}
-          >✏</button>
-          <button type="button" className="event-delete-btn" aria-label="Delete event" onClick={() => removeDayItem(date, item._idx)}>×</button>
-        </div>
-      )}
-    </div>
+    <TimelineEventCard
+      key={`event-${item._idx}`}
+      theme={normalizedItem.theme}
+      time={normalizedItem.time}
+      label={label}
+      backgroundStyle={backgroundStyle}
+      menuUrl={menuUrl}
+      bookingUrl={bookingUrl}
+      viewInfoUrl={viewInfoUrl}
+      mapUrl={mapUrl}
+      hasRestaurantLinks={hasRestaurantLinks}
+      onEdit={() => setEditingDayItem({ date, index: item._idx, draft: { time: normalizedItem.time || '', note: normalizedItem.note || '' } })}
+      onDelete={() => removeDayItem(date, item._idx)}
+    />
   )
 }
 
 function renderGhostEvent({ suggestion, date, acceptSuggestion, dismissSuggestion }) {
   return (
-    <div key={suggestion.id} className="timeline-event">
-      <div className="ghost-event-content" data-theme={suggestion.theme}>
-        <div className="event-text">
-          <span className="event-time">{formatTime(suggestion.time)}</span>
-          <p>{suggestion.label}</p>
-          {suggestion.tags?.length > 0 && (
-            <div className="ghost-tags">
-              {suggestion.tags.map(tag => (
-                <span key={tag} className="ghost-tag">{tag}</span>
-              ))}
-            </div>
-          )}
-          <div className="ghost-links">
-            {suggestion.infoUrl && (
-              <a href={suggestion.infoUrl} target="_blank" rel="noreferrer noopener"
-                className="ghost-link" title="About this show">ℹ Info</a>
-            )}
-            {suggestion.mapUrl && (
-              <a href={suggestion.mapUrl} target="_blank" rel="noreferrer noopener"
-                className="ghost-link" title="View on map">📍 Map</a>
-            )}
-          </div>
-        </div>
-        <div className="ghost-actions">
-          <button type="button" className="ghost-accept-btn" title="Add to my plan" aria-label="Add to my plan"
-            onClick={() => acceptSuggestion(date, suggestion)}>✓</button>
-          <button type="button" className="ghost-dismiss-btn" title="Not for me" aria-label="Not for me"
-            onClick={() => dismissSuggestion(date, suggestion.id)}>✕</button>
-        </div>
-      </div>
-    </div>
+    <TimelineEventCard
+      key={suggestion.id}
+      ghost
+      theme={suggestion.theme}
+      time={suggestion.time}
+      label={suggestion.label}
+      tags={suggestion.tags}
+      infoUrl={suggestion.infoUrl}
+      mapUrl={suggestion.mapUrl}
+      onAccept={() => acceptSuggestion(date, suggestion)}
+      onDismiss={() => dismissSuggestion(date, suggestion.id)}
+    />
   )
 }
 
