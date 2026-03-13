@@ -4,7 +4,7 @@ import { getParkSuggestions } from '../data/parkSuggestions.js'
 import { getRideUrl, RIDE_IMAGES } from '../data/rideData.js'
 import { normalizeEventItem, buildEventLabel } from '../data/planHelpers.js'
 import { WDW_SUFFIX } from '../data/constants.js'
-import { getDayTypeChipColor, hashtagLabel, getDayCardStyle, getDayTypeIcon, getSecondParkOptions, getItemSlot, getTimeSlots, getLocationDisplay } from '../data/displayHelpers.js'
+import { getDayTypeChipColor, hashtagLabel, getDayCardStyle, getDayTypeIcon, getSecondParkOptions, getItemSlot, getTimeSlots, getLocationDisplay, getEventDescription } from '../data/displayHelpers.js'
 import TimelineEventCard from './TimelineEventCard.jsx'
 
 const GOOGLE_MAPS_SEARCH_URL = 'https://www.google.com/maps/search/?api=1&query='
@@ -122,6 +122,7 @@ function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, up
       theme={normalizedItem.theme}
       time={normalizedItem.time}
       label={label}
+      description={getEventDescription(normalizedItem)}
       backgroundStyle={backgroundStyle}
       menuUrl={menuUrl}
       bookingUrl={bookingUrl}
@@ -142,6 +143,7 @@ function renderGhostEvent({ suggestion, date, acceptSuggestion, dismissSuggestio
       theme={suggestion.theme}
       time={suggestion.time}
       label={suggestion.label}
+      description={suggestion.description}
       tags={suggestion.tags}
       infoUrl={suggestion.infoUrl}
       mapUrl={suggestion.mapUrl}

@@ -15,6 +15,7 @@ export default function TimelineEventCard({
   theme,
   time,
   label,
+  description,
   ghost = false,
   // Real event
   backgroundStyle,
@@ -39,6 +40,7 @@ export default function TimelineEventCard({
         <div className="event-text">
           {time && <span className="event-time">{formatTime(time)}</span>}
           <p>{label}</p>
+          {description && <small className="event-description">{description}</small>}
 
           {ghost ? (
             <>

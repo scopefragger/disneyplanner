@@ -95,16 +95,16 @@ export const DISNEY_HOTELS = [
 ]
 
 export const EVENT_TYPES = [
-  { value: 'Breakfast',        theme: 'dining',     requiresRestaurant: true  },
-  { value: 'Lunch',            theme: 'dining',     requiresRestaurant: true  },
-  { value: 'Dinner',           theme: 'dining',     requiresRestaurant: true  },
-  { value: 'Tea',              theme: 'dining',     requiresRestaurant: true  },
-  { value: 'Snack',            theme: 'dining',     requiresRestaurant: true  },
-  { value: 'Fireworks',        theme: 'fireworks',  requiresRestaurant: false },
-  { value: 'Parade',           theme: 'fireworks',  requiresRestaurant: false },
-  { value: 'Ride',             theme: 'ride',       requiresRestaurant: false },
-  { value: 'Character Meet',   theme: 'character',  requiresRestaurant: false },
-  { value: 'Pool Time',        theme: 'nature',     requiresRestaurant: false },
-  { value: 'Shopping',         theme: 'default',    requiresRestaurant: false },
-  { value: 'Travel Transfer',  theme: 'default',    requiresRestaurant: false }
+  { value: 'Breakfast',       theme: 'dining',    requiresRestaurant: true,  description: 'Morning meal at a Disney restaurant or café'               },
+  { value: 'Lunch',           theme: 'dining',    requiresRestaurant: true,  description: 'Midday dining experience in the parks or resort'            },
+  { value: 'Dinner',          theme: 'dining',    requiresRestaurant: true,  description: 'Evening meal — table service or quick service'              },
+  { value: 'Tea',             theme: 'dining',    requiresRestaurant: true,  description: 'Afternoon tea service with light bites and pastries'        },
+  { value: 'Snack',           theme: 'dining',    requiresRestaurant: true,  description: 'Quick bite — Mickey bars, Dole Whip, churros and more'      },
+  { value: 'Fireworks',       theme: 'fireworks', requiresRestaurant: false, description: 'Nighttime fireworks and projection spectacular'             },
+  { value: 'Parade',          theme: 'fireworks', requiresRestaurant: false, description: 'Character parade route through the park'                   },
+  { value: 'Ride',            theme: 'ride',      requiresRestaurant: false, description: 'A themed park attraction or thrill ride'                   },
+  { value: 'Character Meet',  theme: 'character', requiresRestaurant: false, description: 'Photo and autograph session with a Disney character'        },
+  { value: 'Pool Time',       theme: 'nature',    requiresRestaurant: false, description: 'Swimming and relaxing at a resort pool or water park'       },
+  { value: 'Shopping',        theme: 'default',   requiresRestaurant: false, description: 'Browse merchandise at Disney Springs or park gift shops'    },
+  { value: 'Travel Transfer', theme: 'default',   requiresRestaurant: false, description: 'Transfer between parks, resort, or airport'                },
 ]

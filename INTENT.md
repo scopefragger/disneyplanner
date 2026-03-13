@@ -3,6 +3,22 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-13T02:00:00Z — Add descriptions to all timeline event cards
+
+**What:**
+- `rideData.js`: added `RIDE_DESCRIPTIONS` (29 rides) and `getRideDescription()` helper
+- `restaurantMetadata.js`: added `RESTAURANT_DESCRIPTIONS` (~75 restaurants) and `getRestaurantDescription()` helper
+- `parkSuggestions.js`: added `description` field to all 9 static park suggestion entries
+- `tripOptions.js`: added `description` field to all 12 `EVENT_TYPES` entries (fallback for generic events)
+- `displayHelpers.js`: added `getEventDescription(normalizedItem)` — looks up ride → restaurant → event-type in priority order
+- `TimelineEventCard.jsx`: added `description` prop; renders `<small class="event-description">` below the label
+- `DayPlanSection.jsx`: passes `getEventDescription(normalizedItem)` to confirmed event cards; passes `suggestion.description` to ghost cards
+- `App.css`: added `.event-description` rule (0.72rem italic muted grey)
+
+**Why:** Every card item now shows a one-line description, making the timeline scannable without needing prior knowledge of Disney attractions.
+
+---
+
 ## 2026-03-13T01:00:00Z — Extract TimelineEventCard component
 
 **What:**

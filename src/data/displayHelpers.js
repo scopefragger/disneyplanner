@@ -1,6 +1,7 @@
 // Pure display and style helpers — no React / DOM dependencies (TD-035)
-import { DAY_TYPES, PARK_OPTIONS, SWIM_OPTIONS } from './tripOptions.js'
-import { RIDES_BY_PARK } from './rideData.js'
+import { DAY_TYPES, PARK_OPTIONS, SWIM_OPTIONS, EVENT_TYPES } from './tripOptions.js'
+import { RIDES_BY_PARK, getRideDescription } from './rideData.js'
+import { getRestaurantDescription } from './restaurantMetadata.js'
 import { IMG_BASE } from './constants.js'
 
 const DAY_TYPE_BACKGROUNDS = {
@@ -224,4 +225,20 @@ export function getTimeSlots(dayType) {
     { slot: 'night',     time: '9:00pm',   label: isPark ? 'Night shows' : 'Night' },
     { slot: 'latenight', time: 'Midnight', label: 'Late night' },
   ]
+}
+
+// ── Description lookup ────────────────────────────────────────────────────────
+// Returns a short description string for a confirmed event item, or null.
+export function getEventDescription(normalizedItem) {
+  if (normalizedItem.ride) {
+    const rideName = normalizedItem.ride.split('::').pop()
+    const rideDesc = getRideDescription(rideName)
+    if (rideDesc) return rideDesc
+  }
+  if (normalizedItem.restaurant) {
+    const restaurantDesc = getRestaurantDescription(normalizedItem.restaurant)
+    if (restaurantDesc) return restaurantDesc
+  }
+  const eventType = EVENT_TYPES.find(e => e.value === normalizedItem.type)
+  return eventType?.description ?? null
 }

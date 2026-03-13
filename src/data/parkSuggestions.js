@@ -9,6 +9,7 @@ export const PARK_SUGGESTIONS = {
   'Magic Kingdom': [
     {
       id: 'mk-friendship-faire', label: "Mickey's Magical Friendship Faire",
+      description: 'Live stage show at Cinderella Castle with Mickey, Minnie and friends',
       time: '10:30', type: 'Show', theme: 'character',
       tags: ['#character', '#castle', '#family'],
       infoUrl: `${DW}/entertainment/magic-kingdom/mickeys-magical-friendship-faire/`,
@@ -16,6 +17,7 @@ export const PARK_SUGGESTIONS = {
     },
     {
       id: 'mk-festival-fantasy', label: 'Festival of Fantasy Parade',
+      description: 'Spectacular afternoon parade with elaborate floats and beloved characters',
       time: '15:00', type: 'Parade', theme: 'default',
       tags: ['#parade', '#afternoon', '#mustdo'],
       infoUrl: `${DW}/entertainment/magic-kingdom/festival-of-fantasy-parade/`,
@@ -23,6 +25,7 @@ export const PARK_SUGGESTIONS = {
     },
     {
       id: 'mk-happily-ever-after', label: 'Happily Ever After Fireworks',
+      description: "Magic Kingdom's signature fireworks spectacular over Cinderella Castle",
       time: '21:00', type: 'Fireworks', theme: 'fireworks',
       tags: ['#fireworks', '#nighttime', '#mustdo'],
       infoUrl: `${DW}/entertainment/magic-kingdom/happily-ever-after/`,
@@ -32,6 +35,7 @@ export const PARK_SUGGESTIONS = {
   'EPCOT': [
     {
       id: 'ep-luminous', label: 'Luminous: The Symphony of Us',
+      description: 'Nighttime fireworks and light show on the World Showcase Lagoon',
       time: '21:00', type: 'Fireworks', theme: 'fireworks',
       tags: ['#fireworks', '#nighttime', '#worldshowcase'],
       infoUrl: `${DW}/entertainment/epcot/luminous-the-symphony-of-us/`,
@@ -41,6 +45,7 @@ export const PARK_SUGGESTIONS = {
   "Disney's Hollywood Studios": [
     {
       id: 'hs-indy', label: 'Indiana Jones Epic Stunt Spectacular',
+      description: 'Live stunt show recreating iconic scenes from the Indiana Jones films',
       time: '11:30', type: 'Show', theme: 'default',
       tags: ['#stunts', '#live', '#adventure'],
       infoUrl: `${DW}/entertainment/hollywood-studios/indiana-jones-epic-stunt-spectacular/`,
@@ -48,6 +53,7 @@ export const PARK_SUGGESTIONS = {
     },
     {
       id: 'hs-fantasmic', label: 'Fantasmic!',
+      description: 'Mickey battles Disney villains in an epic outdoor nighttime water spectacular',
       time: '21:00', type: 'Fireworks', theme: 'fireworks',
       tags: ['#nighttime', '#mustdo', '#spectacular'],
       infoUrl: `${DW}/entertainment/hollywood-studios/fantasmic/`,
@@ -55,6 +61,7 @@ export const PARK_SUGGESTIONS = {
     },
     {
       id: 'hs-galactic', label: 'Star Wars: A Galactic Spectacular',
+      description: 'Star Wars nighttime fireworks and projection show on the Hollywood Studios skyline',
       time: '21:30', type: 'Fireworks', theme: 'fireworks',
       tags: ['#starwars', '#fireworks', '#nighttime'],
       infoUrl: `${DW}/entertainment/hollywood-studios/star-wars-a-galactic-spectacular/`,
@@ -64,6 +71,7 @@ export const PARK_SUGGESTIONS = {
   "Disney's Animal Kingdom": [
     {
       id: 'ak-harambe', label: 'Harambe Wildlife Parti',
+      description: 'Lively interactive street party parade through Africa in Animal Kingdom',
       time: '17:00', type: 'Parade', theme: 'nature',
       tags: ['#parade', '#africa', '#interactive'],
       infoUrl: `${DW}/entertainment/animal-kingdom/harambe-wildlife-parti/`,
@@ -71,6 +79,7 @@ export const PARK_SUGGESTIONS = {
     },
     {
       id: 'ak-tree-awakening', label: 'Tree of Life Awakening',
+      description: 'The Tree of Life comes alive with projected animal spirits at dusk',
       time: '20:00', type: 'Show', theme: 'nature',
       tags: ['#nature', '#evening', '#magical'],
       infoUrl: `${DW}/entertainment/animal-kingdom/tree-of-life-awakening/`,

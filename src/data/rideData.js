@@ -74,12 +74,52 @@ export const RIDE_TAGS = {
   'DINOSAUR':                           ['thrill', 'dark ride', 'dinosaur', 'time travel', 'intense', 'indoor', 'bumpy', 'scary', 'moderate thrill', 'loud', 'action', 'jurassic'],
 }
 
+export const RIDE_DESCRIPTIONS = {
+  // Magic Kingdom
+  'TRON Lightcycle / Run':              'High-speed launch coaster through a neon-lit digital frontier',
+  'Seven Dwarfs Mine Train':            'Gentle family coaster through Snow White\'s glittering diamond mine',
+  'Space Mountain':                     'Classic indoor roller coaster through the darkness of outer space',
+  'Big Thunder Mountain Railroad':      'Wild mine train ride through haunted gold-rush hills',
+  'Pirates of the Caribbean':           'Boat ride through swashbuckling pirate scenes and battles',
+  'Haunted Mansion':                    'Doom buggies past 999 happy haunts in a ghost-filled manor',
+  "Peter Pan's Flight":                 'Soar over London and Neverland in a magical flying pirate ship',
+  "Tiana's Bayou Adventure":            'Log flume through Princess Tiana\'s enchanted Louisiana bayou',
+  'Jungle Cruise':                      'Boat tour with animatronic animals and punny skipper commentary',
+  // EPCOT
+  'Guardians of the Galaxy: Cosmic Rewind': 'Reverse-launch indoor coaster set to a cosmic classic mixtape',
+  'Test Track':                         'Design a concept car and race it through performance tests at 65mph',
+  'Frozen Ever After':                  'Gentle boat ride through Arendelle with Anna and Elsa',
+  "Remy's Ratatouille Adventure":       'Shrink to mouse-size and scurry through Gusteau\'s restaurant',
+  'Soarin Around the World':            'Hang-glider simulation over breathtaking landmarks around the world',
+  'Mission: SPACE':                     'Intense centrifuge-powered astronaut training simulator',
+  'Spaceship Earth':                    'Slow journey through the entire history of human communication',
+  // Hollywood Studios
+  'Star Wars: Rise of the Resistance':  'Immersive full-scale battle between the Resistance and First Order',
+  'Millennium Falcon: Smugglers Run':   'Pilot the Millennium Falcon on an interactive smuggling mission',
+  'Slinky Dog Dash':                    'Family coaster through Andy\'s backyard on a giant Slinky Dog',
+  'Tower of Terror':                    'Elevator plunges through a haunted Twilight Zone hotel',
+  "Rock 'n' Roller Coaster":            'High-speed indoor coaster with Aerosmith and multiple inversions',
+  "Mickey & Minnie's Runaway Railway":  'Trackless dark ride inside a chaotic Mickey Mouse cartoon short',
+  'Toy Story Mania':                    '4D interactive shooting gallery through Toy Story game boards',
+  // Animal Kingdom
+  'Avatar Flight of Passage':           'Banshee-riding simulation soaring over Pandora\'s bioluminescent world',
+  "Na'vi River Journey":                'Serene boat through the glowing Pandoran jungle at night',
+  'Expedition Everest':                 'Coaster up the Himalayas, then backwards — chased by a Yeti',
+  'Kilimanjaro Safaris':                'Open jeep safari past real African wildlife on the savanna',
+  'Kali River Rapids':                  'White-water raft ride down a rainforest river — get ready to get soaked',
+  'DINOSAUR':                           'Dark time-travel ride through the Cretaceous under dinosaur attack',
+}
+
 export function getRideUrl(ride) {
   return RIDE_URLS[ride] ?? null
 }
 
 export function getRideTags(ride) {
   return RIDE_TAGS[ride] ?? []
+}
+
+export function getRideDescription(ride) {
+  return RIDE_DESCRIPTIONS[ride] ?? null
 }
 
 import { IMG_BASE } from './constants.js'
