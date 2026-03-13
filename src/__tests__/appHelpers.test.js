@@ -196,24 +196,24 @@ describe('formatTime', () => {
 // ── buildEventLabel ──────────────────────────────────────────────────────────
 
 describe('buildEventLabel', () => {
-  it('formats ride with park', () => {
-    const label = buildEventLabel({ type: 'Ride', ride: 'Space Mountain', ridePark: 'Magic Kingdom', restaurant: '', note: '' })
-    expect(label).toBe('Ride: Space Mountain (Magic Kingdom)')
+  it('formats ride with park prefix — strips to ride name only', () => {
+    const label = buildEventLabel({ type: 'Ride', ride: 'Magic Kingdom::Space Mountain', ridePark: 'Magic Kingdom', restaurant: '', note: '' })
+    expect(label).toBe('Space Mountain')
   })
 
-  it('formats ride without park', () => {
+  it('formats ride without park prefix — returns ride name as-is', () => {
     const label = buildEventLabel({ type: 'Ride', ride: 'Space Mountain', ridePark: '', restaurant: '', note: '' })
-    expect(label).toBe('Ride: Space Mountain')
+    expect(label).toBe('Space Mountain')
   })
 
-  it('formats restaurant as "Type at Restaurant"', () => {
+  it('formats restaurant — returns restaurant name only (badge shows meal type)', () => {
     const label = buildEventLabel({ type: 'Dinner', restaurant: 'Be Our Guest', ride: '', note: '' })
-    expect(label).toBe('Dinner at Be Our Guest')
+    expect(label).toBe('Be Our Guest')
   })
 
-  it('formats note as "Type: Note"', () => {
+  it('formats note — strips type prefix, returns note text only', () => {
     const label = buildEventLabel({ type: 'Fireworks', restaurant: '', ride: '', note: 'Happily Ever After' })
-    expect(label).toBe('Fireworks: Happily Ever After')
+    expect(label).toBe('Happily Ever After')
   })
 
   it('returns the type alone when no ride/restaurant/note', () => {

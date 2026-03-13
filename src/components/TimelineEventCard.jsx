@@ -3,11 +3,11 @@ import { formatTime } from '../utils.js'
 /**
  * Unified card for both confirmed events and ghost suggestions in the day timeline.
  *
- * Real event props:  theme, time, label, backgroundStyle,
+ * Real event props:  theme, time, label, description, eventType, backgroundStyle,
  *                    menuUrl, bookingUrl, viewInfoUrl, mapUrl, hasRestaurantLinks,
  *                    onEdit, onDelete
  *
- * Ghost / suggestion props: ghost=true, theme, time, label,
+ * Ghost / suggestion props: ghost=true, theme, time, label, description, eventType,
  *                            tags, infoUrl, mapUrl,
  *                            onAccept, onDismiss
  */
@@ -16,6 +16,7 @@ export default function TimelineEventCard({
   time,
   label,
   description,
+  eventType,
   ghost = false,
   // Real event
   backgroundStyle,
@@ -38,6 +39,7 @@ export default function TimelineEventCard({
     <div className="timeline-event">
       <div className={contentClass} data-theme={theme} style={backgroundStyle}>
         <div className="event-text">
+          {eventType && <span className="event-type-badge">{eventType.toUpperCase()}</span>}
           {time && <span className="event-time">{formatTime(time)}</span>}
           <p>{label}</p>
           {description && <small className="event-description">{description}</small>}

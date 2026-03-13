@@ -159,17 +159,17 @@ export function normalizeEventItem(item) {
 }
 
 export function buildEventLabel(item) {
-  // Ride with optional park qualifier
+  // Ride: strip park prefix — "Park::Ride Name" → "Ride Name"
   if (item.type === 'Ride' && item.ride) {
-    return `Ride: ${item.ride}${item.ridePark ? ` (${item.ridePark})` : ''}`
+    return item.ride.includes('::') ? item.ride.split('::').pop() : item.ride
   }
-  // Dining at a named restaurant
+  // Dining: show restaurant name — type badge provides meal context
   if (item.type && item.restaurant) {
-    return `${item.type} at ${item.restaurant}`
+    return item.restaurant
   }
-  // Typed event with a free-text note
+  // Typed event with a free-text note: strip type prefix
   if (item.type && item.note) {
-    return `${item.type}: ${item.note}`
+    return item.note
   }
   // Type only — no extra detail
   if (item.type) return item.type

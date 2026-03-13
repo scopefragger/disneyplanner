@@ -106,7 +106,7 @@ function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, up
   const rideImage = RIDE_IMAGES[rideName] || ''
   const hasRestaurantLinks = Boolean(normalizedItem.type !== 'Ride' && normalizedItem.restaurant && (menuUrl || bookingUrl))
   const backgroundStyle = rideImage
-    ? { backgroundImage: `linear-gradient(to bottom right, rgba(255,255,255,1) 30%, rgba(255,255,255,0.6) 65%, rgba(255,255,255,0) 100%), url(${rideImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' }
+    ? { backgroundImage: `linear-gradient(to bottom right, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.72) 45%, rgba(255,255,255,0.15) 100%), url(${rideImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' }
     : undefined
   const isEditing = editingDayItem?.date === date && editingDayItem?.index === item._idx
   if (isEditing) {
@@ -123,6 +123,7 @@ function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, up
       time={normalizedItem.time}
       label={label}
       description={getEventDescription(normalizedItem)}
+      eventType={normalizedItem.type}
       backgroundStyle={backgroundStyle}
       menuUrl={menuUrl}
       bookingUrl={bookingUrl}
@@ -144,6 +145,7 @@ function renderGhostEvent({ suggestion, date, acceptSuggestion, dismissSuggestio
       time={suggestion.time}
       label={suggestion.label}
       description={suggestion.description}
+      eventType={suggestion.type}
       tags={suggestion.tags}
       infoUrl={suggestion.infoUrl}
       mapUrl={suggestion.mapUrl}

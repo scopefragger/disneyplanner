@@ -3,6 +3,17 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-13T22:30:00Z — Redesign timeline event cards
+
+**What:**
+- `planHelpers.js` (`buildEventLabel`): strip type prefix and park name from labels — rides show just the attraction name, dining shows just the restaurant name, notes show just the note text
+- `TimelineEventCard.jsx`: add `eventType` prop; render a small coloured type badge (RIDE / DINNER / FIREWORKS etc.) above the card title
+- `DayPlanSection.jsx`: pass `eventType={normalizedItem.type}` for real events and `eventType={suggestion.type}` for ghost suggestions; reduce white gradient overlay on ride background images so more of the photo shows through
+- `App.css`: add `.event-type-badge` rule using `color-mix` on `--event-theme-color`; replace blue pill link buttons with small inline text links
+- `appHelpers.test.js`: update `buildEventLabel` tests to match new label format
+
+**Why:** Cards were visually cluttered — verbose labels ("Ride: Millennium Falcon: Smugglers Run (Disney's Hollywood Studios)") and large blue pill buttons dominated each card. The redesign separates type context into a coloured badge and lets the attraction name stand as the hero text, with links becoming subtle inline text.
+
 ## 2026-03-13T02:00:00Z — Add descriptions to all timeline event cards
 
 **What:**
