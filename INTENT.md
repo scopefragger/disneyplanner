@@ -3,6 +3,19 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-13T00:00:00Z — Add PWA support for Android installation
+
+**What:**
+- Installed `vite-plugin-pwa` (devDependency v0.21.x) — auto-generates service worker via Workbox
+- Created `public/images/app-icon.svg` — square 512×512 castle icon on Disney blue background
+- Updated `vite.config.js` — added `VitePWA()` plugin with manifest config (name, start_url `/disneyplanner/`, standalone display, SVG icon) and Workbox pre-cache for all assets
+- Updated `index.html` — added `theme-color`, `description`, `mobile-web-app-capable`, `apple-mobile-web-app-*` meta tags and `apple-touch-icon` link
+- Build now outputs `dist/manifest.webmanifest`, `dist/sw.js`, `dist/registerSW.js`, and `dist/workbox-*.js`
+
+**Why:** User wants the app installable on Android as a home screen app. PWA allows Chrome on Android to prompt "Add to Home Screen"; installed app launches full-screen with no browser chrome and works offline (all state in localStorage).
+
+---
+
 ## 2026-03-09T08:40:00Z — Pay down all 38 remaining tech debt items
 
 **What:**

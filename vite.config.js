@@ -1,10 +1,41 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 
 const base = process.env.BASE_PATH || '/disneyplanner/'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['images/**/*'],
+      manifest: {
+        name: 'Disney Holiday Planner',
+        short_name: 'Disney Planner',
+        description: 'Plan and manage your Walt Disney World holidays',
+        theme_color: '#003b78',
+        background_color: '#f5f9ff',
+        display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/disneyplanner/',
+        scope: '/disneyplanner/',
+        icons: [
+          {
+            src: 'images/app-icon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,jpg,png,webmanifest}'],
+        navigateFallback: '/disneyplanner/',
+        navigateFallbackDenylist: [/^\/_/]
+      }
+    })
+  ],
   base,
   test: {
     environment: 'jsdom',
