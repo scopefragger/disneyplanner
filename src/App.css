@@ -1125,7 +1125,7 @@ textarea:focus {
 .event-description {
   display: block;
   font-size: 0.72rem;
-  color: #6b7280;
+  color: rgba(29, 42, 68, 0.55);
   font-style: italic;
   margin-top: 0.15rem;
   margin-bottom: 0.25rem;
@@ -1232,12 +1232,12 @@ textarea:focus {
 }
 
 .event-edit-btn {
-  background: #f5c400;
+  background: var(--dw-sun);
   color: #1a1a00;
 }
 
 .event-edit-btn:hover {
-  background: #e0b300;
+  background: #f0c545;
 }
 
 .event-delete-btn {
