@@ -3,6 +3,17 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-13T23:30:00Z — Add brand and design guide
+
+**What:**
+- Created `DESIGN.md` at the project root — a full brand and design system guide
+
+**Why:**
+- Establish a consistent design language for colours, typography, spacing, shape, components, motion, and imagery
+- Acts as a single source of truth for all future visual decisions and artwork
+
+---
+
 ## 2026-03-13T23:00:00Z — Improve day card header UX
 
 **What:**
