@@ -106,7 +106,7 @@ function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, up
   const rideImage = RIDE_IMAGES[rideName] || ''
   const hasRestaurantLinks = Boolean(normalizedItem.type !== 'Ride' && normalizedItem.restaurant && (menuUrl || bookingUrl))
   const backgroundStyle = rideImage
-    ? { backgroundImage: `linear-gradient(to bottom right, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.72) 45%, rgba(255,255,255,0.15) 100%), url(${rideImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' }
+    ? { backgroundImage: `linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 55%, rgba(255,255,255,0.4) 80%, rgba(255,255,255,0) 100%), url(${rideImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' }
     : undefined
   const isEditing = editingDayItem?.date === date && editingDayItem?.index === item._idx
   if (isEditing) {
@@ -168,7 +168,8 @@ function renderDayBadges({ dayPlan, date, clearDayType, clearPark, clearSwimSpot
           type="button"
           className="day-type-badge"
           onClick={() => clearDayType(date)}
-          title="Remove day type"
+          title={`Remove day type: ${dayPlan.dayType}`}
+          aria-label={`Remove day type: ${dayPlan.dayType}`}
         >
           <img src={getDayTypeIcon(dayPlan.dayType)} alt={dayPlan.dayType} />
         </button>
@@ -178,7 +179,8 @@ function renderDayBadges({ dayPlan, date, clearDayType, clearPark, clearSwimSpot
           type="button"
           className="day-type-badge"
           onClick={clearLocation}
-          title={`Remove ${locationDisplay.label}`}
+          title={`Remove: ${locationDisplay.label}`}
+          aria-label={`Remove: ${locationDisplay.label}`}
         >
           <img src={locationDisplay.icon} alt={locationDisplay.label} />
         </button>
@@ -196,32 +198,20 @@ function renderDaySummaryPills({ dayPlan, dayTypeChipColor, locationDisplay }) {
       : 'Choose location'
   return (
     <div className="day-summary-group">
-      <span
-        className="day-summary-pill day-summary-type"
-        style={{ '--chip-color': dayTypeChipColor }}
-      >
-        {hashtagLabel(dayPlan.dayType)}
+      <span className="day-summary-pill day-summary-type" style={{ '--chip-color': dayTypeChipColor }}>
+        {dayPlan.dayType}
       </span>
       {dayPlan.dayType === 'Park' && dayPlan.parkHop && (
-        <span
-          className="day-summary-pill day-summary-type"
-          style={{ '--chip-color': dayTypeChipColor }}
-        >
-          {hashtagLabel('ParkHop')}
+        <span className="day-summary-pill day-summary-type" style={{ '--chip-color': dayTypeChipColor }}>
+          Park Hop
         </span>
       )}
-      <span
-        className="day-summary-pill day-summary-location"
-        style={{ '--chip-color': dayTypeChipColor }}
-      >
-        {hashtagLabel(locationText)}
+      <span className="day-summary-pill day-summary-location" style={{ '--chip-color': dayTypeChipColor }}>
+        {locationText}
       </span>
       {dayPlan.dayType === 'Park' && dayPlan.parkHop && (
-        <span
-          className="day-summary-pill day-summary-location"
-          style={{ '--chip-color': dayTypeChipColor }}
-        >
-          {hashtagLabel(dayPlan.secondPark || 'Choose second park')}
+        <span className="day-summary-pill day-summary-location" style={{ '--chip-color': dayTypeChipColor }}>
+          {dayPlan.secondPark || 'Choose second park'}
         </span>
       )}
     </div>
@@ -320,7 +310,7 @@ export default function DayPlanSection({
   return (
     <section className="card card-wide">
       <div className="card-title-row day-header">
-        <h2>Daily Plan by Date</h2>
+        <h2>Daily Plan</h2>
         <div className="day-nav-arrows">
           <button disabled={activeDay === 0} onClick={() => setActiveDay(d => d - 1)}>←</button>
           <span>Day {activeDay + 1} of {tripDates.length || 0}</span>
@@ -372,16 +362,18 @@ export default function DayPlanSection({
           </div>
 
           <div className="park-hop-dock">
+            {dayPlan.dayType === 'Park' && (
+              <button
+                type="button"
+                className={`park-hop-btn${dayPlan.parkHop ? ' park-hop-active' : ''}`}
+                onClick={() => toggleParkHop(date)}
+              >
+                {dayPlan.parkHop ? '✓ Park hop on' : '+ Park hop'}
+              </button>
+            )}
             <button
               type="button"
-              className={dayPlan.dayType === 'Park' ? 'park-hop-btn' : 'park-hop-btn disabled'}
-              onClick={() => toggleParkHop(date)}
-            >
-              {dayPlan.parkHop ? 'Remove park hop' : 'Park hop'}
-            </button>
-            <button
-              type="button"
-              className="park-hop-btn reset-day-btn"
+              className="reset-day-btn"
               onClick={() => resetDay(date)}
             >
               Reset day

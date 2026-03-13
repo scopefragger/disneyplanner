@@ -3,6 +3,17 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-13T23:00:00Z — Improve day card header UX
+
+**What:**
+- `DayPlanSection.jsx`: changed heading from "Daily Plan by Date" to "Daily Plan"
+- `DayPlanSection.jsx` (`renderDaySummaryPills`): replaced `hashtagLabel()` calls with plain text — pills now show "Park" and "Disney's Hollywood Studios" instead of "#Park" and "#Disney'sHollywoodStudios"
+- `DayPlanSection.jsx` (`renderDayBadges`): added descriptive `title` and `aria-label` to badge buttons so their remove action is clear
+- `DayPlanSection.jsx` (park-hop-dock): "Park hop" now only renders on Park days, shows state ("+ Park hop" / "✓ Park hop on"), uses `park-hop-active` class; "Reset day" is now a separate text-only button
+- `App.css`: `.park-hop-btn` changed to outlined ghost pill with green active state; `.reset-day-btn` changed to text-only link; `.day-type-badge::after` adds coral `×` indicator on hover
+
+**Why:** The section had four UX problems: generic heading, unreadable hashtag labels (joined words), two different-weight actions looking identical, and icon buttons with no visible remove affordance.
+
 ## 2026-03-13T22:30:00Z — Redesign timeline event cards
 
 **What:**
