@@ -3,6 +3,12 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T10:25:00Z — Increase card height to 100px to prevent link clipping
+
+**What:** Increased all timeline card heights from 88px to 100px (swipe-reveal-wrap, ghost-event-content)
+
+**Why:** The bottom link row was visually clipped at 88px; 100px gives the extra clearance needed
+
 ## 2026-03-14T10:15:00Z — True fixed-height cards with pinned links
 
 **What:**
