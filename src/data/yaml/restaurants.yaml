@@ -1,0 +1,540 @@
+# Walt Disney World restaurant reference data
+# Edit this file to add/update/remove restaurants
+# Each entry: park, menuUrl, bookingUrl, heroImage, description, tags
+
+Be Our Guest Restaurant:
+  park: Magic Kingdom
+  menuUrl: "https://www.disneyworld.co.uk/dining/magic-kingdom/be-our-guest-restaurant/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/be-our-gu"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/magic-kingdom/be-our-guest-restaurant/be-our-guest-restaurant-gallery04.jpg?1766401750331"
+  description: "French dining inside Beast's enchanted castle in Fantasyland"
+  tags: [table service, character, french, beauty and the beast, fine dining, themed, signature, indoor, romantic, prix fixe, breakfast, lunch, dinner, character dining]
+
+The Crystal Palace:
+  park: Magic Kingdom
+  menuUrl: "https://www.disneyworld.co.uk/dining/magic-kingdom/crystal-palace/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/crystal-p"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/crystal-palace/Crystal_Palace_Magic_Kingdom_Hero-16x9.jpg?2024-12-11T15:07:10+00:00"
+  description: "Winnie the Pooh character buffet in a sunlit Victorian conservatory"
+  tags: [buffet, character, family style, winnie the pooh, all you can eat, breakfast, lunch, dinner, kids, themed, indoor, character dining, american]
+
+Liberty Tree Tavern:
+  park: Magic Kingdom
+  menuUrl: "https://www.disneyworld.co.uk/dining/magic-kingdom/liberty-tree-tavern/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/liberty-t"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/magic-kingdom/liberty-tree-tavern/liberty-tree-tavern-00.jpg?1753784334709"
+  description: "Colonial family dinner with turkey, pot roast and hearty stuffing"
+  tags: [family style, american, table service, thanksgiving, comfort food, indoor, themed, lunch, dinner, kids menu, colonial, turkey, moderate]
+
+The Diamond Horseshoe:
+  park: Magic Kingdom
+  menuUrl: "https://www.disneyworld.co.uk/dining/magic-kingdom/diamond-horseshoe/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/diamond-h"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/diamond-horseshoe/Diamond-Horseshoe-interior-wide-16x9.jpg?2025-03-18T17:46:06+00:00"
+  description: "Quick-service western saloon with platters of American comfort food"
+  tags: [quick service, american, western, casual, indoor, lunch, dinner, budget, kids menu, sandwiches, cowboy]
+
+Jungle Navigation Co. LTD Skipper Canteen:
+  park: Magic Kingdom
+  menuUrl: "https://www.disneyworld.co.uk/dining/magic-kingdom/jungle-navigation-skipper-canteen/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/jungle-na"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/jungle-skipper-canteen/WDW_MK_JSC_TastesLikeChickenBecauseItis_STYLIZED_083024_0853_CJ-16x9.jpg?2024-10-30T14:55:52+00:00"
+  description: "Quirky sit-down meals in the Jungle Cruise skipper's headquarters"
+  tags: [table service, american, jungle cruise, themed, lunch, dinner, indoor, quirky, adventure, moderate, humorous]
+
+The Plaza Restaurant:
+  park: Magic Kingdom
+  menuUrl: "https://www.disneyworld.co.uk/dining/magic-kingdom/plaza-restaurant/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/plaza-res"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/magic-kingdom/plaza-restaurant/plaza-restaurant-00.jpg?1766401774929"
+  description: "Classic American sandwiches and ice cream sundaes on Main Street"
+  tags: [table service, american, lunch, dinner, indoor, ice cream, dessert, casual, moderate, milkshakes, classic]
+
+Columbia Harbour House:
+  park: Magic Kingdom
+  menuUrl: "https://www.disneyworld.co.uk/dining/magic-kingdom/columbia-harbour-house/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/columbia-harbour-house/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/magic-kingdom/columbia-harbour-house/columbia-harbour-house-gallery06.jpg?1734546969951"
+  description: "Quick-service seafood and sandwiches in a colonial harbour setting"
+  tags: [quick service, seafood, american, lunch, dinner, indoor, counter service, budget, fish, new england, colonial]
+
+Space 220 Restaurant:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/space-220/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/space-220"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/space-220/0324ZO_0259KP_xak-16x9.jpg?2022-06-23T22:02:59+00:00"
+  description: "Futuristic fine dining 220 miles above Earth with stunning space views"
+  tags: [table service, american, fine dining, space, themed, immersive, signature, dinner, lunch, prix fixe, futuristic, sci-fi, special occasion, indoor, unique]
+
+Le Cellier Steakhouse:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/le-cellier-steakhouse/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/le-cellie"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/le-cellier/WDW_EC_LeCellier_DurocPorkChop-WithSauce_STYLIZED_102324_9091_SN-16x9.jpg?2025-03-11T15:44:03+00:00"
+  description: "Canadian-themed steakhouse in the Canada Pavilion World Showcase"
+  tags: [table service, steakhouse, fine dining, canadian, beef, wine, indoor, signature, dinner, lunch, romantic, upscale, a la carte, pretzel bread]
+
+Chefs de France:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/chefs-de-france/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/chefs-de-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/epcot/chefs-de-france/chefs-de-france-gallery07.jpg?1763972943075"
+  description: "Classic Parisian brasserie in the France Pavilion"
+  tags: [table service, french, brasserie, indoor, european, dinner, lunch, wine, moderate, a la carte, classic, paris, casual]
+
+Monsieur Paul:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/monsieur-paul/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/monsieur-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/epcot/monsieur-paul/monsieur-paul-12-16x9.jpg?1753784311354"
+  description: "Upscale French fine dining above Chefs de France"
+  tags: [table service, french, fine dining, signature, dinner, wine, romantic, upscale, indoor, prix fixe, elegant, special occasion, a la carte]
+
+Rose and Crown Dining Room:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/rose-and-crown-dining-room/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/rose-and-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/epcot/rose-and-crown-pub-and-dining-room/rose-and-crown-pub-and-dining-room-gallery08.jpg?1766153776100"
+  description: "Traditional British pub food and ales in the UK Pavilion"
+  tags: [table service, british, pub, fish and chips, outdoor, waterfront, beer, indoor, lunch, dinner, casual, informal, fireworks viewing]
+
+Spice Road Table:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/spice-road-table/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/spice-roa"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/disney-world/dining/epcot/spice-road-table/WDW-Epcot-SpiceRoadTable-HummusFries-16x9.jpg?1753784303357"
+  description: "Moroccan-inspired tapas with views over World Showcase Lagoon"
+  tags: [table service, mediterranean, outdoor, waterfront, tapas, small plates, lunch, dinner, casual, drinks, fireworks viewing, appetizers]
+
+Via Napoli Ristorante e Pizzeria:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/via-napoli/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/via-napol"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/epcot/via-napoli/via-napoli-00.jpg?1753784297313"
+  description: "Authentic Neapolitan wood-fired pizza in the Italy Pavilion"
+  tags: [table service, italian, pizza, family style, indoor, wood-fired, lunch, dinner, casual, kids menu, moderate, pasta, sharing]
+
+Tutto Italia Ristorante:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/tutto-italia-ristorante/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/tutto-ita"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/epcot/tutto-italia-ristorante/tutto-italia-ristorante-gallery02.jpg?1753784312689"
+  description: "Full-service Italian dining in the Italy Pavilion World Showcase"
+  tags: [table service, italian, indoor, lunch, dinner, pasta, wine, elegant, moderate, a la carte, classic, european]
+
+Biergarten Restaurant:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/biergarten-restaurant/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/biergarte"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/epcot/biergarten-restaurant/biergarten-restaurant-gallery03.jpg?1762436418130"
+  description: "German all-you-can-eat buffet with live oompah band entertainment"
+  tags: [buffet, german, family style, entertainment, live music, indoor, lunch, dinner, beer, all you can eat, festive, communal, oktoberfest]
+
+Teppan Edo:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/teppan-edo/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/teppan-ed"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/epcot/teppan-edo/teppan-edo-00.jpg?1755537586562"
+  description: "Japanese teppanyaki with chefs cooking theatrically at your table"
+  tags: [table service, japanese, hibachi, teppanyaki, communal dining, interactive, indoor, dinner, lunch, entertaining, fun, shared tables, show cooking]
+
+"Shiki-Sai: Sushi Izakaya":
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/shiki-sai-izakaya-and-sushi/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/shiki-sai"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/shiki-sai-izakaya-and-sushi/1-Sushi-Menu-Grand-View-2-SH-16x9.jpg?2023-07-12T16:50:05+00:00"
+  description: "Modern Japanese sushi and small plates in the Japan Pavilion"
+  tags: [table service, japanese, sushi, izakaya, sake, indoor, dinner, lunch, asian, modern, a la carte, sake, noodles]
+
+Coral Reef Restaurant:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/coral-reef-restaurant/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/coral-ree"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/coral-reef/WDW_EC_CoralReef_MahiMahi_STYLIZED_040224_1597_KE-16x9.jpg?2024-05-09T05:04:04+00:00"
+  description: "Seafood dining next to The Seas with Nemo aquarium"
+  tags: [table service, seafood, aquarium, underwater, indoor, dinner, lunch, themed, moderate, unique, family friendly, american, fish]
+
+Garden Grill Restaurant:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/garden-grill-restaurant/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/garden-gr"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/entertainment/meet-greet/Garden_Grill_Epcot_204-Edit-16x9.jpg?2022-09-27T17:23:54+00:00"
+  description: "Rotating character restaurant above The Land pavilion"
+  tags: [character, family style, table service, american, rotating, indoor, breakfast, lunch, dinner, chip and dale, character dining, all you can eat, unique]
+
+Akershus Royal Banquet Hall:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/akershus-royal-banquet-hall/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/akershus-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/epcot/akershus-royal-banquet-hall/akershus-royal-banquet-hall-07.jpg?1753784307530"
+  description: "Norwegian buffet with Disney princess character dining"
+  tags: [character, buffet, norwegian, princess, family style, breakfast, lunch, dinner, character dining, themed, kids, fairy tale, all you can eat]
+
+San Angel Inn Restaurante:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/san-angel-inn-restaurante/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/san-angel"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/epcot/san-angel-inn-restaurante/san-angel-inn-restaurante-gallery07.jpg?1753784316563"
+  description: "Atmospheric Mexican dining inside the Gran Fiesta Tour building"
+  tags: [table service, mexican, indoor, romantic, atmospheric, dinner, lunch, dim lighting, waterfront, margaritas, tequila, moderate]
+
+La Hacienda de San Angel:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/hacienda-de-san-angel/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/hacienda-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/epcot/la-hacienda-de-san-angel/hacienda-de-san-angel-00.jpg?1763042848153"
+  description: "Mexican cuisine with World Showcase Lagoon and fireworks views"
+  tags: [table service, mexican, waterfront, outdoor, dinner, margaritas, drinks, casual, festive, tequila, fireworks viewing, lake view]
+
+Regal Eagle Smokehouse:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/regal-eagle-smokehouse/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/regal-eagle-smokehouse/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/regal-eagle/WDW_EC_RegalEagle_Brisket-Sandwhich-16x9.jpg?2024-12-10T19:57:10+00:00"
+  description: "American BBQ smokehouse in the American Adventure pavilion"
+  tags: [quick service, bbq, american, outdoor, casual, counter service, lunch, dinner, ribs, pulled pork, budget, smokehouse]
+
+Connections Eatery:
+  park: EPCOT
+  menuUrl: "https://www.disneyworld.co.uk/dining/epcot/connections-eatery/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/connections-eatery/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/connections-eatery/WDW_EPCOT_ConnectionsEatery_0421ZO_0516DR-16x9.jpg?2022-06-03T16:26:18+00:00"
+  description: "International street food in a modern communal dining hub"
+  tags: [quick service, american, indoor, casual, budget, counter service, breakfast, lunch, dinner, fast food, modern, options]
+
+Sci-Fi Dine-In Theater Restaurant:
+  park: "Disney's Hollywood Studios"
+  menuUrl: "https://www.disneyworld.co.uk/dining/hollywood-studios/sci-fi-dine-in-theater/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/sci-fi-di"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/hollywood-studios/sci-fi-dine-in-theater/sci-fi-dine-in-theater-gallery02.jpg?1753784321148"
+  description: "Burgers and milkshakes in drive-in cars under a B-movie sky"
+  tags: [table service, american, retro, drive-in, themed, indoor, dinner, lunch, fun, unique, nostalgic, milkshakes, burgers, 50s]
+
+Docking Bay 7 Food and Cargo:
+  park: "Disney's Hollywood Studios"
+  menuUrl: "https://www.disneyworld.co.uk/dining/hollywood-studios/docking-bay-7-food-and-cargo/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/docking-bay-7-food-and-cargo/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/disneyland/dining/disneyland/docking-bay-7-food-and-cargo/docking-bay-guests-food-16x9.jpg?1709157710496"
+  description: "Galactic quick-service food in Star Wars: Galaxy's Edge"
+  tags: [quick service, star wars, counter service, themed, lunch, dinner, casual, outdoor, budget, galactic, sci-fi, fun]
+
+Ronto Roasters:
+  park: "Disney's Hollywood Studios"
+  menuUrl: "https://www.disneyworld.co.uk/dining/hollywood-studios/ronto-roasters/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/ronto-roasters/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/disney-world/dining/hollywood-studios/ronto-roasters/rontos-roasters-16x9.jpg?1704796204083"
+  description: "Street-food wraps cooked by a podracer engine in Galaxy's Edge"
+  tags: [quick service, star wars, wraps, counter service, outdoor, snack, themed, budget, galactic, fast, lunch, dinner]
+
+Hollywood and Vine:
+  park: "Disney's Hollywood Studios"
+  menuUrl: "https://www.disneyworld.co.uk/dining/hollywood-studios/hollywood-and-vine/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/hollywood"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/entertainment/meet-greet/Silverscreen-4-1-16x9.jpg?2022-09-23T22:23:28+00:00"
+  description: "Disney Junior character buffet in a Hollywood diner setting"
+  tags: [buffet, character, family style, american, breakfast, lunch, dinner, character dining, all you can eat, indoor, kids, festive]
+
+ABC Commissary:
+  park: "Disney's Hollywood Studios"
+  menuUrl: "https://www.disneyworld.co.uk/dining/hollywood-studios/abc-commissary/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/abc-commissary/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/hollywood-studios/abc-commissary/abc-commissary-gallery00.jpg?1770414060544"
+  description: "Casual quick-service American food in a studio canteen"
+  tags: [quick service, american, counter service, indoor, casual, budget, lunch, dinner, fast food, burgers, sandwiches]
+
+Backlot Express:
+  park: "Disney's Hollywood Studios"
+  menuUrl: "https://www.disneyworld.co.uk/dining/hollywood-studios/backlot-express/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/backlot-express/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/backlot-express/DHS_BacklotExpress_SmokedBBQPulledPorkBurger-16x9.jpg?2022-04-11T13:13:41+00:00"
+  description: "Counter-service burgers and wraps near Star Wars: Galaxy's Edge"
+  tags: [quick service, american, counter service, outdoor, casual, budget, lunch, dinner, burgers, themed, fast food]
+
+Tiffins Restaurant:
+  park: "Disney's Animal Kingdom"
+  menuUrl: "https://www.disneyworld.co.uk/dining/animal-kingdom/tiffins/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/tiffins/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/tiffins/WDW_DAK_Tiffins_SurfAndTurf-16x9.jpg?2025-03-18T22:31:36+00:00"
+  description: "Globally-inspired fine dining celebrating world travel and exploration"
+  tags: [table service, fine dining, african, asian, indian, signature, dinner, lunch, artwork, indoor, special occasion, upscale, wine, elegant, eclectic]
+
+Yak and Yeti Restaurant:
+  park: "Disney's Animal Kingdom"
+  menuUrl: "https://www.disneyworld.co.uk/dining/animal-kingdom/yak-and-yeti-restaurant/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/yak-and-y"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/animal-kingdom/yak-and-yeti-restaurant/yak-and-yeti-restaurant-00.jpg?1753784294991"
+  description: "Pan-Asian cuisine in a richly decorated Himalayan lodge"
+  tags: [table service, asian, pan-asian, indoor, casual, moderate, dinner, lunch, himalayan, themed, kids menu, shared, noodles]
+
+Tusker House Restaurant:
+  park: "Disney's Animal Kingdom"
+  menuUrl: "https://www.disneyworld.co.uk/dining/animal-kingdom/tusker-house-restaurant/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/tusker-ho"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/0518ZP_0030MS-16x9.jpg?2022-03-10T19:16:34+00:00"
+  description: "African-style character buffet with Donald Duck and friends"
+  tags: [buffet, character, family style, african, breakfast, lunch, dinner, character dining, all you can eat, donald duck, themed, kids, festive]
+
+Flame Tree Barbecue:
+  park: "Disney's Animal Kingdom"
+  menuUrl: "https://www.disneyworld.co.uk/dining/animal-kingdom/flame-tree-barbecue/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/flame-tree-barbecue/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/flame-tree-barbecue/WDW_DAK_FlameTreeBarbeque_RibsChickenAndPulledPork_Stylized_230306_FL1_-4210-1-16x9.jpg?2025-07-03T17:22:04+00:00"
+  description: "Outdoor BBQ counter with shaded waterfront seating"
+  tags: [quick service, bbq, american, outdoor, counter service, budget, lunch, dinner, waterfront, casual, ribs, pulled pork]
+
+Restaurantosaurus:
+  park: "Disney's Animal Kingdom"
+  menuUrl: "https://www.disneyworld.co.uk/dining/animal-kingdom/restaurantosaurus/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/restaurantosaurus/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/45/45/75/dam/wdpro-assets/things-to-do/dining/magic-kingdom/cheshire-cafe/cheshire-cafe-cheshire-cat-tails-1x1.jpg?1704798291171"
+  description: "Quick-service burgers in a palaeontology dig site setting"
+  tags: [quick service, american, counter service, indoor, casual, budget, lunch, dinner, dinosaur, themed, burgers, kids]
+
+Nomad Lounge:
+  park: "Disney's Animal Kingdom"
+  menuUrl: "https://www.disneyworld.co.uk/dining/animal-kingdom/nomad-lounge/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/nomad-lounge/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/animal-kingdom/nomad-lounge/nomad-lounge-03.jpg?1714527013701"
+  description: "Craft cocktails and small plates beside Tiffins with river views"
+  tags: [bar, lounge, cocktails, drinks, african, small plates, appetizers, indoor, casual, adults, relaxed, atmosphere, sharing]
+
+The BOATHOUSE:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/disney-springs/the-boathouse/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/the-boathouse/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/media/layout/syndicated/prod/assets/logos/wdw.svg"
+  description: "Upscale seafood and steaks on the water with vintage boat rides"
+  tags: [table service, seafood, american, waterfront, outdoor, casual, dinner, lunch, nautical, moderate, bar, fresh fish, steaks]
+
+Wine Bar George:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/disney-springs/wine-bar-george/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/wine-bar-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/disney-world/dining/disney-springs/wine-bar-george/exterior-16x9.jpg?1759496351767"
+  description: "Master Sommelier's curated wine bar with charcuterie and tapas"
+  tags: [bar, wine, tapas, small plates, indoor, adults, casual, drinks, cheese, charcuterie, sophisticated, date night, sharing]
+
+Morimoto Asia:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/disney-springs/morimoto-asia/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/morimoto-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/downtown-disney/morimoto-asia/morimoto-family-16x9.jpg?1724074013251"
+  description: "Iron Chef Morimoto's pan-Asian restaurant on the waterfront"
+  tags: [table service, asian, japanese, pan-asian, fine dining, dinner, lunch, indoor, elegant, sushi, dim sum, upscale, sake, special occasion]
+
+Raglan Road Irish Pub and Restaurant:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/raglan-road-irish-pub-and-restaurant/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/raglan-ro"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/disney-world/dining/disney-springs/raglan-road-irish-pub-and-restaurant/drink-time-friends-16x9.jpg?1762868516700"
+  description: "Authentic Irish pub with live traditional music and dancing"
+  tags: [table service, irish, pub, beer, entertainment, live music, indoor, dinner, lunch, casual, festive, dancing, lively]
+
+Paddlefish:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/disney-springs/paddlefish/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/paddlefis"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-springs/dining/paddlefish/Paddlefish_0725ZM_2093AFN-16x9.jpg?2025-02-05T19:54:41+00:00"
+  description: "Seafood and cocktails aboard a triple-decker riverboat"
+  tags: [table service, seafood, waterfront, outdoor, dinner, lunch, casual, moderate, boat, fish, shrimp, lobster, american]
+
+Frontera Cocina:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/disney-springs/frontera-cocina/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/frontera-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-springs/dining/frontera-cocina-mexicana/Frontera-Cocina-1-16x9.jpg?2025-07-29T21:52:20+00:00"
+  description: "Rick Bayless's contemporary Mexican cuisine and margaritas"
+  tags: [table service, mexican, margaritas, tequila, dinner, lunch, indoor, moderate, casual, guacamole, tacos, festive]
+
+Jaleo by Jose Andres:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/disney-springs/jaleo/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/jaleo/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-springs/dining/jaleo/Jaleo_Carousel_3-16x9.jpg?2024-10-07T18:24:22+00:00"
+  description: "Spanish tapas and paella by celebrated chef José Andrés"
+  tags: [table service, spanish, tapas, small plates, fine dining, dinner, lunch, indoor, upscale, wine, sophisticated, sharing, date night]
+
+STK Orlando:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/disney-springs/stk-orlando/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/stk-orlando/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/media/layout/syndicated/prod/assets/logos/wdw.svg"
+  description: "Modern American steakhouse with a vibrant upscale atmosphere"
+  tags: [table service, steakhouse, fine dining, dinner, indoor, upscale, romantic, signature, special occasion, wine, cocktails, trendy, date night]
+
+City Works Eatery and Pour House:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/disney-springs/city-works/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/city-work"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-springs/dining/cityworks/0726ZM_3524AFN-16x9.jpg?2025-02-06T14:44:36+00:00"
+  description: "Sports bar with craft beers and American comfort food"
+  tags: [bar, american, sports bar, beer, casual, indoor, lunch, dinner, wings, lively, tv, entertainment, pub]
+
+Planet Hollywood:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/disney-springs/planet-hollywood-observatory/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/planet-ho"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/downtown-disney/planet-hollywood-observatory/disney-springs-planet-hollywood-observatory-16x9-01.jpg?1710402030608"
+  description: "Hollywood-themed American classics surrounded by film memorabilia"
+  tags: [table service, american, hollywood, celebrity, themed, indoor, dinner, lunch, casual, moderate, burgers, fun]
+
+Wolfgang Puck Bar and Grill:
+  park: Disney Springs
+  menuUrl: "https://www.disneyworld.co.uk/dining/disney-springs/wolfgang-puck-bar-and-grill/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/wolfgang-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/disney-world/dining/disney-springs/wolfgang-puck-bar-and-grill/wolfgang-puck-bar-grill-table-16x9.jpg?1709748664959"
+  description: "Celebrity chef's contemporary American brasserie at Disney Springs"
+  tags: [table service, american, fine dining, dinner, lunch, indoor, upscale, modern, wine, special occasion, bar, signature, californian]
+
+Steakhouse 71:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/contemporary-resort/steakhouse-71/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/steakhous"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/resorts/disneys-contemporary-resort/WDW_Contemporary_Steakhouse71_PorkChop_Sauce_0816ZP_0385MS-16x9.jpg?2022-03-10T19:37:24+00:00"
+  description: "Mid-century American steakhouse at Disney's Contemporary Resort"
+  tags: [table service, steakhouse, american, breakfast, lunch, dinner, indoor, casual, moderate, retro, classic, burgers, comfort food]
+
+Boma - Flavors of Africa:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/animal-kingdom-lodge/boma-flavors-of-africa/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/boma-flav"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/resort-dining/animal-kingdom-lodge/boma-flavors-of-africa/boma-flavors-of-africa-00.jpg?1700004971115"
+  description: "African-inspired buffet breakfast and dinner at Animal Kingdom Lodge"
+  tags: [buffet, african, family style, breakfast, dinner, all you can eat, indoor, moderate, exotic, adventurous, flavourful, safari]
+
+Jiko - The Cooking Place:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/animal-kingdom-lodge/jiko-the-cooking-place/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/jiko-the-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/resort-dining/animal-kingdom-lodge/jiko-the-cooking-place/jiko-the-cooking-place-gallery05.jpg?1751990895784"
+  description: "Upscale African fusion fine dining at Animal Kingdom Lodge"
+  tags: [table service, fine dining, african, dinner, indoor, romantic, upscale, wine, special occasion, signature, exotic, elegant]
+
+Sanaa:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/animal-kingdom-villas-kidani/sanaa/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/sanaa/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/resort-dining/animal-kingdom-villas-kidani/sanaa/sanaa-00.jpg?1768206768846"
+  description: "Indian-African cuisine with savanna wildlife views"
+  tags: [table service, indian, african, breakfast, lunch, dinner, indoor, moderate, savanna view, naan, exotic, family, sharing]
+
+Kona Cafe:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/polynesian-resort/kona-cafe/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/kona-cafe"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/kona-cafe/WDW_Polynesian_Kona_Architecture_16x9_1102ZO_0116KP-16x9.jpg?2022-11-22T23:12:45+00:00"
+  description: "Pacific Rim flavours and specialty coffee at the Polynesian Resort"
+  tags: [table service, asian, pacific rim, breakfast, lunch, dinner, indoor, casual, moderate, relaxed, coffee, tropical, fusion]
+
+Grand Floridian Cafe:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/grand-floridian-resort-and-spa/grand-floridian-cafe/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/grand-flo"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/disney-world/dining/grand-floridian-resort-and-spa/grand-floridian-cafe/grand-floridian-cafe-dining-16x9.jpg?1770395832017"
+  description: "Classic American meals in Disney's most elegant resort setting"
+  tags: [table service, american, breakfast, lunch, dinner, indoor, casual, elegant, moderate, classic, refined, relaxed]
+
+Victoria and Alberts:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/grand-floridian-resort-and-spa/victoria-and-alberts/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/victoria-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/victoria-and-alberts/WDW_GrandFLoridian_V-A_ToothfishBambooSambal_0708ZO_0018KP-16x9.jpg?2025-05-30T21:37:08+00:00"
+  description: "Walt Disney World's most prestigious multi-course tasting menu"
+  tags: [table service, fine dining, upscale, dinner, prix fixe, signature, romantic, special occasion, adults, elegant, opulent, multi-course, tasting menu]
+
+"1900 Park Fare":
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/grand-floridian-resort-and-spa/1900-park-fare/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/1900-park"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/character-dining/0323ZM_0649SD_R2_xak-16x9.jpg?2024-05-22T14:56:00+00:00"
+  description: "Cinderella character buffet at Disney's Grand Floridian Resort"
+  tags: [buffet, character, family style, breakfast, dinner, all you can eat, character dining, cinderella, winnie the pooh, kids, festive, themed, princess]
+
+Whispering Canyon Cafe:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/wilderness-lodge-resort/whispering-canyon-cafe/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/whisperin"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/whispering-canyon/The-Traditional-16x9.jpg?2024-05-08T04:29:19+00:00"
+  description: "Rowdy frontier BBQ with skillet meals at Wilderness Lodge"
+  tags: [table service, american, bbq, family style, breakfast, lunch, dinner, indoor, casual, fun, quirky, interactive, all you can eat, western]
+
+Story Book Dining at Artist Point:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/wilderness-lodge-resort/artist-point/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/artist-po"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/resorts/disneys-wilderness-lodge/1215ZS_0055KP_jrod-16x9.jpg?2022-03-10T19:21:45+00:00"
+  description: "Snow White and Evil Queen character dinner in an enchanted forest"
+  tags: [character, table service, american, dinner, indoor, character dining, snow white, evil queen, themed, fairy tale, princess, moderate, prix fixe]
+
+Geyser Point Bar and Grill:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/wilderness-lodge-resort/geyser-point/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/geyser-point/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/resort-dining/wilderness-lodge-resort/geyser-point/geyser-point-gallery03.jpg?1750326062815"
+  description: "Outdoor waterfront bar and grill at Wilderness Lodge"
+  tags: [bar, american, outdoor, waterfront, drinks, casual, lunch, dinner, snacks, relaxed, scenic, lake view, quick bites]
+
+Cape May Cafe:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/beach-club-resort/cape-may-cafe/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/cape-may-"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/gallery/dining/resort-dining/beach-club-resort/cape-may-cafe/cape-may-cafe-gallery03.jpg?1770412517405"
+  description: "New England clambake character buffet at the Beach Club Resort"
+  tags: [buffet, seafood, character, breakfast, dinner, all you can eat, clambake, casual, indoor, family, kids, american, character dining]
+
+Ale and Compass Restaurant:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/yacht-club-resort/ale-and-compass/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/ale-and-c"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/experience/archive/1215ZR_3383CM_xak-16x9.jpg?2022-03-17T23:35:15+00:00"
+  description: "New England comfort food at Disney's Yacht Club Resort"
+  tags: [table service, american, seafood, breakfast, lunch, dinner, indoor, moderate, casual, nautical, elegant, relaxed]
+
+Beaches and Cream Soda Shop:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/beach-club-resort/beaches-and-cream-soda-shop/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/beaches-a"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/resort-dining/beach-club-resort/beaches-and-cream-soda-shop/beaches-and-cream-soda-shop-02.jpg?1770412496709"
+  description: "Classic soda fountain with sundaes and milkshakes at Beach Club"
+  tags: [table service, american, dessert, ice cream, milkshakes, casual, fun, indoor, snacks, nostalgic, kids, sweet, sodas]
+
+Yachtsman Steakhouse:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/yacht-club-resort/yachtsman-steakhouse/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/yachtsman"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/resort-dining/yacht-club-resort/yachtsman-steakhouse/yachtsman-steakhouse-00.jpg?1770228116058"
+  description: "Premium dry-aged beef steakhouse at Disney's Yacht Club Resort"
+  tags: [table service, steakhouse, fine dining, dinner, indoor, romantic, upscale, signature, special occasion, wine, aged beef, elegant]
+
+Flying Fish:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/boardwalk/flying-fish/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/flying-fi"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/flying-fish/WDW_BoardWalk_FlyingFish_GrilledOctopus_Full_0316ZN_0371KP-16x9.jpg?2023-06-14T18:16:56+00:00"
+  description: "Sophisticated seafood dining on the Disney BoardWalk waterfront"
+  tags: [table service, seafood, fine dining, dinner, indoor, romantic, upscale, signature, boardwalk, special occasion, wine, elegant]
+
+Toledo - Tapas, Steak and Seafood:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/coronado-springs-resort/toledo/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/toledo/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/vision-dam/digital/parks-platform/parks-global-assets/disney-world/dining/toledo/WDW_Coronado_Toledo_SmokedPorkChop_Full_0904ZM_0190KP-16x9.jpg?2024-12-20T00:04:21+00:00"
+  description: "Spanish rooftop tapas and steaks at Coronado Springs Resort"
+  tags: [table service, tapas, steakhouse, seafood, spanish, dinner, indoor, cocktails, rooftop, views, sharing, date night, moderate]
+
+Three Bridges Bar and Grill:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/grand-floridian-resort-and-spa/beach-pool-bar/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/beach-pool-bar/"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/wdpro-assets/things-to-do/dining/resort-dining/grand-floridian-resort-and-spa/beach-pool-bar/beach-pool-bar-00.jpg?1753720576105"
+  description: "Casual waterfront bar and bites at Disney's Coronado Springs"
+  tags: [bar, american, outdoor, waterfront, casual, drinks, snacks, dinner, lake view, relaxed, scenic, casual dining, quick bites]
+
+Trattoria al Forno:
+  park: Resort Dining
+  menuUrl: "https://www.disneyworld.co.uk/dining/boardwalk/trattoria-al-forno/menus/"
+  bookingUrl: "https://www.disneyworld.co.uk/dine-res/restaurant/trattoria"
+  heroImage: "https://cdn1.parksmedia.wdprapps.disney.com/resize/mwImage/1/1600/900/75/dam/disney-world/dining/boardwalk/trattoria-al-forno/Trattoria-al-Forno-couple-16x9.jpg?1770226302725"
+  description: "Italian character dining with Rapunzel on Disney's BoardWalk"
+  tags: [table service, italian, character, breakfast, dinner, indoor, moderate, character dining, rapunzel, pasta, pizza, kids, themed]
+

@@ -29,6 +29,4 @@ TD-129–131 (handler extractions), TD-140–143 (App.jsx/DayPlanSection organis
 TD-146–147 (planHelpers canonical fields), TD-149 (flatMap→map+filter)
 completed 2026-03-09.*
 
----
-
-*No open items.*
+*TD-154–158 completed 2026-03-14. All static data migrated to YAML. `@modyfi/vite-plugin-yaml` installed; `src/data/yaml/` folder created with 6 YAML files (`trip-options.yaml`, `rides.yaml`, `restaurants.yaml`, `park-shows.yaml`, `keywords.yaml`, `park-config.yaml`). Four JS data files slimmed to thin importers. Build and 480 tests pass.*

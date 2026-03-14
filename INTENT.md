@@ -3,6 +3,26 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T10:00:00Z — Migrate all static data to YAML (TD-154–158)
+
+**What:**
+- Installed `@modyfi/vite-plugin-yaml` (devDependency); added `yaml()` to `vite.config.js` plugins
+- Created `src/data/yaml/` with 6 files:
+  - `trip-options.yaml` — park/dining/franchise/hotel/event-type arrays
+  - `rides.yaml` — 27 rides grouped by park, each with urlSlug, image, description, tags
+  - `restaurants.yaml` — 67 restaurants with menuUrl, bookingUrl, heroImage, description, tags, park
+  - `park-shows.yaml` — static fallback show suggestions per park
+  - `keywords.yaml` — franchise/character/activity keyword maps + princess/pixar/marvel name arrays
+  - `park-config.yaml` — themeparks.wiki entity IDs and Google Maps fallback URLs
+- Slimmed 4 JS data files to thin YAML importers:
+  - `tripOptions.js` (110 → 9 lines)
+  - `rideData.js` (203 → 17 lines)
+  - `restaurantMetadata.js` (653 → 43 lines)
+  - `parkSuggestions.js` (317 → 128 lines — logic functions unchanged)
+- Removed TD-154–158 from TECH_DEBT.md
+
+**Why:** Static data is now in human-readable YAML files that are easy to edit without touching JS syntax. Adding a ride, restaurant, or show no longer requires navigating logic code.
+
 ## 2026-03-14T00:00:00Z — Monorail day-switch loading animation
 
 **What:**

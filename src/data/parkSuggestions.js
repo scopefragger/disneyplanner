@@ -1,195 +1,27 @@
 import { inferTheme } from './planHelpers.js'
 import { WDW_SUFFIX } from './constants.js'
+import parkShowsRaw from './yaml/park-shows.yaml'
+import parkConfigRaw from './yaml/park-config.yaml'
+import keywordsRaw from './yaml/keywords.yaml'
 
-const DW = 'https://disneyworld.disney.go.com'
 const MAPS = 'https://www.google.com/maps?q='
 
-// Static fallback suggestions (used when API is unavailable)
-export const PARK_SUGGESTIONS = {
-  'Magic Kingdom': [
-    {
-      id: 'mk-friendship-faire', label: "Mickey's Magical Friendship Faire",
-      description: 'Live stage show at Cinderella Castle with Mickey, Minnie and friends',
-      time: '10:30', type: 'Show', theme: 'character',
-      tags: ['#character', '#castle', '#family'],
-      infoUrl: `${DW}/entertainment/magic-kingdom/mickeys-magical-friendship-faire/`,
-      mapUrl:  `${MAPS}Cinderella+Castle+Stage+Magic+Kingdom+Walt+Disney+World`,
-    },
-    {
-      id: 'mk-festival-fantasy', label: 'Festival of Fantasy Parade',
-      description: 'Spectacular afternoon parade with elaborate floats and beloved characters',
-      time: '15:00', type: 'Parade', theme: 'default',
-      tags: ['#parade', '#afternoon', '#mustdo'],
-      infoUrl: `${DW}/entertainment/magic-kingdom/festival-of-fantasy-parade/`,
-      mapUrl:  `${MAPS}Main+Street+USA+Magic+Kingdom+Walt+Disney+World`,
-    },
-    {
-      id: 'mk-happily-ever-after', label: 'Happily Ever After Fireworks',
-      description: "Magic Kingdom's signature fireworks spectacular over Cinderella Castle",
-      time: '21:00', type: 'Fireworks', theme: 'fireworks',
-      tags: ['#fireworks', '#nighttime', '#mustdo'],
-      infoUrl: `${DW}/entertainment/magic-kingdom/happily-ever-after/`,
-      mapUrl:  `${MAPS}Cinderella+Castle+Magic+Kingdom+Walt+Disney+World`,
-    },
-  ],
-  'EPCOT': [
-    {
-      id: 'ep-luminous', label: 'Luminous: The Symphony of Us',
-      description: 'Nighttime fireworks and light show on the World Showcase Lagoon',
-      time: '21:00', type: 'Fireworks', theme: 'fireworks',
-      tags: ['#fireworks', '#nighttime', '#worldshowcase'],
-      infoUrl: `${DW}/entertainment/epcot/luminous-the-symphony-of-us/`,
-      mapUrl:  `${MAPS}World+Showcase+Lagoon+EPCOT+Walt+Disney+World`,
-    },
-  ],
-  "Disney's Hollywood Studios": [
-    {
-      id: 'hs-indy', label: 'Indiana Jones Epic Stunt Spectacular',
-      description: 'Live stunt show recreating iconic scenes from the Indiana Jones films',
-      time: '11:30', type: 'Show', theme: 'default',
-      tags: ['#stunts', '#live', '#adventure'],
-      infoUrl: `${DW}/entertainment/hollywood-studios/indiana-jones-epic-stunt-spectacular/`,
-      mapUrl:  `${MAPS}Indiana+Jones+Epic+Stunt+Spectacular+Hollywood+Studios+Walt+Disney+World`,
-    },
-    {
-      id: 'hs-fantasmic', label: 'Fantasmic!',
-      description: 'Mickey battles Disney villains in an epic outdoor nighttime water spectacular',
-      time: '21:00', type: 'Fireworks', theme: 'fireworks',
-      tags: ['#nighttime', '#mustdo', '#spectacular'],
-      infoUrl: `${DW}/entertainment/hollywood-studios/fantasmic/`,
-      mapUrl:  `${MAPS}Hollywood+Hills+Amphitheater+Hollywood+Studios+Walt+Disney+World`,
-    },
-    {
-      id: 'hs-galactic', label: 'Star Wars: A Galactic Spectacular',
-      description: 'Star Wars nighttime fireworks and projection show on the Hollywood Studios skyline',
-      time: '21:30', type: 'Fireworks', theme: 'fireworks',
-      tags: ['#starwars', '#fireworks', '#nighttime'],
-      infoUrl: `${DW}/entertainment/hollywood-studios/star-wars-a-galactic-spectacular/`,
-      mapUrl:  `${MAPS}Hollywood+Studios+Walt+Disney+World`,
-    },
-  ],
-  "Disney's Animal Kingdom": [
-    {
-      id: 'ak-harambe', label: 'Harambe Wildlife Parti',
-      description: 'Lively interactive street party parade through Africa in Animal Kingdom',
-      time: '17:00', type: 'Parade', theme: 'nature',
-      tags: ['#parade', '#africa', '#interactive'],
-      infoUrl: `${DW}/entertainment/animal-kingdom/harambe-wildlife-parti/`,
-      mapUrl:  `${MAPS}Harambe+Africa+Animal+Kingdom+Walt+Disney+World`,
-    },
-    {
-      id: 'ak-tree-awakening', label: 'Tree of Life Awakening',
-      description: 'The Tree of Life comes alive with projected animal spirits at dusk',
-      time: '20:00', type: 'Show', theme: 'nature',
-      tags: ['#nature', '#evening', '#magical'],
-      infoUrl: `${DW}/entertainment/animal-kingdom/tree-of-life-awakening/`,
-      mapUrl:  `${MAPS}Tree+of+Life+Animal+Kingdom+Walt+Disney+World`,
-    },
-  ],
-}
+// Static fallback suggestions (used when API is unavailable) — edit park-shows.yaml
+export const PARK_SUGGESTIONS = parkShowsRaw
 
-// themeparks.wiki entity IDs for Disney World parks
-const PARK_ENTITY_IDS = {
-  'Magic Kingdom':                   '75ea578a-adc8-4116-a54d-dccb60765ef9',
-  'EPCOT':                           '47f90d2c-e191-4239-a466-5892ef59a88b',
-  "Disney's Hollywood Studios":      '288747d1-8b4f-4a64-867e-ea7c9b27bad8',
-  "Disney's Animal Kingdom":         '1c84a229-8862-4648-9c71-378ddd2c7693',
-}
+// themeparks.wiki entity IDs and fallback map URLs — edit park-config.yaml
+const PARK_ENTITY_IDS = parkConfigRaw.entityIds
+const PARK_MAP_URLS   = parkConfigRaw.mapUrls
 
-// Fallback map links for live-data shows (park-level Google Maps search)
-const PARK_MAP_URLS = {
-  'Magic Kingdom':              `${MAPS}Magic+Kingdom+Walt+Disney+World+Orlando`,
-  'EPCOT':                      `${MAPS}EPCOT+Walt+Disney+World+Orlando`,
-  "Disney's Hollywood Studios": `${MAPS}Hollywood+Studios+Walt+Disney+World+Orlando`,
-  "Disney's Animal Kingdom":    `${MAPS}Animal+Kingdom+Walt+Disney+World+Orlando`,
-}
-
-// inferTheme is imported from planHelpers.js — see that file for the full implementation
+// Declarative keyword tables for inferTags — edit keywords.yaml
+const FRANCHISE_KEYWORDS = keywordsRaw.franchiseKeywords
+const CHARACTER_KEYWORDS = keywordsRaw.characterKeywords
+const ACTIVITY_KEYWORDS  = keywordsRaw.activityKeywords
+const PRINCESS_NAMES     = keywordsRaw.princessNames
+const PIXAR_IPS          = keywordsRaw.pixarIps
+const MARVEL_HEROES      = keywordsRaw.marvelHeroes
 
 const CACHE_TTL_MS = 30 * 60 * 1000 // 30 minutes
-
-// ── Declarative keyword tables for inferTags (TD-005) ───────────────────────
-const FRANCHISE_KEYWORDS = {
-  '#starwars':            ['star wars', 'galactic', 'jedi', 'stormtrooper'],
-  '#frozen':              ['frozen', 'arendelle', 'sing-along'],
-  '#indianajones':        ['indiana jones', 'indy', 'stunt spectacular'],
-  '#lionking':            ['lion king', 'simba', 'timon', 'pumbaa', 'hakuna'],
-  '#littlemermaid':       ['little mermaid', 'ursula', 'under the sea'],
-  '#beautyandthebeast':   ['beauty and the beast', 'lumiere', 'cogsworth'],
-  '#toystory':            ['toy story', 'woody', 'buzz lightyear', 'jessie', 'lotso'],
-  '#findingnemo':         ['finding nemo', 'finding dory', 'big blue'],
-  '#up':                  ['bird adventure', 'kevin', 'dug', 'russell'],
-  '#bigherosix':          ['big hero', 'baymax', 'hiro'],
-  '#tangled':             ['tangled', 'rapunzel', 'pascal', 'flynn'],
-  '#moana':               ['moana', 'maui', 'motunui'],
-  '#aladdin':             ['aladdin', 'genie', 'agrabah', 'abu'],
-  '#cinderella':          ['cinderella', 'glass slipper', 'bibbidi'],
-  '#sleepingbeauty':      ['sleeping beauty', 'maleficent', 'aurora', 'prince phillip'],
-  '#snowwhite':           ['snow white', 'seven dwarfs', 'dwarfs mine'],
-  '#brave':               ['brave', 'merida', 'dunbroch'],
-  '#princessandthefrog':  ['princess and the frog', 'tiana', 'naveen', 'louis the alligator'],
-  '#liloandstitch':       ['lilo', 'stitch', 'experiment 626'],
-  '#pooh':                ['winnie', 'hundred acre', 'pooh', 'tigger', 'eeyore', 'piglet'],
-  '#muppets':             ['muppet', 'kermit', 'miss piggy', 'gonzo'],
-  '#figment':             ['figment', 'journey into imagination'],
-  '#coco':                ['coco', 'miguel', 'día de'],
-  '#encanto':             ['encanto', 'mirabel', 'isabela', 'luisa', 'madrigal'],
-  '#ratatouille':         ['ratatouille', 'remy', 'gusteau'],
-  '#cars':                ['lightning mcqueen', 'mater', 'radiator springs'],
-  '#monsters':            ['monsters', 'sulley', 'boo', 'monstropolis'],
-  '#insideout':           ['inside out', 'joy', 'sadness', 'bing bong'],
-  '#incredibles':         ['incredibles', 'mr. incredible', 'elastigirl', 'dash'],
-  '#guardiansofthegalaxy':['guardians', 'rocket raccoon', 'gamora', 'cosmic rewind'],
-  '#spiderman':           ['spider-man', 'spiderman', 'peter parker', 'web-slinger'],
-  '#blackpanther':        ['black panther', 'wakanda', "t'challa"],
-  '#thor':                ['thor', 'asgard', 'loki'],
-  '#captainamerica':      ['captain america', 'steve rogers', 'shield'],
-  '#ironman':             ['iron man', 'tony stark', 'stark'],
-  '#doctorstrange':       ['doctor strange', 'sanctum'],
-  '#antman':              ['ant-man', 'antman', 'scott lang'],
-  '#mulan':               ['mulan', 'mushu', 'shang'],
-  '#junglecruise':        ['jungle cruise'],
-}
-
-const CHARACTER_KEYWORDS = {
-  '#mickey':      ['mickey'],
-  '#minnie':      ['minnie'],
-  '#donald':      ['donald'],
-  '#goofy':       ['goofy'],
-  '#pluto':       ['pluto'],
-  '#chipanddale': ['chip', 'dale'],
-  '#elsa':        ['elsa'],
-  '#olaf':        ['olaf'],
-  '#ariel':       ['ariel'],
-  '#belle':       ['belle'],
-  '#rapunzel':    ['rapunzel'],
-  '#tiana':       ['tiana'],
-  '#jasmine':     ['jasmine'],
-  '#aurora':      ['aurora'],
-  '#merida':      ['merida'],
-  '#woody':       ['woody'],
-  '#buzz':        ['buzz lightyear'],
-  '#nemo':        ['nemo'],
-  '#simba':       ['simba'],
-  '#stitch':      ['stitch'],
-  '#baymax':      ['baymax'],
-  '#groot':       ['groot'],
-  '#tigger':      ['tigger'],
-  '#pooh':        ['winnie', 'pooh'],
-}
-
-const ACTIVITY_KEYWORDS = {
-  '#fireworks':   ['firework', 'luminous', 'galactic', 'happily ever', 'harmonious', 'fantasmic', 'illuminate'],
-  '#parade':      ['parade', 'cavalcade'],
-  '#meetandgreet':['meet', 'greet', 'encounter'],
-  '#adventure':   ['stunt', 'adventure'],
-  '#nature':      ['nature', 'wildlife', 'bird'],
-  '#nighttime':   ['nighttime'],
-}
-
-const PRINCESS_NAMES  = ['cinderella','belle','ariel','rapunzel','moana','tiana','merida','aurora','jasmine','snow white','anna','elsa','mulan']
-const PIXAR_IPS       = ['toy story','nemo','dory','bird adventure','big hero','inside out','coco','ratatouille','cars','monsters','brave','incredibles','turning red','lightyear']
-const MARVEL_HEROES   = ['spider-man','spiderman','thor','iron man','captain america','black panther','guardians','groot','doctor strange','ant-man','hawkeye','avenger']
 
 function matchKeywords(n, table) {
   return Object.entries(table)

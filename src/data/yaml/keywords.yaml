@@ -1,0 +1,122 @@
+# Keyword tables for tag inference — used by inferTags() in parkSuggestions.js
+# Each key is a hashtag; values are substrings matched against show/ride names (lowercase)
+
+franchiseKeywords:
+  "#starwars":            [star wars, galactic, jedi, stormtrooper]
+  "#frozen":              [frozen, arendelle, sing-along]
+  "#indianajones":        [indiana jones, indy, stunt spectacular]
+  "#lionking":            [lion king, simba, timon, pumbaa, hakuna]
+  "#littlemermaid":       [little mermaid, ursula, under the sea]
+  "#beautyandthebeast":   [beauty and the beast, lumiere, cogsworth]
+  "#toystory":            [toy story, woody, buzz lightyear, jessie, lotso]
+  "#findingnemo":         [finding nemo, finding dory, big blue]
+  "#up":                  [bird adventure, kevin, dug, russell]
+  "#bigherosix":          [big hero, baymax, hiro]
+  "#tangled":             [tangled, rapunzel, pascal, flynn]
+  "#moana":               [moana, maui, motunui]
+  "#aladdin":             [aladdin, genie, agrabah, abu]
+  "#cinderella":          [cinderella, glass slipper, bibbidi]
+  "#sleepingbeauty":      [sleeping beauty, maleficent, aurora, prince phillip]
+  "#snowwhite":           [snow white, seven dwarfs, dwarfs mine]
+  "#brave":               [brave, merida, dunbroch]
+  "#princessandthefrog":  [princess and the frog, tiana, naveen, louis the alligator]
+  "#liloandstitch":       [lilo, stitch, experiment 626]
+  "#pooh":                [winnie, hundred acre, pooh, tigger, eeyore, piglet]
+  "#muppets":             [muppet, kermit, miss piggy, gonzo]
+  "#figment":             [figment, journey into imagination]
+  "#coco":                [coco, miguel, "día de"]
+  "#encanto":             [encanto, mirabel, isabela, luisa, madrigal]
+  "#ratatouille":         [ratatouille, remy, gusteau]
+  "#cars":                [lightning mcqueen, mater, radiator springs]
+  "#monsters":            [monsters, sulley, boo, monstropolis]
+  "#insideout":           [inside out, joy, sadness, bing bong]
+  "#incredibles":         [incredibles, "mr. incredible", elastigirl, dash]
+  "#guardiansofthegalaxy": [guardians, rocket raccoon, gamora, cosmic rewind]
+  "#spiderman":           [spider-man, spiderman, peter parker, web-slinger]
+  "#blackpanther":        [black panther, wakanda, "t'challa"]
+  "#thor":                [thor, asgard, loki]
+  "#captainamerica":      [captain america, steve rogers, shield]
+  "#ironman":             [iron man, tony stark, stark]
+  "#doctorstrange":       [doctor strange, sanctum]
+  "#antman":              [ant-man, antman, scott lang]
+  "#mulan":               [mulan, mushu, shang]
+  "#junglecruise":        [jungle cruise]
+
+characterKeywords:
+  "#mickey":      [mickey]
+  "#minnie":      [minnie]
+  "#donald":      [donald]
+  "#goofy":       [goofy]
+  "#pluto":       [pluto]
+  "#chipanddale": [chip, dale]
+  "#elsa":        [elsa]
+  "#olaf":        [olaf]
+  "#ariel":       [ariel]
+  "#belle":       [belle]
+  "#rapunzel":    [rapunzel]
+  "#tiana":       [tiana]
+  "#jasmine":     [jasmine]
+  "#aurora":      [aurora]
+  "#merida":      [merida]
+  "#woody":       [woody]
+  "#buzz":        [buzz lightyear]
+  "#nemo":        [nemo]
+  "#simba":       [simba]
+  "#stitch":      [stitch]
+  "#baymax":      [baymax]
+  "#groot":       [groot]
+  "#tigger":      [tigger]
+  "#pooh":        [winnie, pooh]
+
+activityKeywords:
+  "#fireworks":    [firework, luminous, galactic, happily ever, harmonious, fantasmic, illuminate]
+  "#parade":       [parade, cavalcade]
+  "#meetandgreet": [meet, greet, encounter]
+  "#adventure":    [stunt, adventure]
+  "#nature":       [nature, wildlife, bird]
+  "#nighttime":    [nighttime]
+
+princessNames:
+  - cinderella
+  - belle
+  - ariel
+  - rapunzel
+  - moana
+  - tiana
+  - merida
+  - aurora
+  - jasmine
+  - snow white
+  - anna
+  - elsa
+  - mulan
+
+pixarIps:
+  - toy story
+  - nemo
+  - dory
+  - bird adventure
+  - big hero
+  - inside out
+  - coco
+  - ratatouille
+  - cars
+  - monsters
+  - brave
+  - incredibles
+  - turning red
+  - lightyear
+
+marvelHeroes:
+  - spider-man
+  - spiderman
+  - thor
+  - iron man
+  - captain america
+  - black panther
+  - guardians
+  - groot
+  - doctor strange
+  - ant-man
+  - hawkeye
+  - avenger

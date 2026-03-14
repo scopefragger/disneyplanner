@@ -1,12 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import yaml from '@modyfi/vite-plugin-yaml'
 
 const base = process.env.BASE_PATH || '/disneyplanner/'
 
 export default defineConfig({
   plugins: [
     react(),
+    yaml(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['images/**/*'],
