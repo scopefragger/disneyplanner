@@ -683,7 +683,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #f7f8fc;
+  background: var(--dw-cloud);
   border: 1.5px solid rgba(0, 87, 184, 0.18);
   border-radius: 999px;
   padding: 0.5rem 0.85rem;
@@ -764,11 +764,11 @@ textarea:focus {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--dw-royal-blue);
+  background: linear-gradient(120deg, var(--dw-royal-blue), var(--dw-castle-blue));
   color: white;
   border: none;
-  border-radius: 10px;
-  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  padding: 0.6rem 1.4rem;
   font-size: 0.9rem;
   font-weight: 600;
   font-family: inherit;
@@ -814,7 +814,7 @@ textarea:focus {
 
 /* ── Event builder panel (lives in search bar card) ── */
 .event-builder-panel {
-  background: #f7f8fc;
+  background: var(--dw-cloud);
   border-radius: 12px;
   border: 1.5px solid rgba(0, 87, 184, 0.1);
   padding: 0.85rem;
@@ -901,18 +901,6 @@ textarea:focus {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-}
-
-.event-links a {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 999px;
-  padding: 0.25rem 0.55rem;
-  text-decoration: none;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #0f3e7a;
-  background: rgba(255, 255, 255, 0.85);
 }
 
 .park-hop-dock {
@@ -1080,7 +1068,7 @@ textarea:focus {
 
 .timeline-event-content .event-text p {
   margin: 0;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 500;
   color: var(--dw-ink);
   white-space: nowrap;
@@ -1332,7 +1320,6 @@ textarea:focus {
 .timeline-empty {
   color: rgba(29, 42, 68, 0.38);
   font-size: 0.875rem;
-  font-style: italic;
   margin: 0.75rem 0 0;
 }
 

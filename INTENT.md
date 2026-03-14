@@ -3,6 +3,19 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T08:27:00Z — Fix brand compliance violations in App.css
+
+**What:**
+- `.event-description` colour: replaced hardcoded `#6b7280` with `rgba(29, 42, 68, 0.55)` (Ink opacity scale)
+- `.event-edit-btn` background: replaced off-brand `#f5c400` with `var(--dw-sun)` token
+- `.timeline-empty`: removed `font-style: italic` — italic is reserved for `.event-description` only
+- `.whats-next-btn`: changed `border-radius` from `10px` to `999px` pill and background from solid `--dw-royal-blue` to brand gradient, matching primary button spec
+- `.top-searchbar-wrap` and `.event-builder-panel`: replaced hardcoded `#f7f8fc` with `var(--dw-cloud)`
+- Removed dead `.event-links a` base rule that contained hardcoded `#0f3e7a` and was unreachable in practice
+- `.timeline-event-content .event-text p` font-size: corrected from `0.82rem` to `0.85rem` per type scale
+
+**Why:** Full audit against DESIGN.md revealed 7 violations — hardcoded colours outside the palette, wrong button shapes, and italic misuse. All fixes bring the codebase into alignment with the brand guide.
+
 ## 2026-03-13T23:30:00Z — Add brand and design guide
 
 **What:**
