@@ -67,6 +67,17 @@ export default function TimelineEventCard({
               {time && <span className="event-time">{formatTime(time)}</span>}
             </div>
             <p>{label}</p>
+            {description && <small className="event-description">{description}</small>}
+            <div className="ghost-links">
+              {infoUrl && (
+                <a href={infoUrl} target="_blank" rel="noreferrer noopener"
+                  className="ghost-link" title="About this show">ℹ Info</a>
+              )}
+              {mapUrl && (
+                <a href={mapUrl} target="_blank" rel="noreferrer noopener"
+                  className="ghost-link" title="View on map">📍 Map</a>
+              )}
+            </div>
           </div>
           <div className="ghost-actions">
             <button type="button" className="ghost-accept-btn"
@@ -109,6 +120,19 @@ export default function TimelineEventCard({
               )}
             </div>
             <p>{label}</p>
+            {description && <small className="event-description">{description}</small>}
+            <div className="event-links">
+              {hasRestaurantLinks && menuUrl && (
+                <a href={menuUrl} target="_blank" rel="noreferrer noopener">View menu</a>
+              )}
+              {hasRestaurantLinks && bookingUrl && (
+                <a href={bookingUrl} target="_blank" rel="noreferrer noopener">Book</a>
+              )}
+              {viewInfoUrl && (
+                <a href={viewInfoUrl} target="_blank" rel="noreferrer noopener">View info</a>
+              )}
+              <a href={mapUrl} target="_blank" rel="noreferrer noopener">View on map</a>
+            </div>
           </div>
         </div>
         <button

@@ -3,6 +3,18 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T10:00:00Z — Restore descriptions and links on event cards; flexible card height
+
+**What:**
+- Replaced fixed `height: 52px` with `min-height: 56px` on swipe wrapper, event content, and ghost cards so cards grow to fit their content
+- Changed `.timeline-event-content` alignment to `flex-start` (content anchors top)
+- Reinstated description and action links (View menu, Book, View info, View on map) in TimelineEventCard for real events
+- Reinstated description and info/map links for ghost suggestion cards
+- Increased vertical padding from 0.3rem to 0.5rem for better breathing room
+
+**Why:**
+- Fixed 52px clipped descriptions and removed all action links — reinstating them at a flexible min-height restores full card content
+
 ## 2026-03-14T09:45:00Z — Fixed-height timeline event cards
 
 **What:**

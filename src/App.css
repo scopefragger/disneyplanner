@@ -1066,16 +1066,15 @@ textarea:focus {
 
 .timeline-event-content {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.4rem;
   background: white;
   border-radius: 7px;
-  padding: 0.3rem 0.4rem 0.3rem 0.65rem;
+  padding: 0.5rem 0.4rem 0.5rem 0.65rem;
   border: 1px solid rgba(0, 87, 184, 0.12);
   border-left: 3px solid var(--event-theme-color, rgba(0, 87, 184, 0.4));
-  height: 100%;
-  overflow: hidden;
+  min-height: 56px;
 }
 
 /* Theme color — shared across timeline-event-content, ghost-event-content, timeline-event-edit */
@@ -1169,10 +1168,9 @@ textarea:focus {
   gap: 0.4rem;
   background: rgba(255, 255, 255, 0.55);
   border-radius: 7px;
-  padding: 0.3rem 0.4rem 0.3rem 0.65rem;
+  padding: 0.5rem 0.4rem 0.5rem 0.65rem;
   border: 1.5px dashed var(--event-theme-color, rgba(0, 87, 184, 0.3));
-  height: 52px;
-  overflow: hidden;
+  min-height: 56px;
 }
 
 
@@ -1241,7 +1239,7 @@ textarea:focus {
   position: relative;
   overflow: hidden;
   border-radius: 7px;
-  height: 52px;
+  min-height: 56px;
 }
 
 .swipe-content {
@@ -1253,6 +1251,7 @@ textarea:focus {
   right: 0;
   top: 0;
   bottom: 0;
+  min-height: 56px;
   width: 64px;
   border: none;
   background: var(--dw-coral);
