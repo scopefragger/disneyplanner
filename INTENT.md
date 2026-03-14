@@ -3,6 +3,12 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T10:30:00Z — Fix link clipping by capping description to 1 line
+
+**What:** Added `white-space: nowrap; overflow: hidden; text-overflow: ellipsis` to `.event-description` so it stays on a single line
+
+**Why:** Multi-line descriptions were overflowing the 100px card height, causing the bottom links row to be clipped. Single-line truncation keeps the height budget consistent.
+
 ## 2026-03-14T10:25:00Z — Increase card height to 100px to prevent link clipping
 
 **What:** Increased all timeline card heights from 88px to 100px (swipe-reveal-wrap, ghost-event-content)
