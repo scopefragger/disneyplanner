@@ -3,6 +3,15 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T00:00:00Z — Monorail day-switch loading animation
+
+**What:**
+- Created `src/components/MonorailLoader.jsx` — overlay component with inline SVG monorail car (body gradient, windows, pylon), beam, and day/date label. `role="status"` + `aria-label` for screen readers.
+- Updated `src/components/DayPlanSection.jsx` — added `dayLoading` state + `useEffect` that fires on `activeDay` changes (skips initial render via `prevActiveDayRef = useRef(null)`), wraps article + timeline in `.day-content-wrap`, renders `MonorailLoader` for 3500ms when day changes.
+- Updated `src/App.css` — added `.day-content-wrap`, `.monorail-overlay`, `.monorail-scene`, `.monorail-train-wrap`, `.monorail-beam`, `.monorail-label*` styles and `@keyframes monorailRide`. Animation automatically suppressed by existing `prefers-reduced-motion` rule.
+
+**Why:** Fun Disney-branded transition when switching days — the monorail slides across the screen for ~3.5s before revealing the new day's content.
+
 ## 2026-03-14T10:30:00Z — Fix link clipping by capping description to 1 line
 
 **What:** Added `white-space: nowrap; overflow: hidden; text-overflow: ellipsis` to `.event-description` so it stays on a single line

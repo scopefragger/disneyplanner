@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import { formatPrettyDate, formatShortDate } from '../utils.js'
 import { PARK_OPTIONS, DAY_TYPES, SWIM_OPTIONS, DISNEY_HOTELS } from '../data/tripOptions.js'
 import { getParkSuggestions } from '../data/parkSuggestions.js'
@@ -6,6 +7,7 @@ import { normalizeEventItem, buildEventLabel } from '../data/planHelpers.js'
 import { WDW_SUFFIX } from '../data/constants.js'
 import { getDayTypeChipColor, hashtagLabel, getDayCardStyle, getDayTypeIcon, getSecondParkOptions, getItemSlot, getTimeSlots, getLocationDisplay, getEventDescription } from '../data/displayHelpers.js'
 import TimelineEventCard from './TimelineEventCard.jsx'
+import MonorailLoader from './MonorailLoader.jsx'
 
 const GOOGLE_MAPS_SEARCH_URL = 'https://www.google.com/maps/search/?api=1&query='
 const GOOGLE_SEARCH_URL = 'https://www.google.com/search?q='
@@ -307,6 +309,18 @@ export default function DayPlanSection({
   const dismissed = dayPlan.dismissedSuggestions || []
   const ghostSuggestions = computeGhostSuggestions(dayPlan, liveShowData, plan.favoriteTags, dismissed)
 
+  // ── Monorail day-switch animation ──
+  const [dayLoading, setDayLoading] = useState(false)
+  const prevActiveDayRef = useRef(null)
+  useEffect(() => {
+    if (prevActiveDayRef.current === null) { prevActiveDayRef.current = activeDay; return }
+    if (prevActiveDayRef.current === activeDay) return
+    prevActiveDayRef.current = activeDay
+    setDayLoading(true)
+    const t = setTimeout(() => setDayLoading(false), 3500)
+    return () => clearTimeout(t)
+  }, [activeDay])
+
   return (
     <section className="card card-wide">
       <div className="card-title-row day-header">
@@ -343,7 +357,9 @@ export default function DayPlanSection({
           })}
         </div>
 
-        {tripDates.length > 0 && <>
+        {tripDates.length > 0 && (
+        <div className="day-content-wrap">
+          {dayLoading && <MonorailLoader activeDay={activeDay} date={date} />}
         <article key={date} className="date-card" style={getDayCardStyle(dayPlan)}>
           {renderDayBadges({ dayPlan, date, clearDayType, clearPark, clearSwimSpot, clearStaySpot, locationDisplay })}
 
@@ -411,7 +427,8 @@ export default function DayPlanSection({
             )}
           </div>
         </div>
-        </>}
+        </div>
+        )}
       </div>
     </section>
   )
