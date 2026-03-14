@@ -51,12 +51,18 @@ NO CHANGES NEEDED:
 - [Park names that look correct]
 ```
 
-### 5. Apply changes
-After presenting the report, ask the user to confirm before writing any changes to `src/data/yaml/rides.yaml`.
+### 5. Apply changes immediately
+**Do not ask for confirmation.** Apply all changes directly:
 
-If confirmed, update the YAML and run:
+- **Add** new rides in the correct park section, following the existing YAML shape
+- **Remove** permanently closed rides (comment with `# REMOVED: [reason]` on the line above, then delete the entry)
+- **Rename** entries by updating the `name` field and `urlSlug`
+- **Fix** stale URL slugs in place
+
+Then run the build and tests:
 ```
 /opt/homebrew/bin/node node_modules/.bin/vite build
+/opt/homebrew/bin/node node_modules/.bin/vitest run --coverage
 ```
 
-Update `INTENT.md` and commit if the build passes.
+Update `INTENT.md` with a summary of what changed and why, then commit and push.

@@ -72,10 +72,18 @@ For each new restaurant to add, use this YAML shape:
 
 Tags should include: service type (`table service`/`quick service`/`buffet`/`bar`), cuisine, meal periods (`breakfast`/`lunch`/`dinner`), atmosphere descriptors, and relevant franchise if applicable.
 
-### 6. Apply changes
-Present all proposed changes and ask the user to confirm before writing to `restaurants.yaml`.
+### 6. Apply changes immediately
+**Do not ask for confirmation.** Apply all changes directly to `src/data/yaml/restaurants.yaml`:
 
-If confirmed:
-1. Update `src/data/yaml/restaurants.yaml`
-2. Run: `/opt/homebrew/bin/node node_modules/.bin/vite build`
-3. Update `INTENT.md` and commit if the build passes
+- **Add** new restaurants in alphabetical order within their park group
+- **Delete** permanently closed restaurants
+- **Rename** entries by updating the key and description
+- **Fix** stale `menuUrl` and `bookingUrl` values
+- **Fill in** any missing `description` or `tags` fields on existing entries
+
+Then run:
+```
+/opt/homebrew/bin/node node_modules/.bin/vite build
+```
+
+Update `INTENT.md` with a summary of what changed and why, then commit and push.

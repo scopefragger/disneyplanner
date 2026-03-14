@@ -65,10 +65,16 @@ For each new show, propose a YAML entry following the existing format:
 
 Use the `inferTags` logic from `src/data/parkSuggestions.js` as a guide for tag selection.
 
-### 6. Apply changes
-Present the proposed changes and ask the user to confirm before writing to `park-shows.yaml`.
+### 6. Apply changes immediately
+**Do not ask for confirmation.** Apply all changes directly to `src/data/yaml/park-shows.yaml`:
 
-If confirmed:
-1. Update `src/data/yaml/park-shows.yaml`
-2. Run: `/opt/homebrew/bin/node node_modules/.bin/vite build`
-3. Update `INTENT.md` and commit if the build passes
+- **Add** new shows in the correct park section using the YAML shape above
+- **Update** existing shows whose times, descriptions, or types have changed
+- **Remove** shows that have permanently ended (seasonal shows that return should be kept)
+
+Then run:
+```
+/opt/homebrew/bin/node node_modules/.bin/vite build
+```
+
+Update `INTENT.md` with a summary of what changed and why, then commit and push.

@@ -74,11 +74,19 @@ NO CHANGES NEEDED:
 - [sections that look complete]
 ```
 
-### 5. Apply changes
-Present proposed changes and ask the user to confirm before writing to `keywords.yaml`.
+### 5. Apply changes immediately
+**Do not ask for confirmation.** Apply all changes directly to `src/data/yaml/keywords.yaml`:
 
-If confirmed:
-1. Update `src/data/yaml/keywords.yaml`
-2. Run: `/opt/homebrew/bin/node node_modules/.bin/vite build`
-3. Run: `/opt/homebrew/bin/node node_modules/.bin/vitest run --coverage` (keyword changes affect `inferTags` tests)
-4. Update `INTENT.md` and commit if all checks pass
+- **Add** new franchise entries under `franchiseKeywords` with all relevant keyword variations
+- **Add** new character entries under `characterKeywords`
+- **Extend** existing entries with additional keyword variants
+- **Add** new names to `princessNames`, `pixarIps`, or `marvelHeroes` arrays as appropriate
+- **Remove** or correct any keyword entries for IPs that no longer have a park presence
+
+Then run build and tests (keyword changes affect `inferTags` coverage):
+```
+/opt/homebrew/bin/node node_modules/.bin/vite build
+/opt/homebrew/bin/node node_modules/.bin/vitest run --coverage
+```
+
+Update `INTENT.md` with a summary of what changed and why, then commit and push.
