@@ -3,6 +3,19 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T17:00:00Z — Audit and refresh rides.yaml against current WDW lineup
+
+**What:**
+- Removed DINOSAUR (permanently closed Feb 2, 2026 — DinoLand demolished for Tropical Americas)
+- Updated Rock 'n' Roller Coaster → Rock 'n' Roller Coaster Starring The Muppets (retheme, summer 2026)
+- Renamed Soarin' Around the World → Soarin' Across America (new film debuts May 26, 2026)
+- Removed stale `chevrolet` tag from Test Track (no longer sponsored)
+- Added 5 missing Magic Kingdom rides: it's a small world, Buzz Lightyear's Space Ranger Spin, The Many Adventures of Winnie the Pooh, Under the Sea – Journey of The Little Mermaid, The Barnstormer
+- Added 2 missing EPCOT rides: Living with the Land, The Seas with Nemo & Friends
+- Added 2 missing Hollywood Studios rides: Star Tours – The Adventures Continue, Alien Swirling Saucers
+
+**Why:** Periodic data audit to keep ride data current — DINOSAUR closed, Rock 'n' Roller Coaster rethemed to Muppets, Soarin' getting new American film, and several notable attractions were missing from the YAML.
+
 ## 2026-03-14T10:00:00Z — Migrate all static data to YAML (TD-154–158)
 
 **What:**
