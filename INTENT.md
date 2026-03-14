@@ -3,6 +3,22 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T09:00:00Z — Accessibility audit and WCAG 2.1 AA fixes
+
+**What:**
+- Raised all sub-0.70 Ink opacity text values to minimum 0.70 (~5.1:1 on white): step-sub, pref-no-results, pref-section-label, setup-hint, setup-summary-info, day-nav-arrows, esr-group/meta labels, timeline-anchor-label, event-description, ghost-tag, ghost-link, event-edit-label, timeline-empty, project-row-info, home-empty, close-panel-btn, settings-note, settings-section strong
+- UI-only elements (dismiss icon, searchbar clear, placeholder) raised to 0.55 (~3.5:1 — meets SC 1.4.11 UI component minimum)
+- Removed `opacity: 0.6` from `.step-label` — `var(--dw-royal-blue)` at full opacity is 6.9:1
+- Changed `.event-type-badge` text to `var(--dw-ink)` — 4 of 6 theme colours failed contrast on white
+- `.day-type-badge` 42px → 44px; `.day-nav-arrows button` 2rem → 2.75rem (44px touch targets)
+- Ghost action and event inline icon buttons: expanded hit area to 44px via padding + negative margin
+- Event edit form buttons: `min-height: 2.75rem`, increased padding
+- Input focus ring raised to `rgba(0,87,184,0.8)`; global `:focus-visible` rule added
+- `@media (prefers-reduced-motion: reduce)` added, collapses all animations/transitions
+- DESIGN.md Section 10 (Accessibility) written: Ink opacity floor, contrast tables, touch target rules, focus spec, motion rules, colour independence, semantic HTML
+
+**Why:** WCAG 2.1 AA audit identified contrast failures (SC 1.4.3), missing focus indicators (SC 2.4.7), no reduced-motion support, and sub-minimum touch targets. All resolved and codified as standing design standards.
+
 ## 2026-03-14T08:27:00Z — Fix brand compliance violations in App.css
 
 **What:**

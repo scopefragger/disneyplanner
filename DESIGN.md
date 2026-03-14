@@ -400,7 +400,65 @@ The left 55% is fully opaque white (text zone). The image bleeds in on the right
 
 ---
 
-## 10. Do's and Don'ts
+## 10. Accessibility
+
+This app targets **WCAG 2.1 Level AA** as a minimum. All new UI must meet or exceed these rules.
+
+### Colour contrast
+
+| Text type | Minimum ratio | Rule |
+|-----------|--------------|------|
+| Normal text (< 18pt / 14pt bold) | 4.5:1 | SC 1.4.3 |
+| Large text (≥ 18pt / 14pt bold) | 3:1 | SC 1.4.3 |
+| UI components & graphical objects | 3:1 | SC 1.4.11 |
+| Disabled / decorative elements | None | SC 1.4.3 exception |
+
+**Ink opacity floor** — `rgba(29, 42, 68, X)` on white:
+
+| Opacity | Approx ratio | Use |
+|---------|-------------|-----|
+| `0.70` | ~5.1:1 ✅ | All secondary text, labels, metadata, empty states |
+| `0.55` | ~3.5:1 ✅ | UI-only elements (icon buttons, placeholder text, dismiss icons) |
+| `0.40` or below | < 3:1 ❌ | Do not use for any informative text or interactive element |
+
+**Event-type badge text** must always be `var(--dw-ink)` — never the raw `--event-theme-color`, which can fail for light themes (character, default, nature, dining).
+
+### Touch targets
+
+| Element | Minimum | Method |
+|---------|---------|--------|
+| All interactive elements | 44 × 44px | WCAG 2.5.5 AAA / de-facto mobile standard |
+| Small icon buttons | 44 × 44px hit area | Use padding + negative margin to expand without changing visual size |
+| Pill / chip buttons | Natural size (≥ 44px tall from padding) | Achieved by standard padding |
+
+### Focus indicators
+
+- All interactive elements must show a visible `:focus-visible` ring.
+- Standard ring: `outline: 2px solid rgba(0, 87, 184, 0.8); outline-offset: 2px`
+- Never suppress `outline` without a visible replacement.
+- The global `:focus-visible` rule in App.css covers all elements; per-element overrides must match or exceed this contrast.
+
+### Motion
+
+- All animations and transitions must respect `@media (prefers-reduced-motion: reduce)`.
+- The global rule in App.css collapses all durations to `0.01ms` — do not override this in component-level CSS.
+- Do not introduce new `@keyframes` without verifying the reduced-motion block covers them.
+
+### Colour independence
+
+- Information must never be conveyed by colour alone (SC 1.3.3).
+- Event types: the `event-type-badge` label text (`RIDE`, `DINING`, etc.) provides a redundant non-colour cue — always keep this text visible.
+- Status indicators: pair colour changes with text, icon, or pattern.
+
+### Semantic HTML
+
+- Use `<button type="button">` for all click actions (not `<div onClick>`).
+- Provide `aria-label` on icon-only buttons (e.g. edit ✏, delete ×, accept ✓, dismiss ✕).
+- Inputs must have associated `<label>` elements — do not use `placeholder` as the only label.
+
+---
+
+## 11. Do's and Don'ts
 
 ### Labels & text
 - ✅ "Disney's Hollywood Studios" — full name, spaces intact
