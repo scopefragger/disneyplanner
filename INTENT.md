@@ -3,6 +3,31 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T17:10:00Z — Refresh park-shows.yaml with current WDW entertainment
+
+**What:**
+- Fixed stale showtimes: Happily Ever After 21:00→21:30, Fantasmic! 21:00→20:30
+- Removed 2 ended shows: Star Wars: A Galactic Spectacular (replaced by Wonderful World of Animation), Harambe Wildlife Parti (no longer running)
+- Added 2 Magic Kingdom shows: Disney Starlight: Dream the Night Away (new nighttime parade), Disney Adventure Friends Cavalcade
+- Added 1 EPCOT show: ¡Celebración Encanto! (now permanent)
+- Added 5 Hollywood Studios shows: The Little Mermaid – A Musical Adventure, Disney Villains: Unfairly Ever After, Beauty and the Beast – Live on Stage, For the First Time in Forever: A Frozen Sing-Along Celebration, Wonderful World of Animation
+- Added 3 Animal Kingdom shows: Festival of the Lion King, Finding Nemo: The Big Blue... and Beyond!, Feathered Friends in Flight!
+
+**Why:** Periodic data refresh via themeparks.wiki live API and web research to keep park show data current. Total shows: 8 → 18.
+
+## 2026-03-14T17:00:00Z — Audit and refresh rides.yaml against current WDW lineup
+
+**What:**
+- Removed DINOSAUR (permanently closed Feb 2, 2026 — DinoLand demolished for Tropical Americas)
+- Updated Rock 'n' Roller Coaster → Rock 'n' Roller Coaster Starring The Muppets (retheme, summer 2026)
+- Renamed Soarin' Around the World → Soarin' Across America (new film debuts May 26, 2026)
+- Removed stale `chevrolet` tag from Test Track (no longer sponsored)
+- Added 5 missing Magic Kingdom rides: it's a small world, Buzz Lightyear's Space Ranger Spin, The Many Adventures of Winnie the Pooh, Under the Sea – Journey of The Little Mermaid, The Barnstormer
+- Added 2 missing EPCOT rides: Living with the Land, The Seas with Nemo & Friends
+- Added 2 missing Hollywood Studios rides: Star Tours – The Adventures Continue, Alien Swirling Saucers
+
+**Why:** Periodic data audit to keep ride data current — DINOSAUR closed, Rock 'n' Roller Coaster rethemed to Muppets, Soarin' getting new American film, and several notable attractions were missing from the YAML.
+
 ## 2026-03-14T10:00:00Z — Migrate all static data to YAML (TD-154–158)
 
 **What:**

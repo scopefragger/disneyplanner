@@ -54,10 +54,11 @@ Each entry:
 ```
 
 ### Code Coverage
-- Minimum **60% coverage** on statements, branches, and functions
+- Target **~60% coverage** on statements, branches, and functions — enough to catch regressions, not more
 - Tests live in `src/__tests__/` and use `.test.jsx` or `.test.js` extensions
 - Focus tests on pure logic first: `parkSuggestions.js` helpers (`inferTheme`, `inferTags`, `fuzzyMatch`, `parseShowTime`), `normalizePlan`, utility functions
 - Do not write tests for JSX render output unless explicitly asked
+- **No tests for the sake of it** — every test should protect against a meaningful regression. Prefer fewer, high-value tests over broad coverage padding
 
 ### Commits
 - Co-author line required: `Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>`
