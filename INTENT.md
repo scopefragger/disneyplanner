@@ -3,6 +3,26 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T09:30:00Z — Complete accessibility pass + swipe-to-delete + time-click-edit
+
+**What:**
+- Removed `opacity: 0.82` from `.ghost-event-content` (was undermining all child contrast)
+- Fixed coral contrast: `.danger` and `.event-delete-btn` changed to `color: var(--dw-ink)` (4.82:1 vs ~3:1 for white); `.reset-day-btn` changed to `#c0392b` and opacity removed; `.event-edit-delete` changed to `#c0392b`
+- Fixed ghost accept button green: `#22c55e` → `#15803d` (5.01:1 on white)
+- Added `.hero :focus-visible { outline-color: rgba(255,255,255,0.9) }` for white focus ring on dark hero background
+- Added `type="button"` and `aria-label="Previous day"` / `aria-label="Next day"` to nav arrow buttons in DayPlanSection
+- Added `aria-current="page"` to the active day nav strip button
+- Replaced visible edit (✏) button with clickable time — clicking the time stamp on any event card opens the inline edit form
+- Added swipe-to-reveal delete: swiping a card left reveals the × delete button (touch gesture); no delete button visible by default
+- `createEventItem` now defaults `time` to `'09:00'` if none provided, ensuring all entries always have a time
+- Updated test expectation for new default time
+
+**Why:**
+- Completes all remaining WCAG 2.1 AA contrast violations identified in accessibility audit
+- Swipe-to-delete reduces accidental deletions and cleans up the card UI
+- Time-click-edit improves discoverability and reduces button clutter on small cards
+- Default time ensures timeline always renders correctly even for quickly-added items
+
 ## 2026-03-14T09:00:00Z — Accessibility audit and WCAG 2.1 AA fixes
 
 **What:**

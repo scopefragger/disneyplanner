@@ -48,7 +48,7 @@ describe('createEventItem', () => {
     expect(item.ride).toBe('')
     expect(item.ridePark).toBe('')
     expect(item.note).toBe('')
-    expect(item.time).toBe('')
+    expect(item.time).toBe('09:00')
     expect(item.theme).toBe('')
   })
 

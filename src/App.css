@@ -383,6 +383,11 @@ textarea:focus {
   outline-offset: 2px;
 }
 
+/* Hero has dark blue background — use white focus ring inside it */
+.hero :focus-visible {
+  outline-color: rgba(255, 255, 255, 0.9);
+}
+
 .inline-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -947,17 +952,16 @@ textarea:focus {
 .reset-day-btn {
   border: none;
   background: none;
-  color: var(--dw-coral);
+  color: #c0392b;
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   padding: 0.38rem 0.5rem;
-  opacity: 0.75;
-  transition: opacity 0.15s;
+  transition: color 0.15s;
 }
 
 .reset-day-btn:hover {
-  opacity: 1;
+  color: #922b21;
   text-decoration: underline;
 }
 
@@ -1151,7 +1155,6 @@ textarea:focus {
   border-radius: 7px;
   padding: 0.3rem 0.4rem 0.3rem 0.65rem;
   border: 1.5px dashed var(--event-theme-color, rgba(0, 87, 184, 0.3));
-  opacity: 0.82;
 }
 
 
@@ -1209,41 +1212,64 @@ textarea:focus {
   line-height: 1;
 }
 
-.ghost-accept-btn { color: #22c55e; }
+.ghost-accept-btn { color: #15803d; }
 .ghost-accept-btn:hover { background: rgba(34, 197, 94, 0.12); }
 
 .ghost-dismiss-btn { color: rgba(29, 42, 68, 0.55); }
 .ghost-dismiss-btn:hover { background: rgba(248, 102, 100, 0.1); color: #f86664; }
 
-.event-edit-btn,
+/* ── Swipe-to-reveal delete ── */
+.swipe-reveal-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 7px;
+}
+
+.swipe-content {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .event-delete-btn {
-  flex-shrink: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 64px;
   border: none;
-  cursor: pointer;
-  font-size: 0.8rem;
-  /* 44px hit area via padding + negative margin */
-  padding: 0.8rem 0.75rem;
-  margin: -0.65rem -0.45rem;
-  border-radius: 4px;
-  line-height: 1;
-}
-
-.event-edit-btn {
-  background: var(--dw-sun);
-  color: #1a1a00;
-}
-
-.event-edit-btn:hover {
-  background: #f0c545;
-}
-
-.event-delete-btn {
   background: var(--dw-coral);
-  color: #fff;
+  color: var(--dw-ink);
+  cursor: pointer;
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .event-delete-btn:hover {
   background: #e04f4d;
+}
+
+/* ── Clickable time (opens inline edit) ── */
+.event-time-btn {
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--dw-castle-blue);
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+  margin-bottom: 0.1rem;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.event-time-btn:hover {
+  opacity: 1;
+  text-decoration: underline;
 }
 
 .timeline-event-edit {
@@ -1313,13 +1339,13 @@ textarea:focus {
 
 .event-edit-delete {
   background: none;
-  color: rgba(248, 102, 100, 0.75);
+  color: #c0392b;
   margin-left: auto;
 }
 
 .event-edit-delete:hover {
-  color: #f86664;
-  background: rgba(248, 102, 100, 0.08);
+  color: #922b21;
+  background: rgba(192, 57, 43, 0.08);
 }
 
 .field-time {
@@ -1519,7 +1545,7 @@ textarea:focus {
 
 .danger {
   background: var(--dw-coral);
-  color: var(--dw-white);
+  color: var(--dw-ink);
   font-weight: 700;
 }
 

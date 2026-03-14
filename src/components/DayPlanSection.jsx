@@ -312,9 +312,9 @@ export default function DayPlanSection({
       <div className="card-title-row day-header">
         <h2>Daily Plan</h2>
         <div className="day-nav-arrows">
-          <button disabled={activeDay === 0} onClick={() => setActiveDay(d => d - 1)}>←</button>
+          <button type="button" aria-label="Previous day" disabled={activeDay === 0} onClick={() => setActiveDay(d => d - 1)}>←</button>
           <span>Day {activeDay + 1} of {tripDates.length || 0}</span>
-          <button disabled={activeDay >= tripDates.length - 1} onClick={() => setActiveDay(d => d + 1)}>→</button>
+          <button type="button" aria-label="Next day" disabled={activeDay >= tripDates.length - 1} onClick={() => setActiveDay(d => d + 1)}>→</button>
         </div>
       </div>
 
@@ -333,6 +333,7 @@ export default function DayPlanSection({
                 key={dateStr}
                 type="button"
                 className={navBtnClass}
+                aria-current={i === activeDay ? 'page' : undefined}
                 onClick={() => setActiveDay(i)}
               >
                 <span className="day-nav-num">{i + 1}</span>

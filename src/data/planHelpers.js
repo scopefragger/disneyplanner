@@ -49,12 +49,13 @@ export function createBlankDayPlan(overrides) {
 }
 
 // ── Factory: creates a blank event item merged with overrides (TD-002) ──────
-export function createEventItem(overrides) {
+export function createEventItem(overrides = {}) {
   return {
     type: '', restaurant: '', customRestaurant: '',
     menuUrl: '', bookingUrl: '', heroImage: '',
-    ride: '', ridePark: '', note: '', time: '', theme: '', text: '',
-    ...overrides
+    ride: '', ridePark: '', note: '', time: '09:00', theme: '', text: '',
+    ...overrides,
+    time: overrides.time || '09:00',
   }
 }
 
