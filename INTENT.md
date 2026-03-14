@@ -3,6 +3,17 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T09:45:00Z — Fixed-height timeline event cards
+
+**What:**
+- Set `height: 52px` on `.swipe-reveal-wrap` and `.ghost-event-content` so all timeline cards are a uniform height
+- Changed `.event-text` from `display: grid` to `display: flex; flex-direction: column` with tighter gap
+- Added `.event-text-meta` flex row to place event-type badge and time on the same line, making the 2-row layout (meta row + label) fit within the fixed height
+- Removed description and links from the card face (they were below the 52px fold anyway); accessible via edit form
+
+**Why:**
+- Uniform card height makes the timeline visually consistent and easier to scan
+
 ## 2026-03-14T09:30:00Z — Complete accessibility pass + swipe-to-delete + time-click-edit
 
 **What:**

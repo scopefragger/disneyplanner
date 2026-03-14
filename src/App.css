@@ -903,8 +903,22 @@ textarea:focus {
 
 
 .event-text {
-  display: grid;
-  gap: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Badge + time on the same row */
+.event-text-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.event-text-meta .event-type-badge {
+  margin-bottom: 0;
 }
 
 .event-links {
@@ -1060,6 +1074,8 @@ textarea:focus {
   padding: 0.3rem 0.4rem 0.3rem 0.65rem;
   border: 1px solid rgba(0, 87, 184, 0.12);
   border-left: 3px solid var(--event-theme-color, rgba(0, 87, 184, 0.4));
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Theme color — shared across timeline-event-content, ghost-event-content, timeline-event-edit */
@@ -1155,6 +1171,8 @@ textarea:focus {
   border-radius: 7px;
   padding: 0.3rem 0.4rem 0.3rem 0.65rem;
   border: 1.5px dashed var(--event-theme-color, rgba(0, 87, 184, 0.3));
+  height: 52px;
+  overflow: hidden;
 }
 
 
@@ -1223,6 +1241,7 @@ textarea:focus {
   position: relative;
   overflow: hidden;
   border-radius: 7px;
+  height: 52px;
 }
 
 .swipe-content {

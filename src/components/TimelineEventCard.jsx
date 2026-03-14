@@ -57,35 +57,16 @@ export default function TimelineEventCard({
 
   const closeSwipe = () => setSwipeX(0)
 
-  const contentClass = ghost ? 'ghost-event-content' : 'timeline-event-content'
-  const contentStyle = ghost
-    ? backgroundStyle
-    : { ...backgroundStyle, transform: `translateX(${swipeX}px)` }
-
   if (ghost) {
     return (
       <div className="timeline-event">
-        <div className={contentClass} data-theme={theme} style={backgroundStyle}>
+        <div className="ghost-event-content" data-theme={theme}>
           <div className="event-text">
-            {eventType && <span className="event-type-badge">{eventType.toUpperCase()}</span>}
-            {time && <span className="event-time">{formatTime(time)}</span>}
-            <p>{label}</p>
-            {description && <small className="event-description">{description}</small>}
-            {tags?.length > 0 && (
-              <div className="ghost-tags">
-                {tags.map(tag => <span key={tag} className="ghost-tag">{tag}</span>)}
-              </div>
-            )}
-            <div className="ghost-links">
-              {infoUrl && (
-                <a href={infoUrl} target="_blank" rel="noreferrer noopener"
-                  className="ghost-link" title="About this show">ℹ Info</a>
-              )}
-              {mapUrl && (
-                <a href={mapUrl} target="_blank" rel="noreferrer noopener"
-                  className="ghost-link" title="View on map">📍 Map</a>
-              )}
+            <div className="event-text-meta">
+              {eventType && <span className="event-type-badge">{eventType.toUpperCase()}</span>}
+              {time && <span className="event-time">{formatTime(time)}</span>}
             </div>
+            <p>{label}</p>
           </div>
           <div className="ghost-actions">
             <button type="button" className="ghost-accept-btn"
@@ -100,11 +81,13 @@ export default function TimelineEventCard({
     )
   }
 
+  const contentStyle = { ...backgroundStyle, transform: `translateX(${swipeX}px)` }
+
   return (
     <div className="timeline-event">
       <div className="swipe-reveal-wrap">
         <div
-          className={`${contentClass} swipe-content`}
+          className="timeline-event-content swipe-content"
           data-theme={theme}
           style={contentStyle}
           onTouchStart={handleTouchStart}
@@ -112,31 +95,20 @@ export default function TimelineEventCard({
           onTouchEnd={handleTouchEnd}
         >
           <div className="event-text">
-            {eventType && <span className="event-type-badge">{eventType.toUpperCase()}</span>}
-            {time && (
-              <button
-                type="button"
-                className="event-time-btn"
-                onClick={() => { closeSwipe(); onEdit() }}
-                aria-label={`Edit event at ${formatTime(time)}`}
-              >
-                {formatTime(time)}
-              </button>
-            )}
-            <p>{label}</p>
-            {description && <small className="event-description">{description}</small>}
-            <div className="event-links">
-              {hasRestaurantLinks && menuUrl && (
-                <a href={menuUrl} target="_blank" rel="noreferrer noopener">View menu</a>
+            <div className="event-text-meta">
+              {eventType && <span className="event-type-badge">{eventType.toUpperCase()}</span>}
+              {time && (
+                <button
+                  type="button"
+                  className="event-time-btn"
+                  onClick={() => { closeSwipe(); onEdit() }}
+                  aria-label={`Edit event at ${formatTime(time)}`}
+                >
+                  {formatTime(time)}
+                </button>
               )}
-              {hasRestaurantLinks && bookingUrl && (
-                <a href={bookingUrl} target="_blank" rel="noreferrer noopener">Book</a>
-              )}
-              {viewInfoUrl && (
-                <a href={viewInfoUrl} target="_blank" rel="noreferrer noopener">View info</a>
-              )}
-              <a href={mapUrl} target="_blank" rel="noreferrer noopener">View on map</a>
             </div>
+            <p>{label}</p>
           </div>
         </div>
         <button
