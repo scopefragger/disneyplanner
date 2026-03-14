@@ -3,6 +3,19 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T10:15:00Z — True fixed-height cards with pinned links
+
+**What:**
+- Set `height: 88px` (fixed) on `.swipe-reveal-wrap` and `.ghost-event-content`
+- `.timeline-event-content` and `.event-text` fill full card height via `height: 100%`
+- Event links and ghost links use `margin-top: auto` to pin to the bottom of each card — cards with or without description look the same because the links always sit at the same vertical position
+- Ghost accept/dismiss buttons centred vertically with `flex-direction: column; justify-content: center`
+- `.ghost-event-content` uses `align-items: stretch` so event-text fills the full height
+
+**Why:**
+- `min-height` gave inconsistent heights; true `height: 88px` makes every card identical
+- `margin-top: auto` on links means description presence/absence only affects the gap above the links, not the card height — consistent appearance without requiring placeholder content
+
 ## 2026-03-14T10:00:00Z — Restore descriptions and links on event cards; flexible card height
 
 **What:**
