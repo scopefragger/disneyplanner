@@ -3,6 +3,18 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-14T17:10:00Z — Refresh park-shows.yaml with current WDW entertainment
+
+**What:**
+- Fixed stale showtimes: Happily Ever After 21:00→21:30, Fantasmic! 21:00→20:30
+- Removed 2 ended shows: Star Wars: A Galactic Spectacular (replaced by Wonderful World of Animation), Harambe Wildlife Parti (no longer running)
+- Added 2 Magic Kingdom shows: Disney Starlight: Dream the Night Away (new nighttime parade), Disney Adventure Friends Cavalcade
+- Added 1 EPCOT show: ¡Celebración Encanto! (now permanent)
+- Added 5 Hollywood Studios shows: The Little Mermaid – A Musical Adventure, Disney Villains: Unfairly Ever After, Beauty and the Beast – Live on Stage, For the First Time in Forever: A Frozen Sing-Along Celebration, Wonderful World of Animation
+- Added 3 Animal Kingdom shows: Festival of the Lion King, Finding Nemo: The Big Blue... and Beyond!, Feathered Friends in Flight!
+
+**Why:** Periodic data refresh via themeparks.wiki live API and web research to keep park show data current. Total shows: 8 → 18.
+
 ## 2026-03-14T17:00:00Z — Audit and refresh rides.yaml against current WDW lineup
 
 **What:**

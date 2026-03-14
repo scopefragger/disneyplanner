@@ -25,12 +25,32 @@ Magic Kingdom:
   - id: mk-happily-ever-after
     label: Happily Ever After Fireworks
     description: "Magic Kingdom's signature fireworks spectacular over Cinderella Castle"
-    time: "21:00"
+    time: "21:30"
     type: Fireworks
     theme: fireworks
     tags: ["#fireworks", "#nighttime", "#mustdo"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/magic-kingdom/happily-ever-after/
     mapUrl: "https://www.google.com/maps?q=Cinderella+Castle+Magic+Kingdom+Walt+Disney+World"
+
+  - id: mk-starlight
+    label: "Disney Starlight: Dream the Night Away"
+    description: Glowing nighttime parade with the Blue Fairy, Encanto, Frozen, Moana and Coco characters
+    time: "20:15"
+    type: Parade
+    theme: default
+    tags: ["#parade", "#nighttime", "#mustdo"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/magic-kingdom/disney-starlight-dream-the-night-away/
+    mapUrl: "https://www.google.com/maps?q=Main+Street+USA+Magic+Kingdom+Walt+Disney+World"
+
+  - id: mk-adventure-cavalcade
+    label: Disney Adventure Friends Cavalcade
+    description: Daytime character cavalcade with heroes from Moana, Zootopia, Raya, and more
+    time: "10:30"
+    type: Parade
+    theme: character
+    tags: ["#parade", "#character", "#morning"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/magic-kingdom/disney-adventure-friends-cavalcade/
+    mapUrl: "https://www.google.com/maps?q=Main+Street+USA+Magic+Kingdom+Walt+Disney+World"
 
 EPCOT:
   - id: ep-luminous
@@ -42,6 +62,16 @@ EPCOT:
     tags: ["#fireworks", "#nighttime", "#worldshowcase"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/epcot/luminous-the-symphony-of-us/
     mapUrl: "https://www.google.com/maps?q=World+Showcase+Lagoon+EPCOT+Walt+Disney+World"
+
+  - id: ep-celebracion-encanto
+    label: "\u00a1Celebraci\u00f3n Encanto!"
+    description: High-energy Encanto sing-along and dance party with Mirabel and Bruno on CommuniCore Plaza
+    time: "10:45"
+    type: Show
+    theme: character
+    tags: ["#encanto", "#singalong", "#family"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/epcot/celebracion-encanto/
+    mapUrl: "https://www.google.com/maps?q=CommuniCore+Plaza+EPCOT+Walt+Disney+World"
 
 "Disney's Hollywood Studios":
   - id: hs-indy
@@ -57,34 +87,64 @@ EPCOT:
   - id: hs-fantasmic
     label: "Fantasmic!"
     description: Mickey battles Disney villains in an epic outdoor nighttime water spectacular
-    time: "21:00"
+    time: "20:30"
     type: Fireworks
     theme: fireworks
     tags: ["#nighttime", "#mustdo", "#spectacular"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/fantasmic/
     mapUrl: "https://www.google.com/maps?q=Hollywood+Hills+Amphitheater+Hollywood+Studios+Walt+Disney+World"
 
-  - id: hs-galactic
-    label: "Star Wars: A Galactic Spectacular"
-    description: Star Wars nighttime fireworks and projection show on the Hollywood Studios skyline
-    time: "21:30"
+  - id: hs-little-mermaid
+    label: "The Little Mermaid \u2013 A Musical Adventure"
+    description: Live musical retelling of The Little Mermaid with actors, puppets and special effects
+    time: "10:00"
+    type: Show
+    theme: character
+    tags: ["#littlemermaid", "#musical", "#family"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/the-little-mermaid-a-musical-adventure/
+    mapUrl: "https://www.google.com/maps?q=Animation+Courtyard+Hollywood+Studios+Walt+Disney+World"
+
+  - id: hs-villains
+    label: "Disney Villains: Unfairly Ever After"
+    description: Projection-mapped villain show where Captain Hook, Cruella and Maleficent tell their side
+    time: "10:30"
+    type: Show
+    theme: default
+    tags: ["#villains", "#projection", "#indoor"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/disney-villains-unfairly-ever-after/
+    mapUrl: "https://www.google.com/maps?q=Sunset+Showcase+Hollywood+Studios+Walt+Disney+World"
+
+  - id: hs-beauty-beast
+    label: Beauty and the Beast - Live on Stage
+    description: Broadway-style retelling of Beauty and the Beast at the Theater of the Stars
+    time: "11:00"
+    type: Show
+    theme: character
+    tags: ["#beautyandthebeast", "#musical", "#classic"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/beauty-and-the-beast-live-on-stage/
+    mapUrl: "https://www.google.com/maps?q=Theater+of+the+Stars+Hollywood+Studios+Walt+Disney+World"
+
+  - id: hs-frozen-singalong
+    label: "For the First Time in Forever: A Frozen Sing-Along Celebration"
+    description: Comedic retelling of Frozen with audience sing-along and a visit from Elsa and Anna
+    time: "09:30"
+    type: Show
+    theme: character
+    tags: ["#frozen", "#singalong", "#family"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/for-the-first-time-in-forever-frozen-sing-along-celebration/
+    mapUrl: "https://www.google.com/maps?q=Hyperion+Theater+Hollywood+Studios+Walt+Disney+World"
+
+  - id: hs-wonderful-animation
+    label: Wonderful World of Animation
+    description: Nighttime projection show celebrating Disney animation on the Chinese Theatre facade
+    time: "21:00"
     type: Fireworks
     theme: fireworks
-    tags: ["#starwars", "#fireworks", "#nighttime"]
-    infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/star-wars-a-galactic-spectacular/
-    mapUrl: "https://www.google.com/maps?q=Hollywood+Studios+Walt+Disney+World"
+    tags: ["#projection", "#nighttime", "#animation"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/wonderful-world-of-animation/
+    mapUrl: "https://www.google.com/maps?q=Chinese+Theatre+Hollywood+Studios+Walt+Disney+World"
 
 "Disney's Animal Kingdom":
-  - id: ak-harambe
-    label: Harambe Wildlife Parti
-    description: Lively interactive street party parade through Africa in Animal Kingdom
-    time: "17:00"
-    type: Parade
-    theme: nature
-    tags: ["#parade", "#africa", "#interactive"]
-    infoUrl: https://disneyworld.disney.go.com/entertainment/animal-kingdom/harambe-wildlife-parti/
-    mapUrl: "https://www.google.com/maps?q=Harambe+Africa+Animal+Kingdom+Walt+Disney+World"
-
   - id: ak-tree-awakening
     label: Tree of Life Awakening
     description: The Tree of Life comes alive with projected animal spirits at dusk
@@ -94,3 +154,33 @@ EPCOT:
     tags: ["#nature", "#evening", "#magical"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/animal-kingdom/tree-of-life-awakening/
     mapUrl: "https://www.google.com/maps?q=Tree+of+Life+Animal+Kingdom+Walt+Disney+World"
+
+  - id: ak-lion-king
+    label: Festival of the Lion King
+    description: Broadway-style musical celebration of The Lion King with acrobats, singers and dancers
+    time: "10:00"
+    type: Show
+    theme: nature
+    tags: ["#lionking", "#musical", "#mustdo"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/animal-kingdom/festival-of-the-lion-king/
+    mapUrl: "https://www.google.com/maps?q=Harambe+Theater+Animal+Kingdom+Walt+Disney+World"
+
+  - id: ak-finding-nemo
+    label: "Finding Nemo: The Big Blue... and Beyond!"
+    description: Musical stage show bringing Finding Nemo to life with puppets and special effects
+    time: "11:00"
+    type: Show
+    theme: nature
+    tags: ["#nemo", "#musical", "#family"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/animal-kingdom/finding-nemo-the-musical/
+    mapUrl: "https://www.google.com/maps?q=Theater+in+the+Wild+Animal+Kingdom+Walt+Disney+World"
+
+  - id: ak-feathered-friends
+    label: "Feathered Friends in Flight!"
+    description: Live bird show with macaws, hawks and other birds soaring over the audience
+    time: "10:45"
+    type: Show
+    theme: nature
+    tags: ["#birds", "#live", "#nature"]
+    infoUrl: https://disneyworld.disney.go.com/entertainment/animal-kingdom/feathered-friends-in-flight/
+    mapUrl: "https://www.google.com/maps?q=Caravan+Stage+Animal+Kingdom+Walt+Disney+World"
