@@ -3,6 +3,18 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-15T01:00:00Z — Fix mobile UX: delete button stacking and fixed card height
+
+**What:**
+- Added `position: relative; z-index: 1` to `.swipe-content` — card content now stacks above delete button at rest
+- Changed `height: 100px` → `min-height: 100px` on `.swipe-reveal-wrap` — cards grow with content
+- Changed `height: 100px` → `min-height: 100px` on `.ghost-event-content` — ghost cards also grow
+- Removed `height: 100%` from `.timeline-event-content` — sizes naturally
+
+**Why:**
+- The red 64px delete button (`position: absolute`) was painting above the normal-flow `.swipe-content` by default, creating a permanent red strip on every card's right edge on mobile
+- Fixed 100px height clipped long show names and descriptions on small screens
+
 ## 2026-03-15T00:00:00Z — Extend show search to match description text
 
 **What:**

@@ -1076,7 +1076,6 @@ textarea:focus {
   padding: 0.5rem 0.5rem 0.5rem 0.65rem;
   border: 1px solid rgba(0, 87, 184, 0.12);
   border-left: 3px solid var(--event-theme-color, rgba(0, 87, 184, 0.4));
-  height: 100%;
   box-sizing: border-box;
 }
 
@@ -1177,7 +1176,7 @@ textarea:focus {
   border-radius: 7px;
   padding: 0.5rem 0.4rem 0.5rem 0.65rem;
   border: 1.5px dashed var(--event-theme-color, rgba(0, 87, 184, 0.3));
-  height: 100px;
+  min-height: 100px;
   box-sizing: border-box;
 }
 
@@ -1250,10 +1249,12 @@ textarea:focus {
   position: relative;
   overflow: hidden;
   border-radius: 7px;
-  height: 100px;
+  min-height: 100px;
 }
 
 .swipe-content {
+  position: relative;
+  z-index: 1;
   transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
