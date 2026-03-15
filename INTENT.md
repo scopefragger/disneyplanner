@@ -3,6 +3,20 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-15T20:30:00Z — Wire restaurant hero images and build show image infrastructure
+
+**What:**
+- `DayPlanSection.jsx`: Import `RESTAURANT_METADATA` and look up `heroImage` for dining timeline cards — restaurants now show their CDN hero image as card background (same gradient-fade style as ride images)
+- `DayPlanSection.jsx`: Import `SHOW_IMAGES` and look up show image for confirmed show events; pass `ghostBackgroundStyle` to ghost suggestion cards
+- `parkSuggestions.js`: Export `SHOW_IMAGES` map (label → image URL) built from `park-shows.yaml` `image` fields
+- `TimelineEventCard.jsx`: Accept `ghostBackgroundStyle` prop and apply to ghost card container
+- `rideData.js`: `RIDE_IMAGES` now handles external URLs (http/https) directly, only prepends `IMG_BASE` for relative paths
+
+**Why:**
+- All 65 restaurants had `heroImage` CDN URLs in YAML but they were never rendered in the UI
+- Infrastructure is now in place for show images once URLs are added to `park-shows.yaml`
+- The 10 recently-added rides (it's a small world, Buzz Lightyear, Winnie the Pooh, Little Mermaid, Barnstormer, Living with the Land, Seas with Nemo, Star Tours, Alien Swirling Saucers, Aerophile) still reference local image files that don't exist yet — cards degrade gracefully to text-only style
+
 ## 2026-03-15T01:00:00Z — Fix mobile UX: delete button stacking and fixed card height
 
 **What:**

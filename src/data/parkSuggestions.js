@@ -141,6 +141,11 @@ export async function fetchLiveParkShows(parkName) {
 export const ALL_SHOWS = Object.entries(PARK_SUGGESTIONS)
   .flatMap(([park, shows]) => shows.map(s => ({ ...s, park })))
 
+// Label → image URL lookup for show cards (populated from park-shows.yaml `image` fields)
+export const SHOW_IMAGES = Object.fromEntries(
+  ALL_SHOWS.filter(s => s.image).map(s => [s.label, s.image])
+)
+
 export function getParkSuggestions(park, secondPark) {
   return [park, secondPark]
     .filter(Boolean)

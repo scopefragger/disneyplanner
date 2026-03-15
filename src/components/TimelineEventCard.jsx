@@ -36,6 +36,7 @@ export default function TimelineEventCard({
   infoUrl,
   onAccept,
   onDismiss,
+  ghostBackgroundStyle,
 }) {
   const [swipeX, setSwipeX] = useState(0)
   const touchStartX = useRef(null)
@@ -60,7 +61,7 @@ export default function TimelineEventCard({
   if (ghost) {
     return (
       <div className="timeline-event">
-        <div className="ghost-event-content" data-theme={theme}>
+        <div className="ghost-event-content" data-theme={theme} style={ghostBackgroundStyle}>
           <div className="event-text">
             <div className="event-text-meta">
               {eventType && <span className="event-type-badge">{eventType.toUpperCase()}</span>}

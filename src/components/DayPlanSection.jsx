@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { formatPrettyDate, formatShortDate } from '../utils.js'
 import { PARK_OPTIONS, DAY_TYPES, SWIM_OPTIONS, DISNEY_HOTELS } from '../data/tripOptions.js'
-import { getParkSuggestions } from '../data/parkSuggestions.js'
+import { getParkSuggestions, SHOW_IMAGES } from '../data/parkSuggestions.js'
 import { getRideUrl, RIDE_IMAGES } from '../data/rideData.js'
+import { RESTAURANT_METADATA } from '../data/restaurantMetadata.js'
 import { normalizeEventItem, buildEventLabel } from '../data/planHelpers.js'
 import { WDW_SUFFIX } from '../data/constants.js'
 import { getDayTypeChipColor, hashtagLabel, getDayCardStyle, getDayTypeIcon, getSecondParkOptions, getItemSlot, getTimeSlots, getLocationDisplay, getEventDescription } from '../data/displayHelpers.js'
@@ -106,9 +107,12 @@ function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, up
   const label = buildEventLabel(normalizedItem)
   const { rideName, menuUrl, bookingUrl, mapUrl, viewInfoUrl } = buildItemUrls(normalizedItem, dayPlan)
   const rideImage = RIDE_IMAGES[rideName] || ''
+  const restaurantImage = normalizedItem.restaurant ? (RESTAURANT_METADATA[normalizedItem.restaurant]?.heroImage || '') : ''
+  const showImage = normalizedItem.type === 'Show' ? (SHOW_IMAGES[label] || '') : ''
+  const cardImage = rideImage || restaurantImage || showImage
   const hasRestaurantLinks = Boolean(normalizedItem.type !== 'Ride' && normalizedItem.restaurant && (menuUrl || bookingUrl))
-  const backgroundStyle = rideImage
-    ? { backgroundImage: `linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 55%, rgba(255,255,255,0.4) 80%, rgba(255,255,255,0) 100%), url(${rideImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' }
+  const backgroundStyle = cardImage
+    ? { backgroundImage: `linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 55%, rgba(255,255,255,0.4) 80%, rgba(255,255,255,0) 100%), url(${cardImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' }
     : undefined
   const isEditing = editingDayItem?.date === date && editingDayItem?.index === item._idx
   if (isEditing) {
@@ -139,6 +143,10 @@ function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, up
 }
 
 function renderGhostEvent({ suggestion, date, acceptSuggestion, dismissSuggestion }) {
+  const ghostImage = suggestion.image || SHOW_IMAGES[suggestion.label] || ''
+  const ghostBackgroundStyle = ghostImage
+    ? { backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.92) 55%, rgba(255,255,255,0.4) 80%, rgba(255,255,255,0) 100%), url(${ghostImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' }
+    : undefined
   return (
     <TimelineEventCard
       key={suggestion.id}
@@ -151,6 +159,7 @@ function renderGhostEvent({ suggestion, date, acceptSuggestion, dismissSuggestio
       tags={suggestion.tags}
       infoUrl={suggestion.infoUrl}
       mapUrl={suggestion.mapUrl}
+      ghostBackgroundStyle={ghostBackgroundStyle}
       onAccept={() => acceptSuggestion(date, suggestion)}
       onDismiss={() => dismissSuggestion(date, suggestion.id)}
     />
