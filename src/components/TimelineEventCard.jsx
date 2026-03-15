@@ -24,6 +24,8 @@ export default function TimelineEventCard({
   ghost = false,
   // Real event
   backgroundStyle,
+  typicalWait,
+  liveWait,
   menuUrl,
   bookingUrl,
   viewInfoUrl,
@@ -121,6 +123,13 @@ export default function TimelineEventCard({
               )}
             </div>
             <p>{label}</p>
+            {(typicalWait || liveWait !== null) && (
+              <small className="event-wait-time">
+                {typicalWait && `~${typicalWait} min typical`}
+                {typicalWait && liveWait !== null && ' · '}
+                {liveWait !== null && `Live: ${liveWait} min`}
+              </small>
+            )}
             {description && <small className="event-description">{description}</small>}
             <div className="event-links">
               {hasRestaurantLinks && menuUrl && (

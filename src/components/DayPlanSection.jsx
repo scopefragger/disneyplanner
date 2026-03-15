@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { formatPrettyDate, formatShortDate } from '../utils.js'
 import { PARK_OPTIONS, DAY_TYPES, SWIM_OPTIONS, DISNEY_HOTELS } from '../data/tripOptions.js'
 import { getParkSuggestions, SHOW_IMAGES } from '../data/parkSuggestions.js'
-import { getRideUrl, RIDE_IMAGES } from '../data/rideData.js'
+import { getRideUrl, RIDE_IMAGES, RIDE_DEMAND } from '../data/rideData.js'
+import { getTypicalWait } from '../data/waitTimeHelpers.js'
 import { RESTAURANT_METADATA } from '../data/restaurantMetadata.js'
 import { normalizeEventItem, buildEventLabel } from '../data/planHelpers.js'
 import { WDW_SUFFIX } from '../data/constants.js'
@@ -102,7 +103,7 @@ function renderEditForm({ editingDayItem, setEditingDayItem, updateDayItem, remo
   )
 }
 
-function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, dayPlan }) {
+function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, dayPlan, liveWaitData }) {
   const normalizedItem = normalizeEventItem(item)
   const label = buildEventLabel(normalizedItem)
   const { rideName, menuUrl, bookingUrl, mapUrl, viewInfoUrl } = buildItemUrls(normalizedItem, dayPlan)
@@ -110,6 +111,10 @@ function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, up
   const restaurantImage = normalizedItem.restaurant ? (RESTAURANT_METADATA[normalizedItem.restaurant]?.heroImage || '') : ''
   const showImage = normalizedItem.type === 'Show' ? (SHOW_IMAGES[label] || '') : ''
   const cardImage = rideImage || restaurantImage || showImage
+  const demand = rideName ? RIDE_DEMAND[rideName] : null
+  const typicalWait = demand ? getTypicalWait(demand, date, normalizedItem.time) : null
+  const parkWaits = liveWaitData?.[dayPlan.park] ?? liveWaitData?.[dayPlan.secondPark] ?? null
+  const liveWait = rideName && parkWaits ? (parkWaits[rideName] ?? null) : null
   const hasRestaurantLinks = Boolean(normalizedItem.type !== 'Ride' && normalizedItem.restaurant && (menuUrl || bookingUrl))
   const backgroundStyle = cardImage
     ? { backgroundImage: `linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 55%, rgba(255,255,255,0.4) 80%, rgba(255,255,255,0) 100%), url(${cardImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' }
@@ -131,6 +136,8 @@ function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, up
       description={getEventDescription(normalizedItem)}
       eventType={normalizedItem.type}
       backgroundStyle={backgroundStyle}
+      typicalWait={typicalWait}
+      liveWait={liveWait}
       menuUrl={menuUrl}
       bookingUrl={bookingUrl}
       viewInfoUrl={viewInfoUrl}
@@ -296,7 +303,7 @@ function renderDayFormSelector({ dayPlan, date, secondParkOptions, hotelShopping
 
 export default function DayPlanSection({
   plan, tripDates, activeDay, setActiveDay,
-  liveShowData, editingDayItem, setEditingDayItem,
+  liveShowData, liveWaitData, editingDayItem, setEditingDayItem,
   updateDayPlan, updateDayItem, removeDayItem,
   acceptSuggestion, dismissSuggestion,
   clearDayType, clearPark, clearSwimSpot, clearStaySpot,
@@ -422,7 +429,7 @@ export default function DayPlanSection({
                   <div className="timeline-node" />
                   <div className="timeline-slot-events">
                     {slotItems.map(item => renderTimelineEvent({
-                      item, date, editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, dayPlan
+                      item, date, editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, dayPlan, liveWaitData
                     }))}
                     {slotGhosts.map(suggestion => renderGhostEvent({
                       suggestion, date, acceptSuggestion, dismissSuggestion

@@ -137,6 +137,39 @@ export async function fetchLiveParkShows(parkName) {
   }
 }
 
+// Fetch live attraction wait times for a park from themeparks.wiki
+// Returns { "Ride Name": waitMinutes, ... } or null on failure
+// Caches in sessionStorage for 30 minutes (same TTL as shows)
+export async function fetchLiveAttractions(parkName) {
+  const entityId = PARK_ENTITY_IDS[parkName]
+  if (!entityId) return null
+
+  const cacheKey = `live-waits-${entityId}`
+  const cached = sessionStorage.getItem(cacheKey)
+  if (cached) {
+    const { data, ts } = JSON.parse(cached)
+    if (Date.now() - ts < CACHE_TTL_MS) return data
+  }
+
+  try {
+    const res = await fetch(`https://api.themeparks.wiki/v1/entity/${entityId}/live`)
+    if (!res.ok) return null
+    const json = await res.json()
+
+    const waits = {}
+    for (const e of (json.liveData || [])) {
+      if (e.entityType !== 'ATTRACTION') continue
+      const minutes = e.queue?.STANDBY?.waitTime
+      if (typeof minutes === 'number') waits[e.name] = minutes
+    }
+
+    sessionStorage.setItem(cacheKey, JSON.stringify({ data: waits, ts: Date.now() }))
+    return waits
+  } catch {
+    return null
+  }
+}
+
 // All static shows across every park, each decorated with a `park` field for display
 export const ALL_SHOWS = Object.entries(PARK_SUGGESTIONS)
   .flatMap(([park, shows]) => shows.map(s => ({ ...s, park })))

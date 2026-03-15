@@ -1,0 +1,39 @@
+# Queue time advisory configuration
+# Base wait times (minutes) by demand level × time slot
+# Season multiplier is applied on top, then result is rounded to nearest 5
+
+baseTimes:
+  low:       { opening: 5,  morning: 10, midday: 20,  afternoon: 15, evening: 10 }
+  medium:    { opening: 10, morning: 25, midday: 45,  afternoon: 40, evening: 25 }
+  high:      { opening: 20, morning: 45, midday: 75,  afternoon: 65, evening: 40 }
+  very_high: { opening: 35, morning: 75, midday: 120, afternoon: 100, evening: 60 }
+
+# Multipliers applied to base times based on time of year
+seasonMultipliers:
+  low:      0.65   # Quietest — Jan–Feb, Sep, Nov
+  value:    0.90   # Shoulder — Mar–Apr, Oct
+  moderate: 1.00   # Average — May
+  peak:     1.35   # Busiest — Jun–Aug, Dec
+
+# Maps calendar month (1–12) to a season key
+monthSeasons:
+  1:  low       # January
+  2:  low       # February
+  3:  value     # March
+  4:  value     # April
+  5:  moderate  # May
+  6:  peak      # June
+  7:  peak      # July
+  8:  peak      # August
+  9:  low       # September
+  10: value     # October
+  11: low       # November
+  12: peak      # December
+
+# Maps HH:MM time ranges to a slot key
+# Slot boundaries (inclusive start, exclusive end):
+#   opening:   08:00–10:00
+#   morning:   10:00–12:00
+#   midday:    12:00–15:00
+#   afternoon: 15:00–18:00
+#   evening:   18:00–24:00

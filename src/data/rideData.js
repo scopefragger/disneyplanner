@@ -13,6 +13,7 @@ export const RIDE_URLS         = Object.fromEntries(ALL_RIDES.map(r => [r.name, 
 export const RIDE_TAGS         = Object.fromEntries(ALL_RIDES.map(r => [r.name, r.tags]))
 export const RIDE_DESCRIPTIONS = Object.fromEntries(ALL_RIDES.map(r => [r.name, r.description]))
 export const RIDE_IMAGES       = Object.fromEntries(ALL_RIDES.map(r => [r.name, r.image.startsWith('http') ? r.image : `${IMG_BASE}${r.image}`]))
+export const RIDE_DEMAND       = Object.fromEntries(ALL_RIDES.map(r => [r.name, r.demand ?? 'medium']))
 
 export function getRideUrl(ride)         { return RIDE_URLS[ride] ?? null }
 export function getRideTags(ride)        { return RIDE_TAGS[ride] ?? [] }

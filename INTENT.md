@@ -3,6 +3,25 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-15T21:15:00Z — Add queue time advisory to ride cards
+
+**What:**
+- `src/data/yaml/wait-config.yaml` (new) — base wait times by demand×slot, season multipliers, month→season map
+- `src/data/waitTimeHelpers.js` (new) — `getSeasonFromDate`, `getTimeSlotFromTime`, `getTypicalWait` pure helpers
+- `src/data/yaml/rides.yaml` — added `demand` field (`low|medium|high|very_high`) to all 38 rides
+- `src/data/rideData.js` — export `RIDE_DEMAND` lookup table
+- `src/data/parkSuggestions.js` — added `fetchLiveAttractions` using same themeparks.wiki endpoint; returns `{ "Ride Name": waitMinutes }` per park, cached 30 min in sessionStorage
+- `src/App.jsx` — added `liveWaitData` state; fetches alongside shows; passed to `DayPlanSection`
+- `src/components/DayPlanSection.jsx` — computes `typicalWait` (season+time adjusted) and `liveWait` (from API); passes both to `TimelineEventCard`
+- `src/components/TimelineEventCard.jsx` — renders `~N min typical · Live: N min` line between badge row and label
+- `src/App.css` — `.event-wait-time` styles
+- `src/__tests__/waitTimeHelpers.test.js` (new) — 32 tests covering all three helper functions
+
+**Why:**
+- Users planning a trip need advisory wait times to schedule rides effectively
+- Two tiers: static typical estimates (useful weeks before the trip) + live API data (useful day-of)
+- Uses the already-integrated themeparks.wiki API; no new dependencies or API keys required
+
 ## 2026-03-15T20:30:00Z — Wire restaurant hero images and build show image infrastructure
 
 **What:**

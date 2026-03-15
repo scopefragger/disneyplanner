@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { getRideOptionsForDay } from './data/displayHelpers.js'
-import { fetchLiveParkShows, ALL_SHOWS } from './data/parkSuggestions.js'
+import { fetchLiveParkShows, fetchLiveAttractions, ALL_SHOWS } from './data/parkSuggestions.js'
 import { DEFAULT_PLAN, DEFAULT_DRAFT, SHOW_TYPE_MAP, WIZARD_STEPS, appendDayItem, appendDismissed, createBlankDayPlan, createEventItem, getEventTypeConfig, parseRideSelection, patchDayPlan } from './data/planHelpers.js'
 import { ALL_RESTAURANTS, RESTAURANT_TAGS, getRestaurantResources } from './data/restaurantMetadata'
 import { RIDE_TAGS } from './data/rideData.js'
@@ -35,6 +35,7 @@ function App() {
   const [activeDay, setActiveDay] = useState(0)
   const [editingDayItem, setEditingDayItem] = useState(null) // { date, index, draft }
   const [liveShowData, setLiveShowData] = useState({}) // keyed by park name
+  const [liveWaitData, setLiveWaitData] = useState({}) // keyed by park name → { "Ride Name": waitMinutes }
 
   // ── Search / UI state ──
   const [addEventOpen, setAddEventOpen] = useState(false)
@@ -103,6 +104,9 @@ function App() {
       setLiveShowData(prev => ({ ...prev, [park]: null })) // mark in-flight
       fetchLiveParkShows(park).then(shows => {
         if (shows) setLiveShowData(prev => ({ ...prev, [park]: shows }))
+      })
+      fetchLiveAttractions(park).then(waits => {
+        if (waits) setLiveWaitData(prev => ({ ...prev, [park]: waits }))
       })
     })
   }, [plan.dayPlans]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -426,6 +430,7 @@ function App() {
                 activeDay={activeDay}
                 setActiveDay={setActiveDay}
                 liveShowData={liveShowData}
+                liveWaitData={liveWaitData}
                 editingDayItem={editingDayItem}
                 setEditingDayItem={setEditingDayItem}
                 updateDayPlan={updateDayPlan}
