@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { formatPrettyDate, formatShortDate } from '../utils.js'
 import { PARK_OPTIONS, DAY_TYPES, SWIM_OPTIONS, DISNEY_HOTELS } from '../data/tripOptions.js'
 import { getParkSuggestions, SHOW_IMAGES } from '../data/parkSuggestions.js'
 import { getRideUrl, RIDE_IMAGES, RIDE_DEMAND } from '../data/rideData.js'
 import { getTypicalWait } from '../data/waitTimeHelpers.js'
+import { getWalkingTime, getWalkGapStatus, timeToMinutes } from '../data/walkingTimeHelpers.js'
 import { RESTAURANT_METADATA } from '../data/restaurantMetadata.js'
 import { normalizeEventItem, buildEventLabel } from '../data/planHelpers.js'
 import { WDW_SUFFIX } from '../data/constants.js'
-import { getDayTypeChipColor, hashtagLabel, getDayCardStyle, getDayTypeIcon, getSecondParkOptions, getItemSlot, getTimeSlots, getLocationDisplay, getEventDescription } from '../data/displayHelpers.js'
+import { getDayTypeChipColor, hashtagLabel, getDayCardStyle, getDayTypeIcon, getSecondParkOptions, getItemSlot, getTimeSlots, getLocationDisplay, getEventDescription, getEventArea } from '../data/displayHelpers.js'
 import TimelineEventCard from './TimelineEventCard.jsx'
 import MonorailLoader from './MonorailLoader.jsx'
 
@@ -103,7 +104,30 @@ function renderEditForm({ editingDayItem, setEditingDayItem, updateDayItem, remo
   )
 }
 
-function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, dayPlan, liveWaitData }) {
+function renderWalkConnector({ walkMins, gapMins, status }) {
+  return (
+    <div className={`walk-connector walk-connector--${status}`}>
+      <span>🚶 {walkMins} min walk</span>
+      <span className="walk-connector-gap"> · {gapMins} min gap</span>
+      {status === 'impossible' && <span className="walk-connector-warn"> ⚠️</span>}
+    </div>
+  )
+}
+
+function computeWalkConnector(prevItem, normalizedItem, park) {
+  if (!prevItem || !normalizedItem.time) return null
+  const prevNorm = normalizeEventItem(prevItem)
+  if (!prevNorm.time) return null
+  const fromArea = getEventArea(prevNorm)
+  const toArea = getEventArea(normalizedItem)
+  if (!fromArea || !toArea || fromArea === toArea) return null
+  const walkMins = getWalkingTime(fromArea, toArea, park)
+  const gapMins = timeToMinutes(normalizedItem.time) - timeToMinutes(prevNorm.time)
+  if (gapMins <= 0) return null
+  return { walkMins, gapMins, status: getWalkGapStatus(walkMins, gapMins) }
+}
+
+function renderTimelineEvent({ item, prevItem, date, editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, dayPlan, liveWaitData }) {
   const normalizedItem = normalizeEventItem(item)
   const label = buildEventLabel(normalizedItem)
   const { rideName, menuUrl, bookingUrl, mapUrl, viewInfoUrl } = buildItemUrls(normalizedItem, dayPlan)
@@ -119,33 +143,39 @@ function renderTimelineEvent({ item, date, editingDayItem, setEditingDayItem, up
   const backgroundStyle = cardImage
     ? { backgroundImage: `linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 55%, rgba(255,255,255,0.4) 80%, rgba(255,255,255,0) 100%), url(${cardImage})`, backgroundSize: 'cover', backgroundPosition: 'center right' }
     : undefined
+  const walkConnector = computeWalkConnector(prevItem, normalizedItem, dayPlan.park)
   const isEditing = editingDayItem?.date === date && editingDayItem?.index === item._idx
   if (isEditing) {
     return (
-      <div key={`event-${item._idx}`} className="timeline-event">
-        {renderEditForm({ editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, date, itemIdx: item._idx, normalizedItem })}
-      </div>
+      <Fragment key={`event-${item._idx}`}>
+        {walkConnector && renderWalkConnector(walkConnector)}
+        <div className="timeline-event">
+          {renderEditForm({ editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, date, itemIdx: item._idx, normalizedItem })}
+        </div>
+      </Fragment>
     )
   }
   return (
-    <TimelineEventCard
-      key={`event-${item._idx}`}
-      theme={normalizedItem.theme}
-      time={normalizedItem.time}
-      label={label}
-      description={getEventDescription(normalizedItem)}
-      eventType={normalizedItem.type}
-      backgroundStyle={backgroundStyle}
-      typicalWait={typicalWait}
-      liveWait={liveWait}
-      menuUrl={menuUrl}
-      bookingUrl={bookingUrl}
-      viewInfoUrl={viewInfoUrl}
-      mapUrl={mapUrl}
-      hasRestaurantLinks={hasRestaurantLinks}
-      onEdit={() => setEditingDayItem({ date, index: item._idx, draft: { time: normalizedItem.time || '', note: normalizedItem.note || '' } })}
-      onDelete={() => removeDayItem(date, item._idx)}
-    />
+    <Fragment key={`event-${item._idx}`}>
+      {walkConnector && renderWalkConnector(walkConnector)}
+      <TimelineEventCard
+        theme={normalizedItem.theme}
+        time={normalizedItem.time}
+        label={label}
+        description={getEventDescription(normalizedItem)}
+        eventType={normalizedItem.type}
+        backgroundStyle={backgroundStyle}
+        typicalWait={typicalWait}
+        liveWait={liveWait}
+        menuUrl={menuUrl}
+        bookingUrl={bookingUrl}
+        viewInfoUrl={viewInfoUrl}
+        mapUrl={mapUrl}
+        hasRestaurantLinks={hasRestaurantLinks}
+        onEdit={() => setEditingDayItem({ date, index: item._idx, draft: { time: normalizedItem.time || '', note: normalizedItem.note || '' } })}
+        onDelete={() => removeDayItem(date, item._idx)}
+      />
+    </Fragment>
   )
 }
 
@@ -321,6 +351,7 @@ export default function DayPlanSection({
   const dayTypeChipColor = getDayTypeChipColor(dayPlan.dayType)
   const secondParkOptions = getSecondParkOptions(dayPlan.park)
   const itemsWithIndex = (dayPlan.items || []).map((item, idx) => ({ ...item, _idx: idx }))
+  const allItemsSorted = [...itemsWithIndex].filter(i => i.time).sort((a, b) => a.time.localeCompare(b.time))
   const timeSlots = getTimeSlots(dayPlan.dayType)
   const dismissed = dayPlan.dismissedSuggestions || []
   const ghostSuggestions = computeGhostSuggestions(dayPlan, liveShowData, plan.favoriteTags, dismissed)
@@ -428,9 +459,11 @@ export default function DayPlanSection({
                   </div>
                   <div className="timeline-node" />
                   <div className="timeline-slot-events">
-                    {slotItems.map(item => renderTimelineEvent({
-                      item, date, editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, dayPlan, liveWaitData
-                    }))}
+                    {slotItems.map(item => {
+                      const sortedIdx = allItemsSorted.findIndex(i => i._idx === item._idx)
+                      const prevItem = sortedIdx > 0 ? allItemsSorted[sortedIdx - 1] : null
+                      return renderTimelineEvent({ item, prevItem, date, editingDayItem, setEditingDayItem, updateDayItem, removeDayItem, dayPlan, liveWaitData })
+                    })}
                     {slotGhosts.map(suggestion => renderGhostEvent({
                       suggestion, date, acceptSuggestion, dismissSuggestion
                     }))}

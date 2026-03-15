@@ -7,84 +7,98 @@ parks:
     - name: TRON Lightcycle / Run
       urlSlug: magic-kingdom/tron-lightcycle-run/
       image: rides/tron.jpg
+      area: Tomorrowland
       demand: very_high
       description: High-speed launch coaster through a neon-lit digital frontier
       tags: [thrill, roller coaster, indoor, fast, launch coaster, sci-fi, dark, tron, must do, intense, family, moderate thrill, high speed]
     - name: Seven Dwarfs Mine Train
       urlSlug: magic-kingdom/seven-dwarfs-mine-train/
       image: rides/seven-dwarfs-mine-train.jpg
+      area: Fantasyland
       demand: very_high
       description: Gentle family coaster through Snow White's glittering diamond mine
       tags: [family, roller coaster, mild thrill, snow white, dwarfs, children, family coaster, moderate thrill, outdoor, indoor, must do, queue]
     - name: Space Mountain
       urlSlug: magic-kingdom/space-mountain/
       image: rides/space-mountain.jpg
+      area: Tomorrowland
       demand: high
       description: Classic indoor roller coaster through the darkness of outer space
       tags: [thrill, roller coaster, indoor, dark, classic, space, must do, indoor coaster, dark ride, moderate thrill, futuristic, iconic]
     - name: Big Thunder Mountain Railroad
       urlSlug: magic-kingdom/big-thunder-mountain-railroad/
       image: rides/big-thunder-mountain.jpg
+      area: Frontierland
       demand: high
       description: Wild mine train ride through haunted gold-rush hills
       tags: [family, roller coaster, outdoor, mild thrill, wild west, mine train, children, classic, moderate thrill, fast, bumpy, iconic]
     - name: Pirates of the Caribbean
       urlSlug: magic-kingdom/pirates-of-the-caribbean/
       image: rides/pirates-of-the-caribbean.jpg
+      area: Adventureland
       demand: medium
       description: Boat ride through swashbuckling pirate scenes and battles
       tags: [family, boat ride, dark ride, classic, pirates, adventure, indoor, calm, all ages, slow ride, iconic, water, must do]
     - name: Haunted Mansion
       urlSlug: magic-kingdom/haunted-mansion/
       image: rides/haunted-mansion.jpg
+      area: Liberty Square
       demand: high
       description: Doom buggies past 999 happy haunts in a ghost-filled manor
       tags: [family, dark ride, classic, ghosts, spooky, indoor, all ages, doom buggy, hitchhiking ghosts, must do, iconic, halloween]
     - name: "Peter Pan's Flight"
       urlSlug: magic-kingdom/peter-pans-flight/
       image: rides/peter-pans-flight.jpg
+      area: Fantasyland
       demand: very_high
       description: Soar over London and Neverland in a magical flying pirate ship
       tags: [family, dark ride, classic, flying, children, peter pan, indoor, calm, all ages, slow ride, neverland, suspension]
     - name: "Tiana's Bayou Adventure"
       urlSlug: magic-kingdom/tianas-bayou-adventure/
       image: rides/tianas-bayou-adventure.jpg
+      area: Frontierland
       demand: high
       description: "Log flume through Princess Tiana's enchanted Louisiana bayou"
       tags: [family, log flume, water ride, bayou, tiana, princess, outdoor, mild thrill, moderate thrill, splash, wet, new]
     - name: Jungle Cruise
       urlSlug: magic-kingdom/jungle-cruise/
       image: rides/jungle-cruise.jpg
+      area: Adventureland
       demand: medium
       description: Boat tour with animatronic animals and punny skipper commentary
       tags: [family, boat ride, classic, animals, humour, outdoor, calm, all ages, safari, slow ride, puns, iconic]
     - name: "\"it's a small world\""
       urlSlug: magic-kingdom/its-a-small-world/
       image: rides/its-a-small-world.jpg
+      area: Fantasyland
       demand: low
       description: Classic boat ride past singing dolls representing cultures from around the world
       tags: [family, boat ride, dark ride, classic, indoor, calm, all ages, slow ride, iconic, children, music, gentle]
     - name: "Buzz Lightyear's Space Ranger Spin"
       urlSlug: magic-kingdom/buzz-lightyears-space-ranger-spin/
       image: rides/buzz-lightyear.jpg
+      area: Tomorrowland
       demand: medium
       description: Interactive dark ride blasting targets to defeat Emperor Zurg
       tags: [family, dark ride, interactive, shooting gallery, toy story, pixar, indoor, all ages, children, spin, competitive, fun]
     - name: The Many Adventures of Winnie the Pooh
       urlSlug: magic-kingdom/many-adventures-of-winnie-the-pooh/
       image: rides/winnie-the-pooh.jpg
+      area: Fantasyland
       demand: medium
       description: Gentle dark ride through the Hundred Acre Wood with Pooh and friends
       tags: [family, dark ride, classic, indoor, calm, all ages, children, gentle, winnie the pooh, slow ride, storybook]
     - name: "Under the Sea ~ Journey of The Little Mermaid"
       urlSlug: magic-kingdom/under-the-sea-journey-of-the-little-mermaid/
       image: rides/little-mermaid.jpg
+      area: Fantasyland
       demand: low
       description: Clamshell ride through scenes of Ariel's underwater adventure
       tags: [family, dark ride, indoor, calm, all ages, children, princess, ariel, little mermaid, gentle, music, slow ride]
     - name: The Barnstormer
       urlSlug: magic-kingdom/barnstormer/
       image: rides/barnstormer.jpg
+      area: Fantasyland
       demand: low
       description: Pint-sized roller coaster swooping through Goofy's stunt-pilot barn
       tags: [family, roller coaster, outdoor, mild thrill, children, short, goofy, family coaster, kiddie, first coaster, gentle]
@@ -93,54 +107,63 @@ parks:
     - name: "Guardians of the Galaxy: Cosmic Rewind"
       urlSlug: epcot/guardians-of-the-galaxy-cosmic-rewind/
       image: rides/guardians-cosmic-rewind.jpg
+      area: World Discovery
       demand: very_high
       description: Reverse-launch indoor coaster set to a cosmic classic mixtape
       tags: [thrill, roller coaster, indoor, reverse launch, fast, must do, guardians, marvel, dark, immersive, intense, high thrill]
     - name: Test Track
       urlSlug: epcot/test-track/
       image: rides/test-track.jpg
+      area: World Discovery
       demand: high
       description: Design a concept car and race it through performance tests at 65mph
       tags: [family, mild thrill, cars, design, futuristic, indoor, speed, moderate thrill, interactive, simulator, fast]
     - name: Frozen Ever After
       urlSlug: epcot/frozen-ever-after/
       image: rides/frozen-ever-after.jpg
+      area: World Showcase
       demand: high
       description: Gentle boat ride through Arendelle with Anna and Elsa
       tags: [family, boat ride, frozen, anna, elsa, indoor, calm, children, all ages, dark ride, slow ride, princess]
     - name: "Remy's Ratatouille Adventure"
       urlSlug: epcot/remys-ratatouille-adventure/
       image: rides/remys-ratatouille-adventure.jpg
+      area: World Showcase
       demand: high
       description: "Shrink to mouse-size and scurry through Gusteau's restaurant"
       tags: [family, dark ride, remy, ratatouille, pixar, indoor, calm, children, all ages, trackless, slow ride, interactive]
     - name: "Soarin' Across America"
       urlSlug: epcot/soarin/
       image: rides/soarin.jpg
+      area: World Discovery
       demand: high
       description: Hang-glider simulation soaring over iconic American landscapes and cityscapes
       tags: [family, simulation, flying, scenic, indoor, mild thrill, all ages, must do, hang gliding, iconic, omnimax, wind, america]
     - name: Living with the Land
       urlSlug: epcot/living-with-the-land/
       image: rides/living-with-the-land.jpg
+      area: World Nature
       demand: medium
       description: Gentle boat ride through working greenhouses and innovative agriculture
       tags: [family, boat ride, indoor, calm, all ages, slow ride, educational, nature, greenhouse, epcot, classic, relaxing]
     - name: "The Seas with Nemo & Friends"
       urlSlug: epcot/the-seas-with-nemo-and-friends/
       image: rides/seas-nemo.jpg
+      area: World Nature
       demand: low
       description: Clamshell ride through a coral reef searching for Nemo alongside real marine life
       tags: [family, dark ride, indoor, calm, all ages, children, nemo, pixar, slow ride, aquarium, gentle, ocean]
     - name: "Mission: SPACE"
       urlSlug: epcot/mission-space/
       image: rides/mission-space.jpg
+      area: World Discovery
       demand: medium
       description: Intense centrifuge-powered astronaut training simulator
       tags: [thrill, simulation, astronaut, space, indoor, intense, centrifuge, moderate thrill, spin, family version, motion sickness, NASA]
     - name: Spaceship Earth
       urlSlug: epcot/spaceship-earth/
       image: rides/spaceship-earth.jpg
+      area: World Celebration
       demand: low
       description: Slow journey through the entire history of human communication
       tags: [family, slow ride, dark ride, epcot, classic, educational, calm, all ages, time travel, indoor, iconic, golf ball]
@@ -149,54 +172,63 @@ parks:
     - name: "Star Wars: Rise of the Resistance"
       urlSlug: hollywood-studios/star-wars-rise-of-the-resistance/
       image: rides/star-wars-rise-of-the-resistance.jpg
+      area: "Galaxy's Edge"
       demand: very_high
       description: Immersive full-scale battle between the Resistance and First Order
       tags: [thrill, dark ride, star wars, immersive, indoor, must do, trackless, intense, epic, action, stunning, high thrill]
     - name: "Millennium Falcon: Smugglers Run"
       urlSlug: hollywood-studios/millennium-falcon-smugglers-run/
       image: rides/millennium-falcon-smugglers-run.jpg
+      area: "Galaxy's Edge"
       demand: high
       description: Pilot the Millennium Falcon on an interactive smuggling mission
       tags: [family, interactive, star wars, pilot, mild thrill, indoor, immersive, moderate thrill, action, cooperative, simulator]
     - name: Slinky Dog Dash
       urlSlug: hollywood-studios/slinky-dog-dash/
       image: rides/slinky-dog-dash.jpg
+      area: Toy Story Land
       demand: very_high
       description: "Family coaster through Andy's backyard on a giant Slinky Dog"
       tags: [family, roller coaster, toy story, outdoor, mild thrill, children, fun, family coaster, moderate thrill, pixar, spring]
     - name: Tower of Terror
       urlSlug: hollywood-studios/the-twilight-zone-tower-of-terror/
       image: rides/tower-of-terror.jpg
+      area: Sunset Boulevard
       demand: high
       description: Elevator plunges through a haunted Twilight Zone hotel
       tags: [thrill, drop tower, scary, twilight zone, indoor, intense, must do, vertical drop, horror, high thrill, falling, haunted]
     - name: "Rock 'n' Roller Coaster Starring The Muppets"
       urlSlug: hollywood-studios/rock-n-roller-coaster-starring-the-muppets/
       image: rides/rock-n-roller-coaster.jpg
+      area: Sunset Boulevard
       demand: high
       description: High-speed indoor coaster through Hollywood with Electric Mayhem and Scooter
       tags: [thrill, roller coaster, indoor, fast, launch coaster, muppets, intense, dark, must do, inversions, high thrill, loops]
     - name: "Mickey & Minnie's Runaway Railway"
       urlSlug: hollywood-studios/mickey-minnies-runaway-railway/
       image: rides/mickey-minnies-runaway-railway.jpg
+      area: Hollywood Boulevard
       demand: high
       description: Trackless dark ride inside a chaotic Mickey Mouse cartoon short
       tags: [family, dark ride, mickey, minnie, trackless, indoor, children, all ages, fun, slapstick, wacky, new]
     - name: "Star Tours \u2013 The Adventures Continue"
       urlSlug: hollywood-studios/star-tours/
       image: rides/star-tours.jpg
+      area: Echo Lake
       demand: medium
       description: Motion simulator flight through Star Wars planets with randomized destinations
       tags: [family, simulation, star wars, indoor, mild thrill, moderate thrill, 3D, interactive, action, sci-fi, classic, random]
     - name: Alien Swirling Saucers
       urlSlug: hollywood-studios/alien-swirling-saucers/
       image: rides/alien-swirling-saucers.jpg
+      area: Toy Story Land
       demand: medium
       description: Spinning flying-saucer ride through a Pizza Planet play set with the Aliens
       tags: [family, spinning, toy story, pixar, indoor, mild thrill, children, fun, all ages, whip, gentle, pizza planet]
     - name: Toy Story Mania
       urlSlug: hollywood-studios/toy-story-mania/
       image: rides/toy-story-mania.jpg
+      area: Toy Story Land
       demand: high
       description: 4D interactive shooting gallery through Toy Story game boards
       tags: [family, interactive, shooting gallery, toy story, indoor, competitive, all ages, mild thrill, arcade, pixar, 4D, fun]
@@ -205,30 +237,35 @@ parks:
     - name: Avatar Flight of Passage
       urlSlug: animal-kingdom/avatar-flight-of-passage/
       image: rides/avatar-flight-of-passage.jpg
+      area: Pandora
       demand: very_high
       description: "Banshee-riding simulation soaring over Pandora's bioluminescent world"
       tags: [thrill, simulation, avatar, pandora, intense, indoor, must do, 3D, flying, immersive, high thrill, breathtaking]
     - name: "Na'vi River Journey"
       urlSlug: animal-kingdom/navi-river-journey/
       image: rides/navi-river-journey.jpg
+      area: Pandora
       demand: high
       description: Serene boat through the glowing Pandoran jungle at night
       tags: [family, boat ride, avatar, pandora, calm, indoor, all ages, nature, bioluminescent, dark ride, slow ride, beautiful]
     - name: Expedition Everest
       urlSlug: animal-kingdom/expedition-everest-legend-of-the-forbidden-mountain/
       image: rides/expedition-everest.jpg
+      area: Asia
       demand: high
       description: Coaster up the Himalayas, then backwards — chased by a Yeti
       tags: [thrill, roller coaster, outdoor, backward, yeti, moderate thrill, must do, fast, asia, mountain, reverse, iconic]
     - name: Kilimanjaro Safaris
       urlSlug: animal-kingdom/kilimanjaro-safaris/
       image: rides/kilimanjaro-safaris.jpg
+      area: Africa
       demand: medium
       description: Open jeep safari past real African wildlife on the savanna
       tags: [family, safari, animals, outdoor, real animals, nature, wildlife, must do, slow ride, jeep, africa, educational]
     - name: Kali River Rapids
       urlSlug: animal-kingdom/kali-river-rapids/
       image: rides/kali-river-rapids.jpg
+      area: Asia
       demand: medium
       description: White-water raft ride down a rainforest river — get ready to get soaked
       tags: [family, water ride, outdoor, wet, moderate thrill, rafting, nature, asia, raft, splash, soaked, white water]
@@ -237,6 +274,7 @@ parks:
     - name: Aerophile - The World Leader in Balloon Flight
       urlSlug: disney-springs/aerophile-the-world-leader-in-balloon-flight/
       image: rides/aerophile.jpg
+      area: West Side
       demand: low
       description: Tethered helium balloon flight with panoramic views of Walt Disney World
       tags: [family, outdoor, scenic, gentle, all ages, views, balloon, relaxing]

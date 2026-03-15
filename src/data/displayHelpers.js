@@ -1,7 +1,8 @@
 // Pure display and style helpers — no React / DOM dependencies (TD-035)
 import { DAY_TYPES, PARK_OPTIONS, SWIM_OPTIONS, EVENT_TYPES } from './tripOptions.js'
-import { RIDES_BY_PARK, getRideDescription } from './rideData.js'
+import { RIDES_BY_PARK, getRideDescription, RIDE_AREAS } from './rideData.js'
 import { getRestaurantDescription } from './restaurantMetadata.js'
+import { SHOW_AREAS } from './parkSuggestions.js'
 import { IMG_BASE } from './constants.js'
 
 const DAY_TYPE_BACKGROUNDS = {
@@ -225,6 +226,19 @@ export function getTimeSlots(dayType) {
     { slot: 'night',     time: '9:00pm',   label: isPark ? 'Night shows' : 'Night' },
     { slot: 'latenight', time: 'Midnight', label: 'Late night' },
   ]
+}
+
+// ── Area lookup (for walking time connectors) ─────────────────────────────────
+// Returns the park area string for a confirmed event item, or null.
+export function getEventArea(normalizedItem) {
+  if (normalizedItem.ride) {
+    const rideName = normalizedItem.ride.split('::').pop()
+    return RIDE_AREAS[rideName] ?? null
+  }
+  if (normalizedItem.type === 'Show' || normalizedItem.type === 'Parade' || normalizedItem.type === 'Fireworks') {
+    return SHOW_AREAS[normalizedItem.label] ?? null
+  }
+  return null
 }
 
 // ── Description lookup ────────────────────────────────────────────────────────

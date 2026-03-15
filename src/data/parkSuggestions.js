@@ -179,6 +179,11 @@ export const SHOW_IMAGES = Object.fromEntries(
   ALL_SHOWS.filter(s => s.image).map(s => [s.label, s.image])
 )
 
+// Label → area lookup for walk-time connectors (populated from park-shows.yaml `area` fields)
+export const SHOW_AREAS = Object.fromEntries(
+  ALL_SHOWS.filter(s => s.area).map(s => [s.label, s.area])
+)
+
 export function getParkSuggestions(park, secondPark) {
   return [park, secondPark]
     .filter(Boolean)

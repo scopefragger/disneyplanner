@@ -1,0 +1,36 @@
+# Walking time matrices between park areas (minutes, symmetric)
+# Same-area default: 3 minutes
+
+Magic Kingdom:
+  areas: [Main Street U.S.A., Adventureland, Frontierland, Liberty Square, Fantasyland, Tomorrowland]
+  matrix:
+    Main Street U.S.A.: { Adventureland: 7, Frontierland: 8, Liberty Square: 9, Fantasyland: 10, Tomorrowland: 6 }
+    Adventureland:      { Frontierland: 4, Liberty Square: 6, Fantasyland: 8,  Tomorrowland: 10 }
+    Frontierland:       { Liberty Square: 3, Fantasyland: 7, Tomorrowland: 12 }
+    Liberty Square:     { Fantasyland: 4, Tomorrowland: 10 }
+    Fantasyland:        { Tomorrowland: 6 }
+
+EPCOT:
+  areas: [World Celebration, World Discovery, World Nature, World Showcase]
+  matrix:
+    World Celebration: { World Discovery: 5, World Nature: 5, World Showcase: 8 }
+    World Discovery:   { World Nature: 6, World Showcase: 12 }
+    World Nature:      { World Showcase: 10 }
+
+"Disney's Hollywood Studios":
+  areas: [Hollywood Boulevard, Echo Lake, Grand Avenue, Galaxy's Edge, Toy Story Land, Animation Courtyard, Sunset Boulevard]
+  matrix:
+    Hollywood Boulevard: { Echo Lake: 4, Grand Avenue: 6, "Galaxy's Edge": 12, Toy Story Land: 10, Animation Courtyard: 6, Sunset Boulevard: 5 }
+    Echo Lake:           { Grand Avenue: 4, "Galaxy's Edge": 10, Toy Story Land: 8, Animation Courtyard: 8, Sunset Boulevard: 8 }
+    Grand Avenue:        { "Galaxy's Edge": 8, Toy Story Land: 6, Animation Courtyard: 8, Sunset Boulevard: 10 }
+    "Galaxy's Edge":     { Toy Story Land: 5, Animation Courtyard: 14, Sunset Boulevard: 15 }
+    Toy Story Land:      { Animation Courtyard: 10, Sunset Boulevard: 12 }
+    Animation Courtyard: { Sunset Boulevard: 6 }
+
+"Disney's Animal Kingdom":
+  areas: [Discovery Island, Africa, Asia, Pandora, "DinoLand U.S.A."]
+  matrix:
+    Discovery Island: { Africa: 5, Asia: 7, Pandora: 8, "DinoLand U.S.A.": 6 }
+    Africa:           { Asia: 8, Pandora: 12, "DinoLand U.S.A.": 10 }
+    Asia:             { Pandora: 10, "DinoLand U.S.A.": 8 }
+    Pandora:          { "DinoLand U.S.A.": 14 }

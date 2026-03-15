@@ -752,3 +752,17 @@ Each entry is appended after every prompt.
 - Added "INTENT.md MUST be updated before every commit — no exceptions." as an explicit bolded rule in the Workflow Rules section of CLAUDE.md
 
 **Why:** User flagged that the requirement to update INTENT.md before committing needed to be more prominently stated in the agent instructions to prevent it from being skipped.
+
+## 2026-03-15T22:05:00Z — Add walking time connectors between consecutive events
+
+**What:**
+- Created `src/data/yaml/park-areas.yaml` with symmetric walking time matrices for Magic Kingdom (6 areas), EPCOT (4 areas), Hollywood Studios (7 areas), and Animal Kingdom (5 areas)
+- Created `src/data/walkingTimeHelpers.js` with `getWalkingTime`, `getWalkGapStatus`, and `timeToMinutes` helpers
+- Added `area` field to all 38 rides in `rides.yaml` and all 18 shows in `park-shows.yaml`
+- Exported `RIDE_AREAS` from `rideData.js` and `SHOW_AREAS` from `parkSuggestions.js`
+- Added `getEventArea` to `displayHelpers.js` to look up area for any confirmed event item
+- Updated `DayPlanSection.jsx` to sort items by time, compute walk connectors between consecutive cross-area events, and render them as connector elements
+- Added `.walk-connector` CSS with `--ok` (grey), `--tight` (amber), and `--impossible` (red) status variants
+- Created `src/__tests__/walkingTimeHelpers.test.js` with 22 tests covering all three helpers
+
+**Why:** Users have no spatial awareness of their schedule — booking Space Mountain at 09:30 and Peter Pan at 09:40 is physically impossible but looks valid in the planner. Walk connectors show the gap vs walk time and warn (⚠️) when the schedule is infeasible, helping users build realistic day plans.

@@ -8,6 +8,7 @@ Magic Kingdom:
     time: "10:30"
     type: Show
     theme: character
+    area: Main Street U.S.A.
     tags: ["#character", "#castle", "#family"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/magic-kingdom/mickeys-magical-friendship-faire/
     mapUrl: "https://www.google.com/maps?q=Cinderella+Castle+Stage+Magic+Kingdom+Walt+Disney+World"
@@ -18,6 +19,7 @@ Magic Kingdom:
     time: "15:00"
     type: Parade
     theme: default
+    area: Main Street U.S.A.
     tags: ["#parade", "#afternoon", "#mustdo"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/magic-kingdom/festival-of-fantasy-parade/
     mapUrl: "https://www.google.com/maps?q=Main+Street+USA+Magic+Kingdom+Walt+Disney+World"
@@ -28,6 +30,7 @@ Magic Kingdom:
     time: "21:30"
     type: Fireworks
     theme: fireworks
+    area: Main Street U.S.A.
     tags: ["#fireworks", "#nighttime", "#mustdo"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/magic-kingdom/happily-ever-after/
     mapUrl: "https://www.google.com/maps?q=Cinderella+Castle+Magic+Kingdom+Walt+Disney+World"
@@ -38,6 +41,7 @@ Magic Kingdom:
     time: "20:15"
     type: Parade
     theme: default
+    area: Main Street U.S.A.
     tags: ["#parade", "#nighttime", "#mustdo"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/magic-kingdom/disney-starlight-dream-the-night-away/
     mapUrl: "https://www.google.com/maps?q=Main+Street+USA+Magic+Kingdom+Walt+Disney+World"
@@ -48,6 +52,7 @@ Magic Kingdom:
     time: "10:30"
     type: Parade
     theme: character
+    area: Main Street U.S.A.
     tags: ["#parade", "#character", "#morning"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/magic-kingdom/disney-adventure-friends-cavalcade/
     mapUrl: "https://www.google.com/maps?q=Main+Street+USA+Magic+Kingdom+Walt+Disney+World"
@@ -59,6 +64,7 @@ EPCOT:
     time: "21:00"
     type: Fireworks
     theme: fireworks
+    area: World Showcase
     tags: ["#fireworks", "#nighttime", "#worldshowcase"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/epcot/luminous-the-symphony-of-us/
     mapUrl: "https://www.google.com/maps?q=World+Showcase+Lagoon+EPCOT+Walt+Disney+World"
@@ -69,6 +75,7 @@ EPCOT:
     time: "10:45"
     type: Show
     theme: character
+    area: World Celebration
     tags: ["#encanto", "#singalong", "#family"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/epcot/celebracion-encanto/
     mapUrl: "https://www.google.com/maps?q=CommuniCore+Plaza+EPCOT+Walt+Disney+World"
@@ -80,6 +87,7 @@ EPCOT:
     time: "11:30"
     type: Show
     theme: default
+    area: Echo Lake
     tags: ["#stunts", "#live", "#adventure"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/indiana-jones-epic-stunt-spectacular/
     mapUrl: "https://www.google.com/maps?q=Indiana+Jones+Epic+Stunt+Spectacular+Hollywood+Studios+Walt+Disney+World"
@@ -90,6 +98,7 @@ EPCOT:
     time: "20:30"
     type: Fireworks
     theme: fireworks
+    area: Sunset Boulevard
     tags: ["#nighttime", "#mustdo", "#spectacular"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/fantasmic/
     mapUrl: "https://www.google.com/maps?q=Hollywood+Hills+Amphitheater+Hollywood+Studios+Walt+Disney+World"
@@ -100,6 +109,7 @@ EPCOT:
     time: "10:00"
     type: Show
     theme: character
+    area: Animation Courtyard
     tags: ["#littlemermaid", "#musical", "#family"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/the-little-mermaid-a-musical-adventure/
     mapUrl: "https://www.google.com/maps?q=Animation+Courtyard+Hollywood+Studios+Walt+Disney+World"
@@ -110,6 +120,7 @@ EPCOT:
     time: "10:30"
     type: Show
     theme: default
+    area: Sunset Boulevard
     tags: ["#villains", "#projection", "#indoor"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/disney-villains-unfairly-ever-after/
     mapUrl: "https://www.google.com/maps?q=Sunset+Showcase+Hollywood+Studios+Walt+Disney+World"
@@ -120,6 +131,7 @@ EPCOT:
     time: "11:00"
     type: Show
     theme: character
+    area: Sunset Boulevard
     tags: ["#beautyandthebeast", "#musical", "#classic"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/beauty-and-the-beast-live-on-stage/
     mapUrl: "https://www.google.com/maps?q=Theater+of+the+Stars+Hollywood+Studios+Walt+Disney+World"
@@ -130,6 +142,7 @@ EPCOT:
     time: "09:30"
     type: Show
     theme: character
+    area: Echo Lake
     tags: ["#frozen", "#singalong", "#family"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/for-the-first-time-in-forever-frozen-sing-along-celebration/
     mapUrl: "https://www.google.com/maps?q=Hyperion+Theater+Hollywood+Studios+Walt+Disney+World"
@@ -140,6 +153,7 @@ EPCOT:
     time: "21:00"
     type: Fireworks
     theme: fireworks
+    area: Hollywood Boulevard
     tags: ["#projection", "#nighttime", "#animation"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/hollywood-studios/wonderful-world-of-animation/
     mapUrl: "https://www.google.com/maps?q=Chinese+Theatre+Hollywood+Studios+Walt+Disney+World"
@@ -151,6 +165,7 @@ EPCOT:
     time: "20:00"
     type: Show
     theme: nature
+    area: Discovery Island
     tags: ["#nature", "#evening", "#magical"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/animal-kingdom/tree-of-life-awakening/
     mapUrl: "https://www.google.com/maps?q=Tree+of+Life+Animal+Kingdom+Walt+Disney+World"
@@ -161,6 +176,7 @@ EPCOT:
     time: "10:00"
     type: Show
     theme: nature
+    area: Africa
     tags: ["#lionking", "#musical", "#mustdo"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/animal-kingdom/festival-of-the-lion-king/
     mapUrl: "https://www.google.com/maps?q=Harambe+Theater+Animal+Kingdom+Walt+Disney+World"
@@ -171,6 +187,7 @@ EPCOT:
     time: "11:00"
     type: Show
     theme: nature
+    area: Discovery Island
     tags: ["#nemo", "#musical", "#family"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/animal-kingdom/finding-nemo-the-musical/
     mapUrl: "https://www.google.com/maps?q=Theater+in+the+Wild+Animal+Kingdom+Walt+Disney+World"
@@ -181,6 +198,7 @@ EPCOT:
     time: "10:45"
     type: Show
     theme: nature
+    area: Asia
     tags: ["#birds", "#live", "#nature"]
     infoUrl: https://disneyworld.disney.go.com/entertainment/animal-kingdom/feathered-friends-in-flight/
     mapUrl: "https://www.google.com/maps?q=Caravan+Stage+Animal+Kingdom+Walt+Disney+World"
