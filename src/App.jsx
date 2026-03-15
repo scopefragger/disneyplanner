@@ -336,7 +336,9 @@ function App() {
         .map(show => {
           const cleanTags = (show.tags || []).map(tag => tag.replace(/^#/, ''))
           const matchingTags = cleanTags.filter(tag => fuzzyMatch(topSearchQ, tag))
-          return (fuzzyMatch(topSearchQ, show.label) || matchingTags.length) ? { ...show, matchingTags } : null
+          const labelMatch = fuzzyMatch(topSearchQ, show.label)
+          const descMatch = show.description && show.description.toLowerCase().includes(topSearchQ.toLowerCase())
+          return (labelMatch || descMatch || matchingTags.length) ? { ...show, matchingTags } : null
         }).filter(Boolean).slice(0, MAX_SHOW_RESULTS),
       restaurants: ALL_RESTAURANTS.map(restaurant => {
         const tags = RESTAURANT_TAGS[restaurant] || []

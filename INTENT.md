@@ -3,6 +3,16 @@
 Timestamped record of changes made to this project — what was done and why.
 Each entry is appended after every prompt.
 
+## 2026-03-15T00:00:00Z — Extend show search to match description text
+
+**What:**
+- In `topSearchResults`, added substring match against `show.description` alongside the existing label + tag fuzzy match
+- Uses `.includes()` (substring only, not sequential) to avoid false positives from fuzzy matching on long descriptions
+
+**Why:**
+- Shows were not surfacing for natural search terms like "castle", "magic kingdom", or "cinderella" — terms that appear in descriptions but not labels/tags
+- Sequential fuzzy match on descriptions caused too many false positives so substring match is used instead
+
 ## 2026-03-14T17:10:00Z — Refresh park-shows.yaml with current WDW entertainment
 
 **What:**
